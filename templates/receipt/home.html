@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -9,10 +9,8 @@
 
     <script type="text/javascript">
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
     var constraints = {audio: false, video: true};
     var video = document.querySelector("video");
-
     function successCallback(stream) {
       window.stream = stream; // stream available to console
       if (window.URL) {
@@ -21,12 +19,19 @@
         video.src = stream;
       }
     }
-
     function errorCallback(error){
       console.log("navigator.getUserMedia error: ", error);
     }
-
     navigator.getUserMedia(constraints, successCallback, errorCallback);
+    
     </script>
   </body>
+</html> -->
+<html>
+<body>
+<form>
+<input type="file" accept="image/*;capture=camera"/>
+<input type="submit"/>
+</form>
+</body>
 </html>
