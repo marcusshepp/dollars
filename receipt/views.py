@@ -9,17 +9,22 @@ class Home(View):
     template_name = "receipt/home.html"
 
     def get(self, request, *a, **kw):
-        return render(request, self.template_name, {})
+        context = dict()
+        context["form"] = PicForm
+        return render(request, self.template_name, context)
 
     def post(self, request, *a, **kw):
-
-        print "POSTED"
-
+        context = dict()
+        print "request.POST: ", request.POST
+        print "request.FILES: ", request.FILES
         f = PicForm(request.POST, request.FILES)
+        context["form"] = f
         if f.is_valid():
-            new_picture = Pic(ff=request.FILES["ff"])
+            print "valid"
+            new_picture = Pic(docfile=request.FILES["docfile"])
             new_picture.save()
-        return render(request, self.template_name, {})
+            print new_picture.__unicode__()
+        return render(request, self.template_name, context)
 
 class PicsView(View):
 

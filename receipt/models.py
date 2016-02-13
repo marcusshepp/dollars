@@ -7,4 +7,13 @@ class Pic(models.Model):
     class Meta:
         pass
 
-    ff = models.FileField(upload_to="pics/")
+    docfile = models.FileField(upload_to="pics/")
+
+    def __unicode__(self):
+        return u"HELLO WORLD UNICODE"
+
+# 
+# class Receipt(models.Model):
+#
+#     name_of_company = models.CharField(max_length=50)
+#

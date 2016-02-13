@@ -6,10 +6,16 @@
   </head>
   <body>
       {% block content %}
-      <form action="" method="POST">{% csrf_token %}
+      {{ form.errors }}
+      <form class="" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+          <label for="docfile">Docfile:</label>
+          <input type="file" accept="image/*;capture=camera"/ name="docfile">
+          <input type="submit" value="Submit">
+      </form>
+      <!-- <form action="" method="POST">{% csrf_token %}
           <input type="file" accept="image/*;capture=camera"/ name="ff">
           <input type="submit"/>
-      </form>
+      </form> -->
       {% endblock %}
     <!-- <video autoplay></video>
 
