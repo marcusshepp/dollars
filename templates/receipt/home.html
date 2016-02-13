@@ -1,11 +1,17 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <title></title>
   </head>
   <body>
-    <video autoplay></video>
+      {% block content %}
+      <form action="" method="POST">{% csrf_token %}
+          <input type="file" accept="image/*;capture=camera"/ name="ff">
+          <input type="submit"/>
+      </form>
+      {% endblock %}
+    <!-- <video autoplay></video>
 
     <script type="text/javascript">
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -23,15 +29,7 @@
       console.log("navigator.getUserMedia error: ", error);
     }
     navigator.getUserMedia(constraints, successCallback, errorCallback);
-    
-    </script>
+
+    </script> -->
   </body>
-</html> -->
-<html>
-<body>
-<form>
-<input type="file" accept="image/*;capture=camera"/>
-<input type="submit"/>
-</form>
-</body>
 </html>
