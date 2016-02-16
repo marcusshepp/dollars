@@ -17,3 +17,23 @@ class Pic(models.Model):
 #
 #     name_of_company = models.CharField(max_length=50)
 #
+
+class Purchase(models.Model):
+    
+    class Meta:
+        ordering = ["-date_created"]
+        
+    date_created = models.DateTimeField(auto_now_add=True)
+    item_purchased = models.ForeignKey("Item")
+
+
+class Item(models.Model):
+    
+    class Meta:
+        ordering = ["-date_created"]
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=250)
+    company_came_from = models.CharField(max_length=50, null=True, blank=True)
+    price = models.DecimalField(max_digits=19, decimal_places=2)
+    
