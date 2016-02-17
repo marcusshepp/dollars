@@ -5,7 +5,7 @@
 {{ form.errors }}
 <div class="row">
   <div class="col-md-6">
-    <h4>Add New Item</h4>
+    <h4 id="item_form_header">Add New Item</h4>
     <form class="formmy item_form" action="{% url 'items' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
       <p><label for="name">Name: </label><input type="text" name="name" max_length="250"/></p>
       <p><label for="company_came_from">Company: </label><input type="text" name="company_came_from" max_length="50"></p>
@@ -43,7 +43,10 @@
   function send_new_item(form){
     var url = form.action;
     var form_data = $(form).serializeArray();
+    var name = form_data[1].value;
     $.post(url, form_data);
+    $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
+    document.getElementsByClassName('item_form')[0].reset();
   }
 </script>
 {% endblock %}
