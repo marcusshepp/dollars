@@ -64,4 +64,5 @@ class ItemEndPoint(View):
         data["companies"] = [i.company_came_from for i in items]
         data["prices"] = [i.price for i in items]
         data["length"] = items.count()
+        data["times_purchased"] = [i.times_purchased for i in items]
         return JsonResponse(data)

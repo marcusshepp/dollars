@@ -17,7 +17,7 @@
       <h4>Available Items</h4>
       <div class="items">
         {% for i in items %}
-        <div>{{i.name}} {{i.company_came_from}} {{i.price}}</div><br />
+        <div class="item"><div class="pull-left">{{i.name}} {{i.company_came_from}} {{i.price}}</div><span class="badge pull-right">{{ i.times_purchased }}</span></div><br />
         {% endfor %}
       </div>
   </div>  
@@ -33,7 +33,8 @@
             var name = data.names[i]
             var company = data.companies[i]
             var price = data.prices[i]
-            item_markup += "<div>" + name + " " + company + " " + price + "</div><br />"
+            var times_purchased = data.times_purchased[i]
+            item_markup += "<div class='item'><div class='pull-left'>" + name + " " + company + " " + price + "</div><span class='badge pull-right'>" + times_purchased + "</span></div><br />"
           }
           $(".items").html(item_markup);
         }

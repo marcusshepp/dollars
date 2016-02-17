@@ -1,0 +1,11 @@
+.item {
+  background-color: #6699ff;
+  /*text-align: center;*/
+  padding: 15px 5px 30px 15px;
+  border-radius: 2px 2px 2px 2px;
+}
+.item > div {
+}
+.badge {
+  margin-left: 15px !important;
+}
