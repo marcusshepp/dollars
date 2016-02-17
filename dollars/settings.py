@@ -51,7 +51,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'dollars.urls'
+ROOT_URLCONF = 'receipt.urls'
 
 TEMPLATES = [
     {

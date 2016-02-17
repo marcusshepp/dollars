@@ -1,0 +1,48 @@
+{% extends "receipt/base.html" %}
+{% block title %}form{% endblock %}
+{% block content %}
+<h3 class="page-header">Purchasable Items</h3>
+{{ form.errors }}
+<div class="row">
+  <div class="col-md-6">
+    <h4>Add New Item</h4>
+    <form class="formmy item_form" action="{% url 'items' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+      <p><label for="name">Name: </label><input type="text" name="name" max_length="250"/></p>
+      <p><label for="company_came_from">Company: </label><input type="text" name="company_came_from" max_length="50"></p>
+      <p><label for="price">Price: </label><input type="number" name="price" step="0.01"></p>
+      <input type="button" value="Submit" class="btn btn-default" onclick="send_new_item(this.form)">
+    </form>
+  </div>
+  <div class="col-md-6">
+      <h4>Available Items</h4>
+      <div class="items">
+        {% for i in items %}
+        <div>{{i.name}} {{i.company_came_from}} {{i.price}}</div><br />
+        {% endfor %}
+      </div>
+  </div>  
+</div>
+<script type="text/javascript">
+  var collect_items = setInterval(function(){
+    $.ajax({
+        type: "GET",
+        url: "{% url 'api_items' %}",
+        success: function(data){
+          var item_markup = "";
+          for (var i = 0; i < data.length; i++){
+            var name = data.names[i]
+            var company = data.companies[i]
+            var price = data.prices[i]
+            item_markup += "<div>" + name + " " + company + " " + price + "</div><br />"
+          }
+          $(".items").html(item_markup);
+        }
+    });
+  }, 5000)
+  function send_new_item(form){
+    var url = form.action;
+    var form_data = $(form).serializeArray();
+    $.post(url, form_data);
+  }
+</script>
+{% endblock %}
