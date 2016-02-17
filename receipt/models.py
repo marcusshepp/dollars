@@ -33,6 +33,7 @@ class Item(models.Model):
 
     class Meta:
         ordering = ["-date_created"]
+        unique_together = ("name", "company_came_from")
 
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=250)

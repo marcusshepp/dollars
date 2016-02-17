@@ -9,10 +9,27 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
     
     def create_items(apps, schema_editor):
+        """ Used to create some common items on init """
+        
         I = apps.get_model("receipt", "Item")
         data = {"name": "Coffee",
                 "company_came_from": "Java City",
                 "price": 1.75}
+        item = I(**data)
+        item.save()
+        data = {"name": "Tofu",
+                "company_came_from": "Hunan House",
+                "price": 10.00}
+        item = I(**data)
+        item.save()
+        data = {"name": "Lunch",
+                "company_came_from": "RFOC",
+                "price": 8.00}
+        item = I(**data)
+        item.save()
+        data = {"name": "Veggie Sub",
+                "company_came_from": "Subway",
+                "price": 5.00}
         item = I(**data)
         item.save()
         

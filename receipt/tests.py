@@ -12,5 +12,10 @@ class ReceiptTests(TestCase):
         """ tests that the initial items created in the migration file actually exist. """
         coffee = Item.objects.get(name="Coffee")
         self.assertTrue(coffee)
-        if self.assertTrue(coffee):
-            print "Item: Coffee, exists."
+        tofu = Item.objects.get(name="Tofu")
+        self.assertTrue(tofu)
+        lunch = Item.objects.get(name="Lunch")
+        self.assertTrue(lunch)
+        sub = Item.objects.get(name="Veggie Sub")
+        self.assertTrue(sub)
+        
