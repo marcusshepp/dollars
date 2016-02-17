@@ -1,5 +1,5 @@
 .item {
-  background-color: #6699ff;
+  background-color: #B5EDFF;
   /*text-align: center;*/
   padding: 15px 5px 30px 15px;
   border-radius: 2px 2px 2px 2px;
@@ -10,9 +10,9 @@
   margin-left: 15px !important;
 }
 .formmy {
-  background-color: #6699ff;
-  border-radius: 2px 2px 2px 2px;
-  padding: 15px 25px 30px 15px;
+  background-color: #B5EDFF;
+  border-radius: 2px 2px 125px 2px;
+  padding: 15px 25px 20px 15px;
 }
 .item_form p label input {
   margin-left: 50px !important;
