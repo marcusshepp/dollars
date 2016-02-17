@@ -18,7 +18,8 @@
       <h4>Available Items</h4>
       <div class="items">
         {% for i in items %}
-        <div class="item"><div class="pull-left">{{i.name}} {{i.company_came_from}} {{i.price}}</div><span class="badge pull-right">{{ i.times_purchased }}</span></div><br />
+        <div id="{{ i.id }}" class="item"><div class="pull-left">{{ i.name }} {{ i.company_came_from }} {{ i.price }}</div>
+        <span class="badge pull-right">{{ i.times_purchased }}</span></div><br />
         {% endfor %}
       </div>
   </div>  

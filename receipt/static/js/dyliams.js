@@ -9,7 +9,8 @@ var collect_items = setInterval(function(){
           var company = data.companies[i]
           var price = data.prices[i]
           var times_purchased = data.times_purchased[i]
-          item_markup += "<div class='item'><div class='pull-left'>" + name + " " + company + " " + price + "</div><span class='badge pull-right'>" + times_purchased + "</span></div><br />"
+          item_markup += "<div class='item'><div class='pull-left'>" + name + " " + company + " " + price + "</div>\
+          <span class='badge pull-right'>" + times_purchased + "</span></div><br />"
         }
         $(".items").html(item_markup);
       }
@@ -23,3 +24,17 @@ function send_new_item(form){
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
 };
+$(".item").click(function(){
+  console.log(this.name);
+  $.ajax({
+      type: "POST",
+      url: "/api/items/",
+      data: {
+        "id": this.id,
+        "csrf_token": this.name
+      },
+      success: function(data){
+        console.log(data);
+      }
+    })
+});

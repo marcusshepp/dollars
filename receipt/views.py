@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.generic import TemplateView, View
+from django.views.decorators.csrf import csrf_exempt
 
 from .forms import PicForm, ItemForm
 from .models import Pic, Item
@@ -66,3 +67,9 @@ class ItemEndPoint(View):
         data["length"] = items.count()
         data["times_purchased"] = [i.times_purchased for i in items]
         return JsonResponse(data)
+        
+    @csrf_exempt
+    def post(self, request, *a, **kw):
+        print request.POST
+        return render(request, "receipt/item.html", context)
+    
