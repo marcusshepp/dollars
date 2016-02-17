@@ -14,7 +14,7 @@ var collect_items = setInterval(function(){
         $(".items").html(item_markup);
       }
   });
-}, 5000)
+}, 5000);
 function send_new_item(form){
   var url = form.action;
   var form_data = $(form).serializeArray();
@@ -22,4 +22,4 @@ function send_new_item(form){
   $.post(url, form_data);
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
-}
+};

@@ -8,10 +8,10 @@
   <div class="col-md-6">
     <h4 id="item_form_header">Add New Item</h4>
     <form class="formmy item_form" action="{% url 'items' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
-      <p><label for="name">Name: </label><input type="text" name="name" max_length="250"/></p>
-      <p><label for="company_came_from">Company: </label><input type="text" name="company_came_from" max_length="50"></p>
-      <p><label for="price">Price: </label><input type="number" name="price" step="0.01"></p>
-      <input type="button" value="Submit" class="btn btn-default" onclick="send_new_item(this.form)">
+      <p><label for="name">Name: </label><input type="text" name="name" max_length="250"/ class="pull-right"></p>
+      <p><label for="company_came_from">Company: </label><input type="text" name="company_came_from" max_length="50" class="pull-right"></p>
+      <p><label for="price">Price: </label><input type="number" name="price" step="0.01" class="pull-right"></p>
+      <input type="button" value="Submit" class="btn btn-default" onclick="send_new_item(this.form)" class="pull-right">
     </form>
   </div>
   <div class="col-md-6">
