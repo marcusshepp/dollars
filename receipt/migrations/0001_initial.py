@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     def create_items(apps, schema_editor):
-        I = apps.get_model("reciept", "Item")
+        I = apps.get_model("receipt", "Item")
         data = {"name": "Coffee",
                 "company_came_from": "Java City",
                 "price": 1.75}
