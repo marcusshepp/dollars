@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
         I = apps.get_model("receipt", "Item")
         data = {"name": "Coffee",
                 "company_came_from": "Java City",
-                "price": 1.75}
+                "price": 1.75}3
         item = I(**data)
         item.save()
 
