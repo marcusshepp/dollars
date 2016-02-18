@@ -19,12 +19,13 @@
       <div class="items">
         {% for i in items %}
         <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="itemclick(this)" method="POST">{% csrf_token %}
-            <div><div class="pull-left">{{ i.name }}</div>
-            <span class="badge pull-right">{{ i.number_of_times_purchased }}</span></div><br />
+            <div class="pull-left">{{ i.name }}</div>
+            <span class="badge pull-right">{{ i.number_of_times_purchased }}</span><br />
         </form>
         {% endfor %}
       </div>
   </div>
 </div>
 <script type="text/javascript" src="{% static 'js/dyliams.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
 {% endblock %}
