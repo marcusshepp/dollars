@@ -18,10 +18,10 @@
       <h4>Available Items</h4>
       <div class="items">
         {% for i in items %}
-        <div class="item" action="{% url 'api_items' i.id %}" onclick="itemclick(this)">{% csrf_token %}
-            <div id="{{ i.id }}"><div class="pull-left">{{ i.name }}</div>
-            <span class="badge pull-right">{{ i.times_purchased }}</span></div><br />
-        </div>
+        <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="itemclick(this)" method="POST">{% csrf_token %}
+            <div><div class="pull-left">{{ i.name }}</div>
+            <span class="badge pull-right">{{ i.number_of_times_purchased }}</span></div><br />
+        </form>
         {% endfor %}
       </div>
   </div>

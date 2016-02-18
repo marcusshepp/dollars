@@ -1,4 +1,4 @@
-var collect_items = setInterval(function(){
+var update_items = setInterval(function(){
   $.ajax({
       type: "GET",
       url: "/api/items",
@@ -24,17 +24,20 @@ function send_new_item(form){
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
 };
-function itemclick(div){
-  var url = div.action;
-  var form_data = $(div).serializeArray();
+function itemclick(form){
+  var url = form.action;
+  console.log(form);
+  var form_data = $(form).serializeArray();
   // var name = form_data[1].value;
   $.ajax({
-      typ: 'POST',
+      type: 'POST',
       url: url,
-      data: form_data,
+      data: {
+          "csrfmiddlewaretoken": form_data[0].value,
+          "id": form.id,
+      },
       success: function(){
           console.log("success");
-
       },
       error: function(){
           console.log("failure");
