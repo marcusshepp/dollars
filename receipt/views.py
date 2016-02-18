@@ -70,4 +70,5 @@ class ItemEndPoint(View):
 
     def post(self, request, *a, **kw):
         print request.POST
+        print request.POST['item_id']
         return render(request, "receipt/item.html", context)

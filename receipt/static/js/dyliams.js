@@ -24,19 +24,20 @@ function send_new_item(form){
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
 };
-function itemclick(form){
-  var url = form.action;
-  var form_data = $(form).serializeArray();
+function itemclick(div){
+  var url = div.action;
+  var form_data = $(div).serializeArray();
   // var name = form_data[1].value;
   $.ajax({
       typ: 'POST',
       url: url,
       data: form_data,
       success: function(){
-          alert("success");
+          console.log("success");
+
       },
       error: function(){
-          alert("failure");
+          console.log("failure");
       }
   });
 
