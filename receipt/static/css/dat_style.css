@@ -1,8 +1,9 @@
 .item {
   background-color: #B5EDFF;
   /*text-align: center;*/
-  padding: 15px 5px 30px 15px;
+  padding: 20px 5px 20px 15px;
   border-radius: 2px 2px 2px 2px;
+  margin: 0px 0px 15px 0px;
 }
 .item > div {
 }

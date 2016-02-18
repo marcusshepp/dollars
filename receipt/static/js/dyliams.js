@@ -18,7 +18,7 @@ var update_items = setInterval(function(){
         $(".items").html(item_markup);
       }
   });
-}, 50000);
+}, 10000);
 function send_new_item(form){
   var url = form.action;
   var form_data = $(form).serializeArray();
@@ -31,6 +31,7 @@ function itemclick(form){
   var url = form.action;
   console.log(form);
   var form_data = $(form).serializeArray();
+  console.log("form_data", form_data);
   // var name = form_data[1].value;
   $.ajax({
       type: 'POST',
@@ -46,7 +47,19 @@ function itemclick(form){
           console.log("failure");
       }
   });
-
-  // $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
-  // document.getElementsByClassName('item_form')[0].reset();
+  $.ajax({
+      type: 'GET',
+      url: url,
+      data: {
+          "csrfmiddlewaretoken": form_data[0].value,
+      },
+      success: function(data){
+          console.log("success");
+          console.log(data);
+          $("#purchased_items").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
+      },
+      error: function(){
+          console.log("failure");
+      }
+  });
 };

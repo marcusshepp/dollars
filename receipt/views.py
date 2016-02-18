@@ -5,8 +5,13 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import PicForm, ItemForm
-from .models import Pic, Item
+from .forms import (
+    PicForm,
+    ItemForm)
+from .models import (
+    Pic,
+    Item,
+    Purchase)
 
 
 class Home(TemplateView):
@@ -48,6 +53,7 @@ class ItemView(TemplateView):
         context = dict()
         context["form"] = ItemForm
         context["items"] = Item.objects.all()
+        context["purchased_items"] = Purchase.objects.all()
         return render(request, self.template_name, context)
 
     def post(self, request, *a, **kw):
@@ -71,17 +77,17 @@ class ItemEndPoint(TemplateView):
         data["prices"] = [i.price for i in items]
         data["length"] = items.count()
         data["times_purchased"] = [i.number_of_times_purchased for i in items]
+        purchased = Purchase.objects.all()
+        data["purchased_items_names"] = [i.item_purchased for i in purchased]
+        data["purchased_dates"] = [i.date_created for i in purchased]
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
-        # print request.POST["id"]
         item = Item.objects.get(id=request.POST["id"])
-        print item.number_of_times_purchased
+        print 'before purchase: ', item.number_of_times_purchased
         item.number_of_times_purchased = F("number_of_times_purchased") + 1
         item.save()
-        print item.number_of_times_purchased
-        # print item[0]
-        # item[0].number_of_times_purchased += 1
-        # item[0].save()
-        # context = dict()
+        print 'after purchase: ', Item.objects.get(id=request.POST["id"]).number_of_times_purchased
+        purchased_item = Purchase(item_purchased=item)
+        purchased_item.save()
         return redirect(reverse("items"))
