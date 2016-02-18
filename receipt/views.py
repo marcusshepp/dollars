@@ -78,8 +78,10 @@ class ItemEndPoint(TemplateView):
         data["length"] = items.count()
         data["times_purchased"] = [i.number_of_times_purchased for i in items]
         purchased = Purchase.objects.all()
-        data["purchased_items_names"] = [i.item_purchased for i in purchased]
-        data["purchased_dates"] = [i.date_created for i in purchased]
+        if purchased:
+            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchased]
+            data["purchased_date_created"] = [i.date_created.strftime("%b. %d, %Y, %H:%M") for i in purchased]
+            data["purchased_length"] = purchased.count()
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
@@ -90,4 +92,6 @@ class ItemEndPoint(TemplateView):
         print 'after purchase: ', Item.objects.get(id=request.POST["id"]).number_of_times_purchased
         purchased_item = Purchase(item_purchased=item)
         purchased_item.save()
-        return redirect(reverse("items"))
+        data = dict()
+        data["purchased"] = True
+        return JsonResponse(data)

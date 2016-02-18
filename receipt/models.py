@@ -39,7 +39,9 @@ class Item(models.Model):
     name = models.CharField(max_length=250)
     company_came_from = models.CharField(max_length=50, null=True, blank=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
-    number_of_times_purchased = models.IntegerField(null=False, blank=True)
+    number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)
 
     def __unicode__(self):
         return u"{0} - {1}".format(self.name, self.company_came_from)
+
+        

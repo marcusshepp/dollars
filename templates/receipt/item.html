@@ -20,23 +20,25 @@
         {% for i in items %}
         <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="itemclick(this)" method="POST">{% csrf_token %}
             <div class="pull-left">{{ i.name }}</div>
-            <span class="badge pull-right">
-                {% if i.number_of_times_purchased %}
-                {{ i.number_of_times_purchased }}
-                {% else %}
-                0
-                {% endif %}
-            </span><br />
+            <span class="badge pull-right">{{ i.number_of_times_purchased }}</span><br />
         </form>
         {% endfor %}
       </div>
   </div>
 </div>
+<span id="purchase_success"></span>
 <div class="row" id="purchased_items">
     {% for i in purchased_items %}
     <p>{{ i.item_purchased }} --- {{ i.date_created }}</p>
     {% endfor %}
 </div>
+<span id="testcsrf"></span>
 <script type="text/javascript" src="{% static 'js/dyliams.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  var csrf = "{% csrf_token %}";
+  $.cookie("csrfmiddlewaretoken", csrf);
+});
+</script>
 {% endblock %}
