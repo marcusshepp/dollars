@@ -27,6 +27,9 @@ class Purchase(models.Model):
 
     date_created = models.DateTimeField(auto_now_add=True)
     item_purchased = models.ForeignKey("Item")
+    
+    def date_display(self):
+        return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
 
 
 class Item(models.Model):
@@ -44,4 +47,5 @@ class Item(models.Model):
     def __unicode__(self):
         return u"{0} - {1}".format(self.name, self.company_came_from)
 
-        
+    def date_display(self):
+        return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")

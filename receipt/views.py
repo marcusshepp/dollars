@@ -80,7 +80,7 @@ class ItemEndPoint(TemplateView):
         purchased = Purchase.objects.all()
         if purchased:
             data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchased]
-            data["purchased_date_created"] = [i.date_created.strftime("%b. %d, %Y, %H:%M") for i in purchased]
+            data["purchased_date_created"] = [i.date_display() for i in purchased]
             data["purchased_length"] = purchased.count()
         return JsonResponse(data)
 

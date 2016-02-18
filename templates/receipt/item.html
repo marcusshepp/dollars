@@ -29,7 +29,7 @@
 <span id="purchase_success"></span>
 <div class="row" id="purchased_items">
     {% for i in purchased_items %}
-    <p>{{ i.item_purchased }} --- {{ i.date_created }}</p>
+    <p>{{ i.item_purchased }} --- {{ i.date_display }}</p>
     {% endfor %}
 </div>
 <span id="testcsrf"></span>

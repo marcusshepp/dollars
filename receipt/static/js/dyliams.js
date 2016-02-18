@@ -1,13 +1,15 @@
+var csrf_func = function(){
+  var csrf = $.cookie("csrfmiddlewaretoken");
+  var wrapper = document.createElement("div");
+  wrapper.innerHTML = csrf;
+  var csrf_element = wrapper.firstChild;
+  return csrf_element.value;
+}
 var update_items = setInterval(function(){
   $.ajax({
       type: "GET",
       url: "/api/items",
       success: function(data){
-        var csrf = $.cookie("csrfmiddlewaretoken");
-        var wrapper = document.createElement("div");
-        wrapper.innerHTML = csrf;
-        var csrf_element = wrapper.firstChild;
-        // console.log(csrf_element.value);
         var item_markup = "";
         for (var i = 0; i < data.length; i++){
           var name = data.names[i];
@@ -16,6 +18,7 @@ var update_items = setInterval(function(){
           var times_purchased = data.times_purchased[i];
           var id = data.id[i];
           item_markup += '<form id="' + id + '" class="item" action="api/items/" onclick="itemclick(this)" method="POST">';
+          item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '"'
           item_markup += '<div class="pull-left">' + name + '</div>';
           item_markup += '<span class="badge pull-right">' + times_purchased + '</span><br />';
           item_markup += '</form>';
@@ -28,7 +31,7 @@ var update_items = setInterval(function(){
         $("#purchased_items").html(purchased_items);
       }
   });
-}, 100);
+}, 1000);
 function send_new_item(form){
   var url = form.action;
   var form_data = $(form).serializeArray();
@@ -47,12 +50,12 @@ function itemclick(form){
       type: 'POST',
       url: '/api/items/',
       data: {
-          "csrfmiddlewaretoken": form_data[0].value,
+          "csrfmiddlewaretoken": csrf_func(),
           "id": form.id,
       },
       success: function(data){
           console.log("success");
-          if(data.purchased == true){$("#purchase_success").html("Success");}
+          if(data.purchased == true){$("#purchase_success").html("<p style='color: green;'>Purchase Made</p>");}
       },
       error: function(){
           console.log("failure");
