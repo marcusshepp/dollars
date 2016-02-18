@@ -18,11 +18,13 @@
       <h4>Available Items</h4>
       <div class="items">
         {% for i in items %}
-        <div id="{{ i.id }}" class="item"><div class="pull-left">{{ i.name }} {{ i.company_came_from }} {{ i.price }}</div>
-        <span class="badge pull-right">{{ i.times_purchased }}</span></div><br />
+        <form class="item" action="{% url 'api_items' i.id %}" method="post" onclick="itemclick(this)">{% csrf_token %}
+            <div id="{{ i.id }}"><div class="pull-left">{{ i.name }} {{ i.company_came_from }} {{ i.price }}</div>
+            <span class="badge pull-right">{{ i.times_purchased }}</span></div><br />
+        </form>
         {% endfor %}
       </div>
-  </div>  
+  </div>
 </div>
 <script type="text/javascript" src="{% static 'js/dyliams.js' %}"></script>
 {% endblock %}

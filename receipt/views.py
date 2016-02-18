@@ -47,7 +47,7 @@ class ItemView(TemplateView):
         context["form"] = ItemForm
         context["items"] = Item.objects.all()
         return render(request, self.template_name, context)
-    
+
     def post(self, request, *a, **kw):
         context = dict()
         form = ItemForm(request.POST)
@@ -57,7 +57,7 @@ class ItemView(TemplateView):
 
 
 class ItemEndPoint(View):
-    
+
     def get(self, request, *a, **kw):
         items = Item.objects.all()
         data = dict()
@@ -67,9 +67,7 @@ class ItemEndPoint(View):
         data["length"] = items.count()
         data["times_purchased"] = [i.times_purchased for i in items]
         return JsonResponse(data)
-        
-    @csrf_exempt
+
     def post(self, request, *a, **kw):
         print request.POST
         return render(request, "receipt/item.html", context)
-    

@@ -15,7 +15,7 @@ var collect_items = setInterval(function(){
         $(".items").html(item_markup);
       }
   });
-}, 5000);
+}, 50000);
 function send_new_item(form){
   var url = form.action;
   var form_data = $(form).serializeArray();
@@ -24,17 +24,22 @@ function send_new_item(form){
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
 };
-$(".item").click(function(){
-  console.log(this.name);
+function itemclick(form){
+  var url = form.action;
+  var form_data = $(form).serializeArray();
+  // var name = form_data[1].value;
   $.ajax({
-      type: "POST",
-      url: "/api/items/",
-      data: {
-        "id": this.id,
-        "csrf_token": this.name
+      typ: 'POST',
+      url: url,
+      data: form_data,
+      success: function(){
+          alert("success");
       },
-      success: function(data){
-        console.log(data);
+      error: function(){
+          alert("failure");
       }
-    })
-});
+  });
+
+  // $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
+  // document.getElementsByClassName('item_form')[0].reset();
+};
