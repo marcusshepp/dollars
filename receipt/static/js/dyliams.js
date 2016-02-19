@@ -100,3 +100,22 @@ function itemclick(form){
       },
   });
 };
+
+function undo_purchase(id){
+  $.ajax({
+    type: 'POST',
+    url: '/api/items/',
+    data: {
+        "csrfmiddlewaretoken": csrf_func(),
+        "id": id,
+        "undo": true,
+    },
+    success: function(){
+        var name = $("#item_" + form.id).html()
+        $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + name + "&emsp; Deleted<span class='fa fa-check'></></p>");
+    },
+    error: function(){
+        console.log("failure");
+    },
+  })
+}

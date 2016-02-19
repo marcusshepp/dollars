@@ -52,4 +52,8 @@ class Item(models.Model):
     
         
 class Budget(models.Model):
-    pass
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    monthly_paycheck = models.DecimalField(max_digits=19, decimal_places=2)
+    monthly_saving_desired = models.DecimalField(max_digits=19, decimal_places=2)
+    

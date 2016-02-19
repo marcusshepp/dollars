@@ -3,6 +3,7 @@
 {% block title %}form{% endblock %}
 {% block content %}
 <h3 class="page-header" id="header">Purchasable Items</h3>
+<input type="button" name="name" value="Undo Purchase" class="btn btn-success" onclick="undo_purchase()">
 {{ form.errors }}
 <div class="row">
   <div class="col-md-6">
@@ -21,6 +22,7 @@
         {% for i in items %}
         <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="itemclick(this)" method="POST">{% csrf_token %}
             <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
+            <!-- <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick=""> -->
             <span class="badge pull-right">{{ i.number_of_times_purchased }}</span><br />
         </form>
         {% endfor %}

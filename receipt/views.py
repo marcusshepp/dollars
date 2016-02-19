@@ -96,6 +96,8 @@ class ItemEndPoint(TemplateView):
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
+        if request.POST.get(u"undo", None) == u"true":
+            Purchase.objects.get(id=request.POST['id'])
         item = Item.objects.get(id=request.POST["id"])
         item.number_of_times_purchased = F("number_of_times_purchased") + 1
         item.save()
