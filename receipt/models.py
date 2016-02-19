@@ -49,3 +49,7 @@ class Item(models.Model):
 
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
+    
+        
+class Budget(models.Model):
+    pass
