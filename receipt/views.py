@@ -54,6 +54,10 @@ class ItemView(TemplateView):
         context["form"] = ItemForm
         context["items"] = Item.objects.all()
         context["purchased_items"] = Purchase.objects.all()
+        total = 0
+        for i in context["purchased_items"]:
+            total += i.item_purchased.price
+        context["total"] = total
         return render(request, self.template_name, context)
 
     def post(self, request, *a, **kw):
@@ -82,6 +86,10 @@ class ItemEndPoint(TemplateView):
             data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchased]
             data["purchased_date_created"] = [i.date_display() for i in purchased]
             data["purchased_length"] = purchased.count()
+        total = 0
+        for i in purchased:
+            total += i.item_purchased.price
+        data["total"] = total
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):

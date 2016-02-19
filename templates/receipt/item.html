@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}form{% endblock %}
 {% block content %}
-<h3 class="page-header">Purchasable Items</h3>
+<h3 class="page-header" id="header">Purchasable Items</h3>
 {{ form.errors }}
 <div class="row">
   <div class="col-md-6">
@@ -19,20 +19,24 @@
       <div class="items">
         {% for i in items %}
         <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="itemclick(this)" method="POST">{% csrf_token %}
-            <div class="pull-left">{{ i.name }}</div>
+            <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
             <span class="badge pull-right">{{ i.number_of_times_purchased }}</span><br />
         </form>
         {% endfor %}
       </div>
   </div>
 </div>
-<span id="purchase_success"></span>
+<span id="purchase_success"><h3>Purchases Made: All Time</h3></span>
 <div class="row" id="purchased_items">
     {% for i in purchased_items %}
-    <p>{{ i.item_purchased }} --- {{ i.date_display }}</p>
+    <p>
+        <div class="col-md-6">{{ i.item_purchased }}</div>
+        <div class="col-md-6">{{ i.date_display }}</div>
+    </p>
     {% endfor %}
 </div>
-<span id="testcsrf"></span>
+<h3>Total</h3>
+<span id="total" class="total">Calculating Total...</span>
 <script type="text/javascript" src="{% static 'js/dyliams.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
 <script type="text/javascript">
