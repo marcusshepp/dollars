@@ -28,7 +28,7 @@ var update_items = setInterval(function(){
           var times_purchased = data.times_purchased[i];
           var id = data.id[i];
           item_markup += '<form id="' + id + '" class="item" action="api/items/" onclick="itemclick(this)" method="POST">';
-          item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '"';
+          item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
           item_markup += '<div class="pull-left" id="item_' + id + '">' + name + '</div>';
           item_markup += '<span class="badge pull-right">' + times_purchased + '</span><br />';
           item_markup += '</form>';
@@ -49,7 +49,7 @@ var update_items = setInterval(function(){
         }
       }
   });
-}, 10000);
+}, 5000);
 
 function send_new_item(form){
   /*
