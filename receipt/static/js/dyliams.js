@@ -13,6 +13,7 @@ var csrf_func = function(){
 
 var update_items = setInterval(function(){
   /*
+  UPDATES DOM
   Ajax request to the items API.
   Populates the page with available items & purchases & total.
   */
@@ -47,6 +48,11 @@ var update_items = setInterval(function(){
         } else {
             $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
         }
+        /* latest */
+        var latest_item = data.latest_item;
+        var latest_purchase = data.latest_purchase;
+        console.log("latest_purchase", latest_purchase);
+        console.log("latest_item", latest_item);
       }
   });
 }, 5000);

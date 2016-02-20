@@ -2,8 +2,10 @@
 {% load static %}
 {% block title %}form{% endblock %}
 {% block content %}
-<h3 class="page-header" id="header">Purchasable Items</h3>
-<input type="button" name="name" value="Undo Purchase" class="btn btn-success" onclick="undo_purchase()">
+<div class="row">
+    <h3 class="col-xs-6 page-header" id="header">Purchasable Items</h3>
+    <input type="button" name="name" value="Undo Purchase" class="btn btn-success col-xs-6" onclick="undo_purchase()">
+</div>
 {{ form.errors }}
 <div class="row">
   <div class="col-md-6">
@@ -33,6 +35,9 @@
 <div class="row" id="purchased_items">
     {% for i in purchased_items %}
     <p>
+        {% if latest == i.id %}
+        
+        {% endif %}
         <div class="col-md-6">{{ i.item_purchased }}</div>
         <div class="col-md-6">{{ i.date_display }}</div>
     </p>

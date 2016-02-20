@@ -93,6 +93,10 @@ class ItemEndPoint(TemplateView):
         for i in purchased:
             total += i.item_purchased.price
         data["total"] = total
+        latest_purchase = Purchase.objects.latest("date_created").item_purchased.id
+        latest_item = Item.objects.latest("date_created").id
+        data["latest_purchase"] = latest_purchase
+        data["latest_item"] = latest_item
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
