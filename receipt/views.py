@@ -65,6 +65,9 @@ class ItemView(TemplateView):
         form = ItemForm(request.POST)
         if form.is_valid():
             form.save()
+            if request.POST["purchase"] == u"true":
+                item = Item.objects.get(name=request.POST["name"])
+                Purchase.objects.create(item_purchased=item)
         return self.get(request, *a, **kw) # cool
 
 
@@ -93,11 +96,11 @@ class ItemEndPoint(TemplateView):
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
+        if request.POST.get(u"undo", None) == u"true":
+            Purchase.objects.get(id=request.POST['id'])
         item = Item.objects.get(id=request.POST["id"])
-        print 'before purchase: ', item.number_of_times_purchased
         item.number_of_times_purchased = F("number_of_times_purchased") + 1
         item.save()
-        print 'after purchase: ', Item.objects.get(id=request.POST["id"]).number_of_times_purchased
         purchased_item = Purchase(item_purchased=item)
         purchased_item.save()
         data = dict()

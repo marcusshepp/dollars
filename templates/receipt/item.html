@@ -3,6 +3,7 @@
 {% block title %}form{% endblock %}
 {% block content %}
 <h3 class="page-header" id="header">Purchasable Items</h3>
+<input type="button" name="name" value="Undo Purchase" class="btn btn-success" onclick="undo_purchase()">
 {{ form.errors }}
 <div class="row">
   <div class="col-md-6">
@@ -11,7 +12,8 @@
       <p><label for="name">Name: </label><input type="text" name="name" max_length="250"/ class="pull-right"></p>
       <p><label for="company_came_from">Company: </label><input type="text" name="company_came_from" max_length="50" class="pull-right"></p>
       <p><label for="price">Price: </label><input type="number" name="price" step="0.01" class="pull-right"></p>
-      <input type="button" value="Submit" class="btn btn-default" onclick="send_new_item(this.form)">
+      <input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, purchase=false)">
+      <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, purchase=true)">
     </form>
   </div>
   <div class="col-md-6">
@@ -20,6 +22,7 @@
         {% for i in items %}
         <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="itemclick(this)" method="POST">{% csrf_token %}
             <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
+            <!-- <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick=""> -->
             <span class="badge pull-right">{{ i.number_of_times_purchased }}</span><br />
         </form>
         {% endfor %}

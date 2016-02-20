@@ -1,0 +1,1 @@
+ssh -i marcusshep.pem ec2-user@ec2-52-37-8-186.us-west-2.compute.amazonaws.com

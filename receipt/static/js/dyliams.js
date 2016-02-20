@@ -51,14 +51,28 @@ var update_items = setInterval(function(){
   });
 }, 5000);
 
-function send_new_item(form){
+function send_new_item(form, purchase){
   /*
   Ajax POST to items API. View then creates a new item object.
   */
-  var url = form.action;
   var form_data = $(form).serializeArray();
   var name = form_data[1].value;
-  $.post(url, form_data);
+  var company_came_from = form_data[2].value;
+  var price = form_data[3].value;
+  $.ajax({
+    type: 'POST',
+    url: '/item/',
+    data: {
+      "csrfmiddlewaretoken": csrf_func(),
+      "name": name,
+      "company_came_from": company_came_from,
+      "price": price,
+      "purchase": purchase,
+    },
+    success: function(){
+      console.log("success");
+    }
+  });
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
 };
@@ -69,10 +83,7 @@ function itemclick(form){
   Also increases the int on the btn.
   */
   var url = form.action;
-  console.log(form);
   var form_data = $(form).serializeArray();
-  // console.log("form_data", form_data);
-  // var name = form_data[1].value;
   $.ajax({
       type: 'POST',
       url: '/api/items/',
@@ -81,9 +92,7 @@ function itemclick(form){
           "id": form.id,
       },
       success: function(){
-          console.log("success");
           var name = $("#item_" + form.id).html()
-          console.log(name);
           $("#header").html("<p style='color: green;'>Purchase Made:&emsp;" + name + "&emsp;<span class='fa fa-check'></></p>");
       },
       error: function(){
@@ -91,3 +100,22 @@ function itemclick(form){
       },
   });
 };
+
+function undo_purchase(id){
+  $.ajax({
+    type: 'POST',
+    url: '/api/items/',
+    data: {
+        "csrfmiddlewaretoken": csrf_func(),
+        "id": id,
+        "undo": true,
+    },
+    success: function(){
+        var name = $("#item_" + form.id).html()
+        $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + name + "&emsp; Deleted<span class='fa fa-check'></></p>");
+    },
+    error: function(){
+        console.log("failure");
+    },
+  })
+}

@@ -49,3 +49,11 @@ class Item(models.Model):
 
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
+    
+        
+class Budget(models.Model):
+    
+    date_created = models.DateTimeField(auto_now_add=True)
+    monthly_paycheck = models.DecimalField(max_digits=19, decimal_places=2)
+    monthly_saving_desired = models.DecimalField(max_digits=19, decimal_places=2)
+    
