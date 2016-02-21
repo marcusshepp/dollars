@@ -7,7 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .forms import (
     PicForm,
-    ItemForm)
+    ItemForm,
+    ActionForm)
 from .models import (
     Pic,
     Item,
@@ -45,6 +46,15 @@ class PicsView(TemplateView):
         return render(request, self.template_name, context)
 
 
+class Actions(TemplateView):
+
+    template_name = "receipt/actions.html"
+
+    def get(self, request, *a, **kw):
+        context = dict()
+        context["actions"] = Action.objects.all()
+        return render(request, self.template_name)
+
 class ItemView(TemplateView):
 
     template_name = "receipt/item.html"
@@ -76,15 +86,6 @@ class ItemEndPoint(TemplateView):
 
     template_name = "receipt/item.html"
 
-    def latest_actions(self):
-        latest_purchase_id = Purchase.objects.latest("date_created").item_purchased.id or ""
-        latest_purchase_name = Purchase.objects.latest("date_created").item_purchased.name or ""
-        latest_item_id = Item.objects.latest("date_created").id or ""
-        latest_item_name = Item.objects.latest("date_created").name or ""
-        return {
-            "purchase": [latest_purchase_id,latest_purchase_name],
-            "item_create": [latest_item_id, latest_item_name]}
-
     def get(self, request, *a, **kw):
         items = Item.objects.all()
         data = dict()
@@ -104,13 +105,6 @@ class ItemEndPoint(TemplateView):
         for i in purchased:
             total += i.item_purchased.price
         data["total"] = total
-        # latest_actions
-        latest_actions = self.latest_actions()
-        if latest_actions:
-            data["latest_purchase_id"] = latest_actions["purchase"][0]
-            data["latest_purchase_name"] = latest_actions["purchase"][1]
-            data["latest_item_id"] = latest_actions["item_create"][0]
-            data["latest_item_name"] = latest_actions["item_create"][1]
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
@@ -128,14 +122,29 @@ class ItemEndPoint(TemplateView):
 
 class ActionEndPoint(View):
 
-    def get(self, request, *a, **kw):
-        action_data = dict()
+    def actions(self):
         action = Action.objects.all()
         if action:
             latest_action = action.order_by("-id")[0]
-            action_data["latest_action"] = latest_action
+            return {
+                "latest_action_object_name": latest_action.object_name,}
+
+    def create_action(self, data):
+        form = ActionForm(data)
+        if data.get("description", None):
+            form.description = data["description"]
+        if form.is_valid():
+            form.save()
+
+    def get(self, request, *a, **kw):
+        action_data = dict()
+        action_data["latest_action_object_name"] = self.actions().get(
+            "latest_action_object_name", None)
         return JsonResponse(action_data)
 
     def post(self, request, *a, **kw):
+        if request.POST.get(u"title", None) == u"title":
+            self.create_action(request.POST)
         action_post_data = dict()
+        action_post_data["success"] = True
         return JsonResponse(action_post_data)
