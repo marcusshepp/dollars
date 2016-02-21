@@ -17,6 +17,8 @@ var update_items = setInterval(function(){
   Ajax request to the items API.
   Populates the page with available items & purchases & total.
   */
+  var latest_action = get_latest_action();
+  console.log(latest_action);
   $.ajax({
       type: "GET",
       url: "/api/items",
@@ -130,6 +132,20 @@ function undo_purchase(id){
   })
 }
 
+var get_latest_action = setInterval(function(){
+    $.ajax({
+        type: 'GET',
+        url: '/api/actions/',
+        success: function(data){
+            console.log(data);
+            var latest_action_div = $("#latest_action");
+            latest_action_str = "";
+            latest_action_str += '<input type="button" class="btn btn-success col-xs-6" value="'+data.latest_action_object_name+'">';
+            latest_action_div.html(latest_action_str);
+        },
+    });
+}, 5000);
+
 var create_action = function(){
     data = {
         "title": "Foo",
@@ -140,8 +156,9 @@ var create_action = function(){
         type:"POST",
         url:"/api/actions/",
         data: data,
-        success: function(){
+        success: function(data){
             console.log("success");
+            console.log(data.success);
         },
     })
 }
