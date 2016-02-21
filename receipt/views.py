@@ -130,11 +130,8 @@ class ActionEndPoint(View):
                 "latest_action_object_name": latest_action.object_name,}
 
     def create_action(self, data):
-        form = ActionForm(data)
-        if data.get("description", None):
-            form.description = data["description"]
-        if form.is_valid():
-            form.save()
+
+            return True
 
     def get(self, request, *a, **kw):
         action_data = dict()
@@ -143,8 +140,16 @@ class ActionEndPoint(View):
         return JsonResponse(action_data)
 
     def post(self, request, *a, **kw):
-        if request.POST.get(u"title", None) == u"title":
-            self.create_action(request.POST)
+        print request.POST
+        if request.POST.get("title", None):
+            form = ActionForm(request.POST)
+            print "form.is_valid(): ", form.is_valid()
+            if request.POST.get("description", None):
+                print "description"
+                form.description = data["description"]
+            if form.is_valid():
+                print "VALID POST AND CREATE"
+                form.save()
         action_post_data = dict()
         action_post_data["success"] = True
         return JsonResponse(action_post_data)

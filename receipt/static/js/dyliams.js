@@ -49,14 +49,14 @@ var update_items = setInterval(function(){
             $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
         }
         /* latest actions */
-        var latest_action = data.latest_action
-        var latest_action_div = $("#latest_action");
-        var build_action_btn = '<input type="button" name="name" value="Undo Create Item: '
-        build_action_btn += latest_item_name
-        build_action_btn += '" class="btn btn-success col-xs-6" onclick="undo_purchase('
-        build_action_btn += latest_item
-        build_action_btn += ')">'
-        latest_action_div.html(build_action_btn);
+        // var latest_action = data.latest_action
+        // var latest_action_div = $("#latest_action");
+        // var build_action_btn = '<input type="button" name="name" value="Undo Create Item: '
+        // build_action_btn += latest_item_name
+        // build_action_btn += '" class="btn btn-success col-xs-6" onclick="undo_purchase('
+        // build_action_btn += latest_item
+        // build_action_btn += ')">'
+        // latest_action_div.html(build_action_btn);
       }
   });
 }, 5000);
@@ -128,4 +128,20 @@ function undo_purchase(id){
         console.log("failure");
     },
   })
+}
+
+var create_action = function(){
+    data = {
+        "title": "Foo",
+        "object_name": "Item",
+        "object_id": 3,
+        "csrfmiddlewaretoken": csrf_func()};
+    $.ajax({
+        type:"POST",
+        url:"/api/actions/",
+        data: data,
+        success: function(){
+            console.log("success");
+        },
+    })
 }

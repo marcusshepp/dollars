@@ -1,6 +1,7 @@
 {% extends "receipt/base.html" %}
 {% block title %}actions{% endblock %}
 {% block content %}
+{% csrf_token %}
 <div class="actions">
     {% for a in actions %}
     <div class="action">{{ a.title }}</div>
@@ -9,6 +10,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+    var csrf = $("input[name='csrfmiddlewaretoken']").value;
     setInterval(function(){
         $.ajax({
             type: "GET",
@@ -26,8 +28,20 @@ $(document).ready(function(){
             failur: function(){
                 console.log("fail blog");
             },
+        });
+        // create_action({"title": "Foo", "object_name": "Item", "object_id": 3});
+    }, 5000);
+    var create_action = function(data){
+        data.csrfmiddlewaretoken = csrf;
+        $.ajax({
+            type: "POST",
+            url: "/api/actions/",
+            data: data,
+            success: function(){
+                console.log("success");
+            },
         })
-    }, 500);
+    }
 });
 </script>
 {% endblock %}
