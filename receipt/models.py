@@ -3,6 +3,20 @@ from __future__ import unicode_literals
 from django.db import models
 
 
+class Action(models.Model):
+
+    class Meta:
+        pass
+
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000, null=True)
+    object_name = models.CharField(max_length=25, null=True)
+    object_id = models.PositiveIntegerField()
+
+    def latest_action(self):
+        return self.objects.all().order_by('-id')[0]
+
+
 class Pic(models.Model):
 
     class Meta:
@@ -27,7 +41,7 @@ class Purchase(models.Model):
 
     date_created = models.DateTimeField(auto_now_add=True)
     item_purchased = models.ForeignKey("Item")
-    
+
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
 
@@ -49,11 +63,10 @@ class Item(models.Model):
 
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
-    
-        
+
+
 class Budget(models.Model):
-    
+
     date_created = models.DateTimeField(auto_now_add=True)
     monthly_paycheck = models.DecimalField(max_digits=19, decimal_places=2)
     monthly_saving_desired = models.DecimalField(max_digits=19, decimal_places=2)
-    

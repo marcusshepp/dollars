@@ -5,11 +5,13 @@ from .views import (
     Home,
     PicsView,
     ItemView,
-    ItemEndPoint)
+    ItemEndPoint,
+    ActionEndPoint)
 
 urlpatterns = [
     url(r'^$', Home.as_view(), name="home"),
     url(r'^pics/$', PicsView.as_view(), name="pics"),
     url(r'^item/$', ItemView.as_view(), name="items"),
     url(r'^api/items/$', ItemEndPoint.as_view(), name="api_items"),
+    url(r'^api/actions/$', ActionEndPoint.as_view(), name="api_actions"),
 ]

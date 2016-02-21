@@ -11,7 +11,8 @@ from .forms import (
 from .models import (
     Pic,
     Item,
-    Purchase)
+    Purchase,
+    Action)
 
 
 class Home(TemplateView):
@@ -75,6 +76,15 @@ class ItemEndPoint(TemplateView):
 
     template_name = "receipt/item.html"
 
+    def latest_actions(self):
+        latest_purchase_id = Purchase.objects.latest("date_created").item_purchased.id or ""
+        latest_purchase_name = Purchase.objects.latest("date_created").item_purchased.name or ""
+        latest_item_id = Item.objects.latest("date_created").id or ""
+        latest_item_name = Item.objects.latest("date_created").name or ""
+        return {
+            "purchase": [latest_purchase_id,latest_purchase_name],
+            "item_create": [latest_item_id, latest_item_name]}
+
     def get(self, request, *a, **kw):
         items = Item.objects.all()
         data = dict()
@@ -89,14 +99,18 @@ class ItemEndPoint(TemplateView):
             data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchased]
             data["purchased_date_created"] = [i.date_display() for i in purchased]
             data["purchased_length"] = purchased.count()
+        # total
         total = 0
         for i in purchased:
             total += i.item_purchased.price
         data["total"] = total
-        latest_purchase = Purchase.objects.latest("date_created").item_purchased.id
-        latest_item = Item.objects.latest("date_created").id
-        data["latest_purchase"] = latest_purchase
-        data["latest_item"] = latest_item
+        # latest_actions
+        latest_actions = self.latest_actions()
+        if latest_actions:
+            data["latest_purchase_id"] = latest_actions["purchase"][0]
+            data["latest_purchase_name"] = latest_actions["purchase"][1]
+            data["latest_item_id"] = latest_actions["item_create"][0]
+            data["latest_item_name"] = latest_actions["item_create"][1]
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
@@ -110,3 +124,18 @@ class ItemEndPoint(TemplateView):
         data = dict()
         data["purchased"] = True
         return JsonResponse(data)
+
+
+class ActionEndPoint(View):
+
+    def get(self, request, *a, **kw):
+        action_data = dict()
+        action = Action.objects.all()
+        if action:
+            latest_action = action.order_by("-id")[0]
+            action_data["latest_action"] = latest_action
+        return JsonResponse(action_data)
+
+    def post(self, request, *a, **kw):
+        action_post_data = dict()
+        return JsonResponse(action_post_data)

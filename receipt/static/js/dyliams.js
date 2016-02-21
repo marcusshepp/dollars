@@ -48,11 +48,15 @@ var update_items = setInterval(function(){
         } else {
             $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
         }
-        /* latest */
-        var latest_item = data.latest_item;
-        var latest_purchase = data.latest_purchase;
-        console.log("latest_purchase", latest_purchase);
-        console.log("latest_item", latest_item);
+        /* latest actions */
+        var latest_action = data.latest_action
+        var latest_action_div = $("#latest_action");
+        var build_action_btn = '<input type="button" name="name" value="Undo Create Item: '
+        build_action_btn += latest_item_name
+        build_action_btn += '" class="btn btn-success col-xs-6" onclick="undo_purchase('
+        build_action_btn += latest_item
+        build_action_btn += ')">'
+        latest_action_div.html(build_action_btn);
       }
   });
 }, 5000);
