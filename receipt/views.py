@@ -145,7 +145,6 @@ class ActionEndPoint(View):
             action_data["latest_action_title"] = latest_action.title
             action_data["latest_action_undo_handler"] = latest_action.undo_handler
         else:
-            print "No actions available"
             action_data["no_actions"] = True
         return JsonResponse(action_data)
             

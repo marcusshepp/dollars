@@ -41,7 +41,7 @@
   margin: 0px 0px 15px 0px;
 }
 .purchase_btn{
-  background-color: #5EFF7C;
+  background-color: #99FFAC;
   border-radius: 2px 2px 2px 2px;
   margin: 0px 5px 5px 5px;
   cursor: pointer;
@@ -51,12 +51,11 @@
 }
 .purchase_btn:hover{
   background-color: #C7FFD1;
-  color: black;
   border-radius: 2px 2px 2px 2px;
   margin: 0px 5px 5px 5px;
   cursor: pointer;
-  padding: 5px 0px 5px 15px;
   box-shadow: 2px 2px 2px #888888;
+  padding: 5px 0px 5px .5px;
   text-align: center;
 }
 #latest_action{
@@ -84,4 +83,8 @@
   text-align: center;
   cursor: pointer;
   border-radius: 10px 10px 10px 10px;
+}
+.times_purchased{
+  padding: 5px 10px 5px 10px;
+  text-align: center;
 }

@@ -23,8 +23,9 @@
     <form id="{{ i.id }}" class="item col-sm-12 col-lg-12" action="{% url 'api_items' %}" method="POST">
         {% csrf_token %}
         <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
-        <span class="badge pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
         <div class='purchase_btn col-sm-4 pull-right' onclick='purchase_item({{ i.id }})'>Purchase</div>
+        <span class="times_purchased pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
+        <span class="times_purchased pull-right">$ {{ i.price }}</span>
     </form>
     {% endfor %}
   </div>
