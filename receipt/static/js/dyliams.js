@@ -4,7 +4,7 @@ $(document).ready(function(){
 });
 
 var csrf_func = function(){
-    /* Grab cookie containing {% csrf_token %} django specific */
+  /* Grab cookie containing {% csrf_token %} django specific */
   var csrf = $.cookie("csrfmiddlewaretoken");
   var wrapper = document.createElement("div");
   wrapper.innerHTML = csrf;
@@ -77,6 +77,19 @@ function send_new_item(form, purchase){
   });
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
+  $.ajax({
+      type: 'POST',
+      url: '/api/actions/',
+      data: {
+          "create_item_action": true,
+          "csrfmiddlewaretoken": csrf_func(),
+          "title": "Create Item",
+          "object_name": "Item",
+      },
+      success: function(){
+          console.log("success");
+      }
+  })
 };
 
 function purchase_item(form){
@@ -102,37 +115,63 @@ function purchase_item(form){
           console.log("failure");
       },
   });
+  create_action("Purchase", "Purchase", form.id, "undo purchase");
 };
 
-function undo_purchase(id){
-  $.ajax({
-    type: 'POST',
-    url: '/api/items/',
-    data: {
-        "csrfmiddlewaretoken": csrf_func(),
-        "id": id,
-        "undo": true,
-    },
-    success: function(){
-        var name = $("#item_" + form.id).html()
-        $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + name + "&emsp; Deleted<span class='fa fa-check'></></p>");
-    },
-    error: function(){
-        console.log("failure");
-    },
-  })
+function undo(id, item_name){
+    if (item_name == "Purchase"){
+        $.ajax({
+            type: 'POST',
+            url: '/api/actions/',
+            data: {
+                "csrfmiddlewaretoken": csrf_func(),
+                "id": id,
+                "undo": true,
+                "object_name": "Purchase",
+                'purpose': "undo purchase",
+            },
+            success: function(data){
+                var name = $("#item_" + id).html()
+                $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + data.item_purchased + "&emsp; Deleted<span class='fa fa-check'></></p>");
+            },
+            error: function(){
+                console.log("failure");
+            },
+        })
+    } else if (item_name == "Item") {
+        $.ajax({
+            type: 'POST',
+            url: '/api/actions/',
+            data: {
+                "csrfmiddlewaretoken": csrf_func(),
+                "id": id,
+                "undo": true,
+                "object_name": "Item",
+            },
+            success: function(){
+                var name = $("#item_" + id).html()
+                $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + name + "&emsp; Deleted<span class='fa fa-check'></></p>");
+            },
+            error: function(){
+                console.log("failure");
+            },
+        })
+    }
+
 }
 
 setInterval(function(){
     var latest_action_div = $("#latest_action");
     var action_title = $.get('/api/actions/', function(data){
+        console.log(data.latest_action_title);
         latest_action_str = "";
-        latest_action_str += '<input type="button" class="btn btn-success col-xs-6" value=" Undo: \''+data.latest_action_title+'\'">';
+        latest_action_str += '<input type="button" class="btn btn-success col-xs-6" value=" Undo: \''+data.latest_action_title+'\'"';
+        latest_action_str += ' onclick="undo('+data.latest_action_object_id+','+data.latest_action_object_name+')">';
         latest_action_div.html(latest_action_str);
     });
 }, 5000);
 
-var create_action = function(title, object_name, object_id){
+var create_action = function(title, object_name, object_id, purpose){
     $.ajax({
         type:"POST",
         url:"/api/actions/",
@@ -141,6 +180,7 @@ var create_action = function(title, object_name, object_id){
             "object_name": object_name,
             "object_id": object_id,
             "csrfmiddlewaretoken": csrf_func(),
+            "purpose": purpose,
         },
         success: function(data){
             console.log("success");
