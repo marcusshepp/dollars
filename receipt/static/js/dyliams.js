@@ -106,7 +106,7 @@ function send_new_item(form, purchase){
       if (data.invalid_form_data){
         $("#item_form_header").html("<p class='text-danger'>Invalid Form</p>");
       } else if (data.success) {
-        $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
+        $("#header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
         create_action("Create Item", "Create Item: "+name, "undo add item");
       } 
     },
