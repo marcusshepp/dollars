@@ -4,14 +4,21 @@ from django.db import models
 
 
 class Action(models.Model):
-
+    
     class Meta:
         pass
-
+        
+    handler_options = (
+        ("undo add item", "Undo Add Item"),
+        ("undo purchase", "Undo Purchase"),
+    )
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000, null=True)
     object_name = models.CharField(max_length=25, null=True)
-    object_id = models.PositiveIntegerField()
+    undo_handler = models.CharField(max_length=25, null=True, choices=handler_options)
+
+    def __unicode__(self):
+        return "{}".format(self.title)
 
     def latest_action(self):
         return self.objects.all().order_by('-id')[0]

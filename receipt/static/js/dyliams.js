@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  console.log($("#foo").value);
+  // console.log($("#foo").value);
   $("#foo").value = "foo";
 });
 
@@ -11,7 +11,7 @@ var csrf_func = function(){
   var csrf_element = wrapper.firstChild;
   return csrf_element.value;
 }
-
+/* DOM UPDATING INTERVALS */
 var update_items = setInterval(function(){
   /*
   UPDATES DOM
@@ -49,9 +49,30 @@ var update_items = setInterval(function(){
         } else {
             $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
         }
-      }
+      },
+      failure: function(){
+        console.log("fail");
+      },
   });
-}, 5000);
+}, 3000);
+
+setInterval(function(){
+    var latest_action_div = $("#latest_action");
+    $.ajax({
+      url: '/api/actions/',
+      type: "GET",
+      success: function(data){
+          console.log(data.latest_action_object_name);
+          latest_action_str = "";
+          latest_action_str += '<input type="button" class="btn btn-success col-xs-6" value="Undo: \''+data.latest_action_object_name+'\'"';
+          latest_action_str += ' onclick="undo(\''+data.latest_action_undo_handler+'\')">';
+          latest_action_div.html(latest_action_str);
+      },
+      failure: function(){
+        console.log("fail");
+      },
+    });
+}, 3000);
 
 function send_new_item(form, purchase){
   /*
@@ -72,24 +93,14 @@ function send_new_item(form, purchase){
       "purchase": purchase,
     },
     success: function(){
-      console.log("success");
-    }
+    },
+    failure: function(){
+      console.log("fail");
+    },
   });
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
-  $.ajax({
-      type: 'POST',
-      url: '/api/actions/',
-      data: {
-          "create_item_action": true,
-          "csrfmiddlewaretoken": csrf_func(),
-          "title": "Create Item",
-          "object_name": "Item",
-      },
-      success: function(){
-          console.log("success");
-      }
-  })
+  create_action("Create Item: "+name, "Create Item", "undo add item");
 };
 
 function purchase_item(form){
@@ -109,48 +120,50 @@ function purchase_item(form){
       success: function(){
           var name = $("#item_" + form.id).html()
           $("#header").html("<p style='color: green;'>Purchase Made:&emsp;" + name + "&emsp;<span class='fa fa-check'></></p>");
-          create_action("Make purchase: "+name, "Item + Purchase", form.id);
+          create_action("Purchase", "Make purchase: "+name, "undo purchase");
       },
       error: function(){
           console.log("failure");
       },
   });
-  create_action("Purchase", "Purchase", form.id, "undo purchase");
 };
 
-function undo(id, item_name){
-    if (item_name == "Purchase"){
+function undo(undo_handler){
+    console.log("UNDO");
+    if (undo_handler == "undo purchase"){
         $.ajax({
             type: 'POST',
             url: '/api/actions/',
             data: {
                 "csrfmiddlewaretoken": csrf_func(),
-                "id": id,
                 "undo": true,
                 "object_name": "Purchase",
-                'purpose': "undo purchase",
+                "undo_handler": undo_handler,
             },
             success: function(data){
-                var name = $("#item_" + id).html()
+                console.log("successful undo");
+                console.log(data.item_purchased);
                 $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + data.item_purchased + "&emsp; Deleted<span class='fa fa-check'></></p>");
             },
             error: function(){
                 console.log("failure");
             },
         })
-    } else if (item_name == "Item") {
+    } else if (undo_handler == "undo add item") {
+      console.log("UNDO ADD ITEM");
         $.ajax({
             type: 'POST',
             url: '/api/actions/',
             data: {
                 "csrfmiddlewaretoken": csrf_func(),
-                "id": id,
                 "undo": true,
-                "object_name": "Item",
+                "object_name": "Create Item",
+                "undo_handler": undo_handler,
             },
-            success: function(){
-                var name = $("#item_" + id).html()
-                $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + name + "&emsp; Deleted<span class='fa fa-check'></></p>");
+            success: function(data){
+                console.log("successful undo");
+                console.log("data.deleted_item_name: ", data.deleted_item_name);
+                $("#header").html("<p style='color: green;'>Item:&emsp;" + data.deleted_item_name + "&emsp; Deleted<span class='fa fa-check'></></p>");
             },
             error: function(){
                 console.log("failure");
@@ -160,31 +173,22 @@ function undo(id, item_name){
 
 }
 
-setInterval(function(){
-    var latest_action_div = $("#latest_action");
-    var action_title = $.get('/api/actions/', function(data){
-        console.log(data.latest_action_title);
-        latest_action_str = "";
-        latest_action_str += '<input type="button" class="btn btn-success col-xs-6" value=" Undo: \''+data.latest_action_title+'\'"';
-        latest_action_str += ' onclick="undo('+data.latest_action_object_id+','+data.latest_action_object_name+')">';
-        latest_action_div.html(latest_action_str);
-    });
-}, 5000);
-
-var create_action = function(title, object_name, object_id, purpose){
+function create_action(title, object_name, undo_handler){
     $.ajax({
         type:"POST",
         url:"/api/actions/",
         data: {
+            "create_action": true,
             "title": title,
             "object_name": object_name,
-            "object_id": object_id,
+            "undo_handler": undo_handler,
             "csrfmiddlewaretoken": csrf_func(),
-            "purpose": purpose,
         },
         success: function(data){
-            console.log("success");
-            console.log(data.success);
+          console.log("success")
+        },
+        failure: function(){
+          console.log("fail");
         },
     })
 }

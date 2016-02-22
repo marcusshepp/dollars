@@ -19,4 +19,4 @@ class ActionForm(forms.ModelForm):
 
     class Meta:
         model = Action
-        fields = ["title", "object_name", "object_id"]
+        fields = ["title", "object_name", "undo_handler"]

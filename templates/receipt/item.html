@@ -1,10 +1,10 @@
 {% extends "receipt/base.html" %}
 {% load static %}
-{% block title %}form{% endblock %}
+{% block title %}Dollars{% endblock %}
 {% block content %}
 <div class="row">
-    <h3 class="col-xs-6 page-header" id="header">Purchasable Items</h3>
-    <div id="latest_action"><input type="button" id="foo" value="Undo Purchase" class="btn btn-success col-xs-6" onclick="undo(none, none)"></div>
+    <h3 class="col-xs-6 page-header" id="header">Dollars</h3>
+    <div id="latest_action"><input type="button" id="foo" value="Loading Last Action..." class="btn btn-success col-xs-6" onclick="undo(none, none)"></div>
 </div>
 {{ form.errors }}
 <div class="row">

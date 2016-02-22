@@ -122,31 +122,27 @@ class ItemEndPoint(TemplateView):
 
 class ActionEndPoint(View):
 
-    def actions(self):
-        action = Action.objects.all()
-        if action:
-            latest_action = action.order_by("-id")[0]
-            return {
-                "latest_action_title": latest_action.title,
-                "latest_action_object_name": latest_action.object_name,
-                "latest_action_object_id": latest_action.object_id,}
+    def delete_latest_action(self):
+        actions = Action.objects.all()
+        if actions:
+            latest_action = actions.order_by("-id")[0]
+            latest_action.delete()
 
     def get(self, request, *a, **kw):
         action_data = dict()
-        action_data["latest_action_object_name"] = self.actions().get(
-            "latest_action_object_name", None)
-        action_data["latest_action_title"] = self.actions().get(
-            "latest_action_title", None)
-        action_data["latest_action_object_id"] = self.actions().get(
-            "latest_action_object_id", None)
-        print action_data["latest_action_object_name"]
+        actions = Action.objects.all()
+        if actions:
+            latest_action = actions.order_by("-id")[0]
+            print "latest_action: ", latest_action
+            action_data["latest_action_object_name"] = latest_action.object_name
+            action_data["latest_action_title"] = latest_action.title
+            action_data["latest_action_undo_handler"] = latest_action.undo_handler
         return JsonResponse(action_data)
-
+            
     def post(self, request, *a, **kw):
         request.POST = request.POST.copy()
-        if request.POST.get("create_item_action", None):
-            latest_item = Item.objects.all().order_by("-id")[0]
-            request.POST["object_id"] = latest_item.id
+        if request.POST.get("create_action", None):
+            print "creating action object"
             form = ActionForm(request.POST)
             if request.POST.get("description", None):
                 form.description = data["description"]
@@ -154,31 +150,32 @@ class ActionEndPoint(View):
                 form.save()
         elif request.POST.get("undo", None):
             print "undoing..."
-            if request.POST["object_name"] == "Purchase":
-                latest_action = Action.objects.all().order_by("-id")[0]
-                if "Purchase" in latest_action.title or "purchase" in latest_action.title:
-                    purchase = Purchase.objects.get(id=latest_action.object_id)
-                    if purchase:
-                        print "undoing a purchase: ", purchase
-                        purchase.delete()
-                        data = dict()
-                        data["purchase_deleted"] = True
-                        data["item_purchased"] = purchase.item_purchased
-                        return JsonResponse(data)
-            elif "Create Item" in latest_action.title:
-                item = Item.objects.get(id=latest_action.object_id)
-                if item:
-                    print "undoing an add item: ", item
-                    item.delete()
-        elif request.POST.get("purpose", None) == "undo purchase":
-            print 'UNDOING PURCHASE'
-            item = Item.objects.get(id=request.POST["object_id"])
-            latest_purchase = Purchase.objects.filter(item_purchased=item).order_by("-id")[0]
-            latest_purchase.delete()
-            data = dict()
-            data["purchase undone"] = True
-            data["item_purchased"] = item.name
-            return JsonResponse(data)
+            if request.POST.get("undo_handler", None) == "undo purchase":
+                purchases = Purchase.objects.all()
+                if purchases:
+                    latest_purchase = purchases.order_by("-id")[0]
+                    latest_purchase_name = ""
+                    latest_purchase_name += str(latest_purchase.item_purchased.name)
+                    print "undoing a purchase: ", latest_purchase_name
+                    latest_purchase.delete()
+                    data = dict()
+                    data["purchase_deleted"] = True
+                    data["item_purchased"] = latest_purchase_name
+                    self.delete_latest_action()
+                    return JsonResponse(data)
+            elif request.POST.get("undo_handler", None) == "undo add item":
+                items = Item.objects.all()
+                if items:
+                    latest_item = items.order_by("-id")[0]
+                    print "undoing an add item: ", latest_item
+                    latest_item_name = ""
+                    latest_item_name += str(latest_item.name)
+                    self.delete_latest_action()
+                    latest_item.delete()
+                    data = dict()
+                    data["deleted_item_name"] = latest_item_name
+                    print data["deleted_item_name"]
+                    return JsonResponse(data)
         action_post_data = dict()
         action_post_data["success"] = True
         return JsonResponse(action_post_data)
