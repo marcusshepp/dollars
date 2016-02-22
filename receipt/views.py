@@ -158,11 +158,19 @@ class ActionEndPoint(View):
             if request.POST.get("undo_handler", None) == "undo purchase":
                 purchases = Purchase.objects.all()
                 if purchases:
+                    # delete purchase
                     latest_purchase = purchases.order_by("-id")[0]
                     latest_purchase_name = ""
                     latest_purchase_name += str(latest_purchase.item_purchased.name)
                     print "undoing a purchase: ", latest_purchase_name
                     latest_purchase.delete()
+                    # decrement item.number_of_times_purchased
+                    item = Item.objects.filter(name=latest_purchase_name)[0]
+                    print "decrementing: ", item
+                    print "time purchased before: ", item.number_of_times_purchased
+                    item.number_of_times_purchased = F("number_of_times_purchased") - 1
+                    item.save()
+                    print "time purchased after: ", item.number_of_times_purchased
                     data = dict()
                     data["purchase_deleted"] = True
                     data["item_purchased"] = latest_purchase_name
