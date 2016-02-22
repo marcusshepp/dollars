@@ -49,6 +49,7 @@ var update_items = setInterval(function(){
         } else {
             $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
         }
+        $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
       },
       failure: function(){
         console.log("fail");
@@ -62,11 +63,9 @@ setInterval(function(){
       url: '/api/actions/',
       type: "GET",
       success: function(data){
-          console.log(data.latest_action_object_name);
-          latest_action_str = "";
-          latest_action_str += '<input type="button" class="btn btn-success col-xs-6" value="Undo: \''+data.latest_action_object_name+'\'"';
-          latest_action_str += ' onclick="undo(\''+data.latest_action_undo_handler+'\')">';
-          latest_action_div.html(latest_action_str);
+          // console.log(data.latest_action_object_name);
+          latest_action_div.text("Undo: \'"+ data.latest_action_object_name+"'");
+          latest_action_div.attr("onclick", "undo(\'"+data.latest_action_undo_handler+"\')");
       },
       failure: function(){
         console.log("fail");
@@ -100,7 +99,7 @@ function send_new_item(form, purchase){
   });
   $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
-  create_action("Create Item: "+name, "Create Item", "undo add item");
+  create_action("Create Item", "Create Item: "+name, "undo add item");
 };
 
 function purchase_item(form){

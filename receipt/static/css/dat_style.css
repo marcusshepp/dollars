@@ -7,6 +7,7 @@
 }
 .item:hover {
     background-color: #80dfff;
+    cursor: pointer;
 }
 .badge {
   margin-left: 15px !important;
@@ -37,4 +38,25 @@
 }
 #latest_action{
     margin-top: 35px;
+}
+.undo{
+  color: white;
+  background-color: black;
+  padding: 15px 0px 15px 0px;
+  margin-bottom: 10px;
+  top: -30px !important;
+  opacity: 0.4;
+  border: .5px solid black;
+  text-align: center;
+}
+.undo:hover{
+  color: black;
+  background-color: #CAE1E8;
+  padding: 15px 0px 15px 0px;
+  margin-bottom: 10px;
+  top: -30px !important;
+  opacity: 0.4;
+  border: .5px solid black;
+  text-align: center;
+  cursor: pointer;
 }

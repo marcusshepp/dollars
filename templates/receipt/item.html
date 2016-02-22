@@ -4,7 +4,7 @@
 {% block content %}
 <div class="row">
     <h3 class="col-xs-6 page-header" id="header">Dollars</h3>
-    <div id="latest_action"><input type="button" id="foo" value="Loading Last Action..." class="btn btn-success col-xs-6" onclick="undo(none, none)"></div>
+    <div id="latest_action" class="undo col-md-6 col-xs-6" onclick="undo(none, none)">Loading Last Action...</div>
 </div>
 {{ form.errors }}
 <div class="row">
@@ -31,7 +31,7 @@
       </div>
   </div>
 </div>
-<span id="purchase_success"><h3>Purchases Made: All Time</h3></span>
+<span id="purchases_header"><h3>Purchases Made: All Time ({{purchased_length}})</h3></span>
 <div class="row" id="purchased_items">
     {% for i in purchased_items %}
     <div class="purchases">

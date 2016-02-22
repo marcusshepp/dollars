@@ -63,12 +63,17 @@ class ItemView(TemplateView):
         super(ItemView, self).get(request, *a, **kw)
         context = dict()
         context["form"] = ItemForm
-        context["items"] = Item.objects.all()
-        context["purchased_items"] = Purchase.objects.all()
-        total = 0
-        for i in context["purchased_items"]:
-            total += i.item_purchased.price
-        context["total"] = total
+        items = Item.objects.all()
+        if items:
+            context["items"] = items
+        purchases = Purchase.objects.all()
+        if purchases:    
+            context["purchased_items"] = purchases
+            total = 0
+            for i in purchases:
+                total += i.item_purchased.price
+            context["total"] = total
+            context["purchased_length"] = purchases.count()
         return render(request, self.template_name, context)
 
     def post(self, request, *a, **kw):
