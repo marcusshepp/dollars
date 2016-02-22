@@ -82,15 +82,13 @@ class ItemView(TemplateView):
         if form.is_valid():
             form.save()
             context["success"] = True
-            if request.POST["purchase"] == True:
+            if request.POST["purchase"] == "true":
                 item = Item.objects.get(name=request.POST["name"])
                 Purchase.objects.create(item_purchased=item)
-                return JsonResponse(context)
-            else:
-                return JsonResponse(context)
+                context["purchased"] = True
         else:
             context["invalid_form_data"] = True
-            return JsonResponse(context)
+        return JsonResponse(context)
 
 class ItemEndPoint(TemplateView):
 
@@ -110,6 +108,8 @@ class ItemEndPoint(TemplateView):
             data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchased]
             data["purchased_date_created"] = [i.date_display() for i in purchased]
             data["purchased_length"] = purchased.count()
+        else:
+            data["purchased_length"] = 0
         # total
         total = 0
         for i in purchased:
@@ -145,6 +145,7 @@ class ActionEndPoint(View):
             action_data["latest_action_title"] = latest_action.title
             action_data["latest_action_undo_handler"] = latest_action.undo_handler
         else:
+            print "No actions available"
             action_data["no_actions"] = True
         return JsonResponse(action_data)
             

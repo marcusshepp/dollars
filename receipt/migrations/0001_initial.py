@@ -32,13 +32,15 @@ class Migration(migrations.Migration):
         item = I(**data)
         item.save()
 
-        Action = apps.get_model("receipt", "Action")
-        data = {"title":"Add Item: Foo",
-                "description":"BOOOM",
-                "object_name":"Item",
-                "undo_handler":"undo add item"}
-        action = Action(**data)
-        action.save()
+        # Action = apps.get_model("receipt", "Action")
+        # data = {"title":"Add Item: Foo",
+        #         "description":"BOOOM",
+        #         "object_name":"Item",
+        #         "undo_handler":"undo add item"}
+        # action = Action(**data)
+        # action.save()
+        
+        
     initial = True
 
     dependencies = [

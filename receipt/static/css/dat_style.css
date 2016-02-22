@@ -30,6 +30,12 @@
   padding-left: 15px;
   padding-top: 15px;
 }
+.purchase_border{
+  border-bottom: .2px solid black;
+  width: 35%;
+  margin-left: 25px;
+  margin-right: auto;
+}
 .purchases div{
   border-radius: 2px 2px 2px 2px;
   margin: 0px 0px 15px 0px;

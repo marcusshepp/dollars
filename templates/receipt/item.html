@@ -14,8 +14,8 @@
       <p><label for="name">Name: </label><input type="text" name="name" max_length="250"/ class="pull-right"></p>
       <p><label for="company_came_from">Company: </label><input type="text" name="company_came_from" max_length="50" class="pull-right"></p>
       <p><label for="price">Price: </label><input type="number" name="price" step="0.01" class="pull-right"></p>
-      <input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, purchase=false)">
-      <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, purchase=true)">
+      <input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">
+      <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">
     </form>
   </div>
   <div class="items col-md-6">
@@ -36,6 +36,7 @@
         <div class="col-md-3 col-lg-3">{{ i.item_purchased }}</div>
         <div class="col-md-3 col-lg-3">{{ i.date_display }}</div>
     </div>
+    <div class="purchase_border"></div>
     {% endfor %}
 </div>
 <h3>Total</h3>

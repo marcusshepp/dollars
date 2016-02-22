@@ -44,6 +44,7 @@ function update_dom(){
           purchased_items += "<div class='col-md-3 col-lg-3'>" + data.purchased_items_names[i] + "</div>"
           purchased_items += "<div class='col-md-3 col-lg-3'>" + data.purchased_date_created[i] + "</div>"
           purchased_items += "</div>";
+          purchased_items += '<div class="purchase_border"></div>'
         }
         $("#purchased_items").html(purchased_items);
         if (data.total == 0){
