@@ -127,12 +127,15 @@ class ActionEndPoint(View):
         if action:
             latest_action = action.order_by("-id")[0]
             return {
+                "latest_action_title": latest_action.title,
                 "latest_action_object_name": latest_action.object_name,}
 
     def get(self, request, *a, **kw):
         action_data = dict()
         action_data["latest_action_object_name"] = self.actions().get(
             "latest_action_object_name", None)
+        action_data["latest_action_title"] = self.actions().get(
+            "latest_action_title", None)
         return JsonResponse(action_data)
 
     def post(self, request, *a, **kw):

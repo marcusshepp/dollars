@@ -4,7 +4,7 @@
 {% block content %}
 <div class="row">
     <h3 class="col-xs-6 page-header" id="header">Purchasable Items</h3>
-    <div id="latest_action"><input type="button" name="name" value="Undo Purchase" class="btn btn-success col-xs-6" onclick="undo_purchase()"></div>
+    <div id="latest_action"><input type="button" id="foo" value="Undo Purchase" class="btn btn-success col-xs-6" onclick="undo_purchase()"></div>
 </div>
 {{ form.errors }}
 <div class="row">
@@ -22,7 +22,7 @@
       <h4>Available Items</h4>
       <div class="items">
         {% for i in items %}
-        <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="itemclick(this)" method="POST">{% csrf_token %}
+        <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="purchase_item(this)" method="POST">{% csrf_token %}
             <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
             <!-- <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick=""> -->
             <span class="badge pull-right">{{ i.number_of_times_purchased }}</span><br />

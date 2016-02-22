@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    var btns = $(":input[type='button']");
+  console.log($("#foo").value);
+  $("#foo").value = "foo";
 });
 
 var csrf_func = function(){
@@ -17,8 +18,6 @@ var update_items = setInterval(function(){
   Ajax request to the items API.
   Populates the page with available items & purchases & total.
   */
-  var latest_action = get_latest_action();
-  console.log(latest_action);
   $.ajax({
       type: "GET",
       url: "/api/items",
@@ -30,7 +29,7 @@ var update_items = setInterval(function(){
           var price = data.prices[i];
           var times_purchased = data.times_purchased[i];
           var id = data.id[i];
-          item_markup += '<form id="' + id + '" class="item" action="api/items/" onclick="itemclick(this)" method="POST">';
+          item_markup += '<form id="' + id + '" class="item" action="api/items/" onclick="purchase_item(this)" method="POST">';
           item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
           item_markup += '<div class="pull-left" id="item_' + id + '">' + name + '</div>';
           item_markup += '<span class="badge pull-right">' + times_purchased + '</span><br />';
@@ -50,15 +49,6 @@ var update_items = setInterval(function(){
         } else {
             $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
         }
-        /* latest actions */
-        // var latest_action = data.latest_action
-        // var latest_action_div = $("#latest_action");
-        // var build_action_btn = '<input type="button" name="name" value="Undo Create Item: '
-        // build_action_btn += latest_item_name
-        // build_action_btn += '" class="btn btn-success col-xs-6" onclick="undo_purchase('
-        // build_action_btn += latest_item
-        // build_action_btn += ')">'
-        // latest_action_div.html(build_action_btn);
       }
   });
 }, 5000);
@@ -89,7 +79,7 @@ function send_new_item(form, purchase){
   document.getElementsByClassName('item_form')[0].reset();
 };
 
-function itemclick(form){
+function purchase_item(form){
   /*
   Creates a new purchase object by POST with Ajax.
   Also increases the int on the btn.
@@ -106,6 +96,7 @@ function itemclick(form){
       success: function(){
           var name = $("#item_" + form.id).html()
           $("#header").html("<p style='color: green;'>Purchase Made:&emsp;" + name + "&emsp;<span class='fa fa-check'></></p>");
+          create_action("Make purchase: "+name, "Item + Purchase", form.id);
       },
       error: function(){
           console.log("failure");
@@ -132,30 +123,25 @@ function undo_purchase(id){
   })
 }
 
-var get_latest_action = setInterval(function(){
-    $.ajax({
-        type: 'GET',
-        url: '/api/actions/',
-        success: function(data){
-            console.log(data);
-            var latest_action_div = $("#latest_action");
-            latest_action_str = "";
-            latest_action_str += '<input type="button" class="btn btn-success col-xs-6" value="'+data.latest_action_object_name+'">';
-            latest_action_div.html(latest_action_str);
-        },
+setInterval(function(){
+    var latest_action_div = $("#latest_action");
+    var action_title = $.get('/api/actions/', function(data){
+        latest_action_str = "";
+        latest_action_str += '<input type="button" class="btn btn-success col-xs-6" value=" Undo: \''+data.latest_action_title+'\'">';
+        latest_action_div.html(latest_action_str);
     });
 }, 5000);
 
-var create_action = function(){
-    data = {
-        "title": "Foo",
-        "object_name": "Item",
-        "object_id": 3,
-        "csrfmiddlewaretoken": csrf_func()};
+var create_action = function(title, object_name, object_id){
     $.ajax({
         type:"POST",
         url:"/api/actions/",
-        data: data,
+        data: {
+            "title": title,
+            "object_name": object_name,
+            "object_id": object_id,
+            "csrfmiddlewaretoken": csrf_func(),
+        },
         success: function(data){
             console.log("success");
             console.log(data.success);
