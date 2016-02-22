@@ -4,7 +4,7 @@
 {% block content %}
 <div class="row">
     <h3 class="col-xs-6 page-header" id="header">Dollars</h3>
-    <div id="latest_action" class="undo col-md-6 col-xs-6" onclick="undo(none, none)">Loading Last Action...</div>
+    <div id="latest_action" class="undo col-md-3 col-xs-3 pull-right" onclick="undo(none, none)">Loading Last Action...</div>
 </div>
 {{ form.errors }}
 <div class="row">
@@ -18,25 +18,23 @@
       <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, purchase=true)">
     </form>
   </div>
-  <div class="col-md-6">
-      <h4>Available Items</h4>
-      <div class="items">
-        {% for i in items %}
-        <form id="{{ i.id }}" class="item" action="{% url 'api_items' %}" onclick="purchase_item(this)" method="POST">{% csrf_token %}
-            <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
-            <!-- <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick=""> -->
-            <span class="badge pull-right">{{ i.number_of_times_purchased }}</span><br />
-        </form>
-        {% endfor %}
-      </div>
+  <div class="items col-md-6">
+    {% for i in items %}
+    <form id="{{ i.id }}" class="item col-sm-12 col-lg-12" action="{% url 'api_items' %}" method="POST">
+        {% csrf_token %}
+        <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
+        <span class="badge pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
+        <div class='purchase_btn col-sm-4 pull-right' onclick='purchase_item({{ i.id }})'>Purchase</div>
+    </form>
+    {% endfor %}
   </div>
 </div>
 <span id="purchases_header"><h3>Purchases Made: All Time ({{purchased_length}})</h3></span>
-<div class="row" id="purchased_items">
+<div id="purchased_items">
     {% for i in purchased_items %}
-    <div class="purchases">
-        <div class="col-md-6 col-lg-6">{{ i.item_purchased }}</div>
-        <div class="col-md-6 col-lg-6">{{ i.date_display }}</div>
+    <div class="row purchases">
+        <div class="col-md-3 col-lg-3">{{ i.item_purchased }}</div>
+        <div class="col-md-3 col-lg-3">{{ i.date_display }}</div>
     </div>
     {% endfor %}
 </div>

@@ -12,7 +12,7 @@ var csrf_func = function(){
   return csrf_element.value;
 }
 /* DOM UPDATING INTERVALS */
-var update_items = setInterval(function(){
+function update_dom(){
   /*
   UPDATES DOM
   Ajax request to the items API.
@@ -29,18 +29,20 @@ var update_items = setInterval(function(){
           var price = data.prices[i];
           var times_purchased = data.times_purchased[i];
           var id = data.id[i];
-          item_markup += '<form id="' + id + '" class="item" action="api/items/" onclick="purchase_item(this)" method="POST">';
+          item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
           item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
           item_markup += '<div class="pull-left" id="item_' + id + '">' + name + '</div>';
-          item_markup += '<span class="badge pull-right">' + times_purchased + '</span><br />';
+          item_markup += '<span class="badge pull-right"># of purchases: ' + times_purchased + '</span>';
+          item_markup += "<div class='purchase_btn col-sm-4 pull-right' onclick='purchase_item("+id+")'>"+"Purchase"+"</div>"
           item_markup += '</form>';
+          
         }
         $(".items").html(item_markup);
-        var purchased_items = ""
+        var purchased_items = "";
         for(var i = 0; i < data.purchased_length; i++){
-          purchased_items += '<div class="purchases">';
-          purchased_items += "<div class='col-md-6 col-lg-6'>" + data.purchased_items_names[i] + "</div>"
-          purchased_items += "<div class='col-md-6 col-lg-6'>" + data.purchased_date_created[i] + "</div>"
+          purchased_items += '<div class="row purchases">';
+          purchased_items += "<div class='col-md-3 col-lg-3'>" + data.purchased_items_names[i] + "</div>"
+          purchased_items += "<div class='col-md-3 col-lg-3'>" + data.purchased_date_created[i] + "</div>"
           purchased_items += "</div>";
         }
         $("#purchased_items").html(purchased_items);
@@ -55,7 +57,8 @@ var update_items = setInterval(function(){
         console.log("fail");
       },
   });
-}, 3000);
+}
+setInterval(update_dom, 3000);
 
 setInterval(function(){
     var latest_action_div = $("#latest_action");
@@ -64,8 +67,13 @@ setInterval(function(){
       type: "GET",
       success: function(data){
           // console.log(data.latest_action_object_name);
-          latest_action_div.text("Undo: \'"+ data.latest_action_object_name+"'");
-          latest_action_div.attr("onclick", "undo(\'"+data.latest_action_undo_handler+"\')");
+          if (data.no_actions){
+            latest_action_div.text("Nothing To Undo");
+            latest_action_div.attr("onclick", "undo(\'none\')");
+          } else {
+            latest_action_div.text("Undo: \'"+ data.latest_action_object_name+"'");
+            latest_action_div.attr("onclick", "undo(\'"+data.latest_action_undo_handler+"\')");
+          }
       },
       failure: function(){
         console.log("fail");
@@ -91,22 +99,29 @@ function send_new_item(form, purchase){
       "price": price,
       "purchase": purchase,
     },
-    success: function(){
+    success: function(data){
+      console.log(data);
+      if (data.invalid_form_data){
+        $("#item_form_header").html("<p class='text-danger'>Invalid Form</p>");
+      } else if (data.success) {
+        $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
+        create_action("Create Item", "Create Item: "+name, "undo add item");
+      } 
     },
     failure: function(){
       console.log("fail");
     },
   });
-  $("#item_form_header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
   document.getElementsByClassName('item_form')[0].reset();
-  create_action("Create Item", "Create Item: "+name, "undo add item");
+  update_dom()
 };
 
-function purchase_item(form){
+function purchase_item(id){
   /*
   Creates a new purchase object by POST with Ajax.
   Also increases the int on the btn.
   */
+  var form = $("#"+id)[0];
   var url = form.action;
   var form_data = $(form).serializeArray();
   $.ajax({
@@ -128,7 +143,6 @@ function purchase_item(form){
 };
 
 function undo(undo_handler){
-    console.log("UNDO");
     if (undo_handler == "undo purchase"){
         $.ajax({
             type: 'POST',
@@ -168,8 +182,10 @@ function undo(undo_handler){
                 console.log("failure");
             },
         })
+    } else if (undo_handler == "none"){
+      console.log("doing nothing");
     }
-
+  update_dom();
 }
 
 function create_action(title, object_name, undo_handler){
@@ -190,4 +206,5 @@ function create_action(title, object_name, undo_handler){
           console.log("fail");
         },
     })
+    update_dom();
 }

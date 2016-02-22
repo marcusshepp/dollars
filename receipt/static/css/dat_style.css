@@ -1,13 +1,12 @@
+*{
+}
 .item {
   background-color: #B5EDFF;
   /*text-align: center;*/
-  padding: 20px 5px 20px 15px;
+  padding: 5px 5px 5px 5px;
   border-radius: 2px 2px 2px 2px;
   margin: 0px 0px 15px 0px;
-}
-.item:hover {
-    background-color: #80dfff;
-    cursor: pointer;
+  border: .3px solid black;
 }
 .badge {
   margin-left: 15px !important;
@@ -25,34 +24,52 @@
 }
 #purchased_items{
     border-radius: 10px 10px 10px 10px;
+    background-color: #CFCFCF;
 }
 .purchases{
-  background-color: #B5EDFF;
+  padding-left: 15px;
+  padding-top: 15px;
+}
+.purchases div{
   border-radius: 2px 2px 2px 2px;
   margin: 0px 0px 15px 0px;
 }
-.purchases div{
-  background-color: #B5EDFF;
+.purchase_btn{
+  background-color: #5EFF7C;
   border-radius: 2px 2px 2px 2px;
-  margin: 0px 0px 15px 0px;
+  margin: 0px 5px 5px 5px;
+  cursor: pointer;
+  box-shadow: 2px 2px 2px #888888;
+  padding: 5px 0px 5px 15px;
+  text-align: center;
+}
+.purchase_btn:hover{
+  background-color: #C7FFD1;
+  color: black;
+  border-radius: 2px 2px 2px 2px;
+  margin: 0px 5px 5px 5px;
+  cursor: pointer;
+  padding: 5px 0px 5px 15px;
+  box-shadow: 2px 2px 2px #888888;
+  text-align: center;
 }
 #latest_action{
     margin-top: 35px;
 }
 .undo{
-  color: white;
-  background-color: black;
+  color: black;
+  background-color: #F2F2F2;
   padding: 15px 0px 15px 0px;
   margin-bottom: 10px;
   top: -30px !important;
-  opacity: 0.4;
-  border: .5px solid black;
+  border: .1px solid black;
   text-align: center;
+  box-shadow: 2px 2px 2px #888888;
   border-radius: 6px 6px 6px 6px;
 }
 .undo:hover{
   color: black;
-  background-color: #CAE1E8;
+  background-color: #F2F2F2;
   padding: 15px 0px 15px 0px;
   margin-bottom: 10px;
   top: -30px !important;

@@ -81,11 +81,16 @@ class ItemView(TemplateView):
         form = ItemForm(request.POST)
         if form.is_valid():
             form.save()
-            if request.POST["purchase"] == u"true":
+            context["success"] = True
+            if request.POST["purchase"] == True:
                 item = Item.objects.get(name=request.POST["name"])
                 Purchase.objects.create(item_purchased=item)
-        return self.get(request, *a, **kw) # cool
-
+                return JsonResponse(context)
+            else:
+                return JsonResponse(context)
+        else:
+            context["invalid_form_data"] = True
+            return JsonResponse(context)
 
 class ItemEndPoint(TemplateView):
 
@@ -113,8 +118,6 @@ class ItemEndPoint(TemplateView):
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
-        if request.POST.get(u"undo", None) == u"true":
-            Purchase.objects.get(id=request.POST['id'])
         item = Item.objects.get(id=request.POST["id"])
         item.number_of_times_purchased = F("number_of_times_purchased") + 1
         item.save()
@@ -138,23 +141,22 @@ class ActionEndPoint(View):
         actions = Action.objects.all()
         if actions:
             latest_action = actions.order_by("-id")[0]
-            print "latest_action: ", latest_action
             action_data["latest_action_object_name"] = latest_action.object_name
             action_data["latest_action_title"] = latest_action.title
             action_data["latest_action_undo_handler"] = latest_action.undo_handler
+        else:
+            action_data["no_actions"] = True
         return JsonResponse(action_data)
             
     def post(self, request, *a, **kw):
         request.POST = request.POST.copy()
         if request.POST.get("create_action", None):
-            print "creating action object"
             form = ActionForm(request.POST)
             if request.POST.get("description", None):
                 form.description = data["description"]
             if form.is_valid():
                 form.save()
         elif request.POST.get("undo", None):
-            print "undoing..."
             if request.POST.get("undo_handler", None) == "undo purchase":
                 purchases = Purchase.objects.all()
                 if purchases:
@@ -162,15 +164,11 @@ class ActionEndPoint(View):
                     latest_purchase = purchases.order_by("-id")[0]
                     latest_purchase_name = ""
                     latest_purchase_name += str(latest_purchase.item_purchased.name)
-                    print "undoing a purchase: ", latest_purchase_name
                     latest_purchase.delete()
                     # decrement item.number_of_times_purchased
                     item = Item.objects.filter(name=latest_purchase_name)[0]
-                    print "decrementing: ", item
-                    print "time purchased before: ", item.number_of_times_purchased
                     item.number_of_times_purchased = F("number_of_times_purchased") - 1
                     item.save()
-                    print "time purchased after: ", item.number_of_times_purchased
                     data = dict()
                     data["purchase_deleted"] = True
                     data["item_purchased"] = latest_purchase_name
@@ -180,14 +178,12 @@ class ActionEndPoint(View):
                 items = Item.objects.all()
                 if items:
                     latest_item = items.order_by("-id")[0]
-                    print "undoing an add item: ", latest_item
                     latest_item_name = ""
                     latest_item_name += str(latest_item.name)
                     self.delete_latest_action()
                     latest_item.delete()
                     data = dict()
                     data["deleted_item_name"] = latest_item_name
-                    print data["deleted_item_name"]
                     return JsonResponse(data)
         action_post_data = dict()
         action_post_data["success"] = True
