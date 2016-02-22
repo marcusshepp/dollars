@@ -22,3 +22,19 @@
 #header{
   opacity: .9;
 }
+#purchased_items{
+    border-radius: 10px 10px 10px 10px;
+}
+.purchases{
+  background-color: #B5EDFF;
+  border-radius: 2px 2px 2px 2px;
+  margin: 0px 0px 15px 0px;
+}
+.purchases div{
+  background-color: #B5EDFF;
+  border-radius: 2px 2px 2px 2px;
+  margin: 0px 0px 15px 0px;
+}
+#latest_action{
+    margin-top: 35px;
+}

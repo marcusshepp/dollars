@@ -38,10 +38,10 @@ var update_items = setInterval(function(){
         $(".items").html(item_markup);
         var purchased_items = ""
         for(var i = 0; i < data.purchased_length; i++){
-          purchased_items += "<p>";
-          purchased_items += "<div class='col-md-6'>" + data.purchased_items_names[i] + "</div>"
-          purchased_items += "<div class='col-md-6'>" + data.purchased_date_created[i] + "</div>"
-          purchased_items += "<p>";
+          purchased_items += '<div class="purchases">';
+          purchased_items += "<div class='col-md-6 col-lg-6'>" + data.purchased_items_names[i] + "</div>"
+          purchased_items += "<div class='col-md-6 col-lg-6'>" + data.purchased_date_created[i] + "</div>"
+          purchased_items += "</div>";
         }
         $("#purchased_items").html(purchased_items);
         if (data.total == 0){

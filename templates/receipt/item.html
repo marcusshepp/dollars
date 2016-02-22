@@ -34,13 +34,10 @@
 <span id="purchase_success"><h3>Purchases Made: All Time</h3></span>
 <div class="row" id="purchased_items">
     {% for i in purchased_items %}
-    <p>
-        {% if latest == i.id %}
-
-        {% endif %}
-        <div class="col-md-6">{{ i.item_purchased }}</div>
-        <div class="col-md-6">{{ i.date_display }}</div>
-    </p>
+    <div class="purchases">
+        <div class="col-md-6 col-lg-6">{{ i.item_purchased }}</div>
+        <div class="col-md-6 col-lg-6">{{ i.date_display }}</div>
+    </div>
     {% endfor %}
 </div>
 <h3>Total</h3>
