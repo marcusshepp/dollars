@@ -7,39 +7,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-    def create_items(apps, schema_editor):
-        """ Used to create some common items on init """
-
-        I = apps.get_model("receipt", "Item")
-        data = {"name": "Coffee",
-                "company_came_from": "Java City",
-                "price": 1.75}
-        item = I(**data)
-        item.save()
-        data = {"name": "Tofu",
-                "company_came_from": "Hunan House",
-                "price": 10.00}
-        item = I(**data)
-        item.save()
-        data = {"name": "Lunch",
-                "company_came_from": "RFOC",
-                "price": 8.00}
-        item = I(**data)
-        item.save()
-        data = {"name": "Veggie Sub",
-                "company_came_from": "Subway",
-                "price": 5.00}
-        item = I(**data)
-        item.save()
-
-        # Action = apps.get_model("receipt", "Action")
-        # data = {"title":"Add Item: Foo",
-        #         "description":"BOOOM",
-        #         "object_name":"Item",
-        #         "undo_handler":"undo add item"}
-        # action = Action(**data)
-        # action.save()
-        
         
     initial = True
 
@@ -103,5 +70,4 @@ class Migration(migrations.Migration):
             name='item',
             unique_together=set([('name', 'company_came_from')]),
         ),
-        migrations.RunPython(create_items),
     ]
