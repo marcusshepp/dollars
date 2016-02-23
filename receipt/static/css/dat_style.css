@@ -52,10 +52,10 @@
 .purchase_btn:hover{
   background-color: #C7FFD1;
   border-radius: 2px 2px 2px 2px;
-  margin: 0px 5px 5px 5px;
+  /*margin: 0px 5px 5px 5px;*/
   cursor: pointer;
   box-shadow: 2px 2px 2px #888888;
-  padding: 5px 0px 5px .5px;
+  /*padding: 5px 0px 5px .5px;*/
   text-align: center;
 }
 #latest_action{
@@ -66,17 +66,21 @@
   background-color: #F2F2F2;
   padding: 15px 0px 15px 0px;
   margin-bottom: 10px;
+  margin-right: 10px;
   top: -30px !important;
   border: .1px solid black;
   text-align: center;
   box-shadow: 2px 2px 2px #888888;
   border-radius: 6px 6px 6px 6px;
+  height: 70px;
+  width: auto
 }
 .undo:hover{
   color: black;
   background-color: #F2F2F2;
   padding: 15px 0px 15px 0px;
   margin-bottom: 10px;
+  margin-right: 10px;
   top: -30px !important;
   opacity: 0.4;
   border: .5px solid black;
@@ -91,25 +95,33 @@
 
 @media only screen
 and (max-width : 790px) {
+    .item{
+        height: 200%;
+        width: auto;;
+        padding-bottom: 70px;
+    }
+    .item > div{
+        height: auto;
+        width: 50%;
+        margin-right: 50px;
+        font-size: 110%;
+    }
+    .item span{
+        display: none;
+    }
     .items{
         margin-top: 15px;
     }
-    .items form{
-
+    .purchase_btn:hover{
+        background-color: #C7FFD1;
+        border-radius: 2px 2px 2px 2px;
+        /*margin: 0px 5px 5px 5px;*/
+        cursor: pointer;
+        box-shadow: 2px 2px 2px #888888;
+        /*padding: 5px 0px 5px 15px;*/
+        text-align: center;
     }
-    .items form div{
-        width:50%;
-        height:50%;
-    }
-    .items form span{
-        width:50%;
-        height:50%;
-    }
-    .purchases_header {
-        background-color: black;
-        /*
-        width: 30%;
-        height: auto;
-        */
+    .undo{
+        height: inherit;
     }
 }
