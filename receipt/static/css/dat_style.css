@@ -88,3 +88,28 @@
   padding: 5px 10px 5px 10px;
   text-align: center;
 }
+
+@media only screen
+and (max-width : 790px) {
+    .items{
+        margin-top: 15px;
+    }
+    .items form{
+
+    }
+    .items form div{
+        width:50%;
+        height:50%;
+    }
+    .items form span{
+        width:50%;
+        height:50%;
+    }
+    .purchases_header {
+        background-color: black;
+        /*
+        width: 30%;
+        height: auto;
+        */
+    }
+}
