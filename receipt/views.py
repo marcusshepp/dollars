@@ -67,7 +67,7 @@ class ItemView(TemplateView):
         if items:
             context["items"] = items
         purchases = Purchase.objects.all()
-        if purchases:    
+        if purchases:
             context["purchased_items"] = purchases
             total = 0
             for i in purchases:
@@ -130,6 +130,18 @@ class ItemEndPoint(TemplateView):
 
 class ActionEndPoint(View):
 
+    def delete_and_return_name(self, objct):
+        name = ""
+        objs = objct.objects.all()
+        if objs:
+            latest_obj = objs.order_by("-id")[0]
+            if hasattr(latest_obj, "item_purchased"):
+                name += str(latest_obj.item_purchased.name)
+            elif latest_obj.name:
+                name += str(latest_obj.name)
+            latest_obj.delete()
+        return name
+
     def delete_latest_action(self):
         actions = Action.objects.all()
         if actions:
@@ -147,8 +159,9 @@ class ActionEndPoint(View):
         else:
             action_data["no_actions"] = True
         return JsonResponse(action_data)
-            
+
     def post(self, request, *a, **kw):
+        data = dict()
         request.POST = request.POST.copy()
         if request.POST.get("create_action", None):
             form = ActionForm(request.POST)
@@ -158,33 +171,20 @@ class ActionEndPoint(View):
                 form.save()
         elif request.POST.get("undo", None):
             if request.POST.get("undo_handler", None) == "undo purchase":
-                purchases = Purchase.objects.all()
-                if purchases:
-                    # delete purchase
-                    latest_purchase = purchases.order_by("-id")[0]
-                    latest_purchase_name = ""
-                    latest_purchase_name += str(latest_purchase.item_purchased.name)
-                    latest_purchase.delete()
+                # delete purchase
+                latest_purchase_name = self.delete_and_return_name(Purchase)
+                if latest_purchase_name:
+                    data["item_purchased"] = latest_purchase_name
                     # decrement item.number_of_times_purchased
                     item = Item.objects.filter(name=latest_purchase_name)[0]
                     item.number_of_times_purchased = F("number_of_times_purchased") - 1
                     item.save()
-                    data = dict()
                     data["purchase_deleted"] = True
-                    data["item_purchased"] = latest_purchase_name
                     self.delete_latest_action()
-                    return JsonResponse(data)
             elif request.POST.get("undo_handler", None) == "undo add item":
-                items = Item.objects.all()
-                if items:
-                    latest_item = items.order_by("-id")[0]
-                    latest_item_name = ""
-                    latest_item_name += str(latest_item.name)
-                    self.delete_latest_action()
-                    latest_item.delete()
-                    data = dict()
+                latest_item_name = self.delete_and_return_name(Item)
+                if latest_item_name:
                     data["deleted_item_name"] = latest_item_name
-                    return JsonResponse(data)
-        action_post_data = dict()
-        action_post_data["success"] = True
-        return JsonResponse(action_post_data)
+                    self.delete_latest_action()
+        data["success"] = True
+        return JsonResponse(data)
