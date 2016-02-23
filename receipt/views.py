@@ -1,4 +1,3 @@
-from django.db.models import F
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
@@ -15,6 +14,9 @@ from .models import (
     Purchase,
     Action)
 
+
+class HelpMeWithMyData(object):
+    pass
 
 class Home(TemplateView):
 

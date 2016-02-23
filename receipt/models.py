@@ -4,10 +4,10 @@ from django.db import models
 
 
 class Action(models.Model):
-    
+
     class Meta:
         pass
-        
+
     handler_options = (
         ("undo add item", "Undo Add Item"),
         ("undo purchase", "Undo Purchase"),
@@ -71,6 +71,9 @@ class Item(models.Model):
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
 
+    def decrement_number_of_times_purchased(self):
+        self.number_of_times_purchased = models.F("number_of_times_purchased") + 1
+        return 1
 
 class Budget(models.Model):
 
