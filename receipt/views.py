@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
+from django.db.models import F
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import csrf_exempt
@@ -133,6 +134,9 @@ class ItemEndPoint(TemplateView):
 class ActionEndPoint(View):
 
     def delete_and_return_name(self, objct):
+        """
+        Queries the latest object, deletes it and returns it's name.
+        """
         name = ""
         objs = objct.objects.all()
         if objs:
@@ -145,10 +149,8 @@ class ActionEndPoint(View):
         return name
 
     def delete_latest_action(self):
-        actions = Action.objects.all()
-        if actions:
-            latest_action = actions.order_by("-id")[0]
-            latest_action.delete()
+        latest_action = Action.latest_action()
+        latest_action.delete()
 
     def get(self, request, *a, **kw):
         action_data = dict()

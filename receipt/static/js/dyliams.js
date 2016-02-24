@@ -60,7 +60,7 @@ function update_dom(){
       },
   });
 }
-setInterval(update_dom, 3000);
+// setInterval(update_dom, 3000);
 
 setInterval(function(){
     var latest_action_div = $("#latest_action");
@@ -108,6 +108,7 @@ function send_new_item(form, purchase){
       } else if (data.success) {
         $("#header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
         create_action("Create Item", "Create Item: "+name, "undo add item");
+        $("#item_form_header").html("Add New Item");
       } 
     },
     failure: function(){
@@ -159,6 +160,7 @@ function undo(undo_handler){
                 console.log("successful undo");
                 console.log(data.item_purchased);
                 $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + data.item_purchased + "&emsp; Deleted<span class='fa fa-check'></></p>");
+                update_dom();
             },
             error: function(){
                 console.log("failure");
@@ -179,6 +181,7 @@ function undo(undo_handler){
                 console.log("successful undo");
                 console.log("data.deleted_item_name: ", data.deleted_item_name);
                 $("#header").html("<p style='color: green;'>Item:&emsp;" + data.deleted_item_name + "&emsp; Deleted<span class='fa fa-check'></></p>");
+                update_dom();
             },
             error: function(){
                 console.log("failure");
@@ -187,7 +190,6 @@ function undo(undo_handler){
     } else if (undo_handler == "none"){
       console.log("doing nothing");
     }
-  update_dom();
 }
 
 function create_action(title, object_name, undo_handler){

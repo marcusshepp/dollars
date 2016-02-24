@@ -19,9 +19,12 @@ class Action(models.Model):
 
     def __unicode__(self):
         return "{}".format(self.title)
-
-    def latest_action(self):
-        return self.objects.all().order_by('-id')[0]
+    
+    @classmethod
+    def latest_action(cls):
+        objs = Action.objects.all()
+        if objs:
+            return objs.order_by('-id')[0]
 
 
 class Pic(models.Model):

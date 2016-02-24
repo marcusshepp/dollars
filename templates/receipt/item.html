@@ -4,7 +4,7 @@
 {% block content %}
 <div class="row">
     <h3 class="col-xs-6 page-header" id="header">Guru Development	&#174;</h3>
-    <div id="latest_action" class="undo col-md-3 col-xs-3 pull-right" onclick="undo(none, none)">Loading Last Action...</div>
+    <div id="latest_action" class="undo col-md-2 col-xs-2 pull-right" onclick="undo(none, none)">Loading Last Action...</div>
 </div>
 {{ form.errors }}
 <div class="row">
@@ -23,9 +23,10 @@
     <form id="{{ i.id }}" class="item col-sm-12 col-lg-12" action="{% url 'api_items' %}" method="POST">
         {% csrf_token %}
         <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
+        <div class="options pull-right">&#8594;</div>
         <div class='purchase_btn col-sm-4 pull-right' onclick='purchase_item({{ i.id }})'>Purchase</div>
-        <span class="times_purchased pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
         <span class="times_purchased pull-right">$ {{ i.price }}</span>
+        <span class="times_purchased pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
     </form>
     {% endfor %}
   </div>
@@ -48,6 +49,19 @@
 $(document).ready(function(){
   var csrf = "{% csrf_token %}";
   $.cookie("csrfmiddlewaretoken", csrf);
+  var options = "<span class='fa fa-edit'></span>";
+  $(".options").click(function(){
+    console.log($("this:first-child"));
+    $(this).html(options);
+    // if(this.contains(options)){
+    //   console.log("True");
+    // }else{
+    //   
+    // }
+  });
+  $(".edit").click(function(){
+    $(this).html("edited");
+  });
 });
 </script>
 {% endblock %}
