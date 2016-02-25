@@ -214,8 +214,8 @@ function create_action(title, object_name, undo_handler){
 }
 
 function show_options(th){
-    var options = '<div class="options pull-right"><span onclick="hide_options(this)" class="fa fa-arrow-right"></span>&emsp;';
-    options += '<span onclick="edit()">Edit</span>&emsp;<span onclick="del()">Delete</span></div>';
+    var options = '<div class="options pull-right"><span onclick="edit()">Edit</span>&emsp;<span onclick="del()">Delete</span>&emsp;';
+    options += '<div onclick="hide_options(this)" class="fa fa-arrow-right"></div></div>';
     var options_div = $(th);
     options_div.replaceWith(options);
 }
@@ -223,7 +223,7 @@ function hide_options(th){
     var a_options = "<span>&#8594;</span>";
     var options_div = $(th);
     var par = options_div.parent().filter(".options");
-    par.replaceWith("<div class='options pull-right' onclick='show_options(this)'><span class='fa fa-arrow-left'></span></div>")
+    par.replaceWith("<div class='options pull-right' onclick='show_options(this)'><div class='fa fa-arrow-left'></div></div>")
 }
 function edit(){
     console.log("foo");

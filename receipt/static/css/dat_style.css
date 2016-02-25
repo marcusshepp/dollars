@@ -107,6 +107,13 @@
   box-shadow: 2px 2px 2px #888888;
   cursor: pointer;
 }
+.options span{
+  padding: 5px 5px 5px 5px;
+  border-radius: 8px 8px 8px 8px;
+}
+.options span:hover{
+  background-color: #C2C2C2;
+}
 .line{
     border-left: .2 solid black;
 }
