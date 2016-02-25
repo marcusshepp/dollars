@@ -107,6 +107,9 @@
   box-shadow: 2px 2px 2px #888888;
   cursor: pointer;
 }
+.line{
+    border-left: .2 solid black;
+}
 @media only screen
 and (max-width : 790px) {
     .item{

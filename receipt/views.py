@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
-from django.db.models import F
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import csrf_exempt
@@ -122,8 +121,7 @@ class ItemEndPoint(TemplateView):
 
     def post(self, request, *a, **kw):
         item = Item.objects.get(id=request.POST["id"])
-        item.number_of_times_purchased = F("number_of_times_purchased") + 1
-        item.save()
+        item.increase_number_of_times_purchased()
         purchased_item = Purchase(item_purchased=item)
         purchased_item.save()
         data = dict()
@@ -133,7 +131,7 @@ class ItemEndPoint(TemplateView):
 
 class ActionEndPoint(View):
 
-    def delete_and_return_name(self, objct):
+    def delete_latest_and_return_name(self, objct):
         """
         Queries the latest object, deletes it and returns it's name.
         """
@@ -176,17 +174,16 @@ class ActionEndPoint(View):
         elif request.POST.get("undo", None):
             if request.POST.get("undo_handler", None) == "undo purchase":
                 # delete purchase
-                latest_purchase_name = self.delete_and_return_name(Purchase)
+                latest_purchase_name = self.delete_latest_and_return_name(Purchase)
                 if latest_purchase_name:
                     data["item_purchased"] = latest_purchase_name
                     # decrement item.number_of_times_purchased
                     item = Item.objects.filter(name=latest_purchase_name)[0]
-                    item.number_of_times_purchased = F("number_of_times_purchased") - 1
-                    item.save()
+                    item.decrement_number_of_times_purchased()
                     data["purchase_deleted"] = True
                     self.delete_latest_action()
             elif request.POST.get("undo_handler", None) == "undo add item":
-                latest_item_name = self.delete_and_return_name(Item)
+                latest_item_name = self.delete_latest_and_return_name(Item)
                 if latest_item_name:
                     data["deleted_item_name"] = latest_item_name
                     self.delete_latest_action()

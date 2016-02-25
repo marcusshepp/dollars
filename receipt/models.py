@@ -60,13 +60,14 @@ class Item(models.Model):
 
     class Meta:
         ordering = ["-date_created"]
-        unique_together = ("name", "company_came_from")
+        unique_together = ("name", "company_came_from", "catagory")
 
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=250)
     company_came_from = models.CharField(max_length=50, null=True, blank=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)
+    catagory = models.ForeignKey("Catagory")
 
     def __unicode__(self):
         return u"{0} - {1}".format(self.name, self.company_came_from)
@@ -74,9 +75,32 @@ class Item(models.Model):
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
 
-    def decrement_number_of_times_purchased(self):
+    def increase_number_of_times_purchased(self):
+        num_of_times_purchased_before = self.number_of_times_purchased
         self.number_of_times_purchased = models.F("number_of_times_purchased") + 1
-        return 1
+        self.save()
+        if num_of_times_purchased_before + 1 == self.number_of_times_purchased:
+            return 1
+
+    def decrement_number_of_times_purchased(self):
+        num_of_times_purchased_before = self.number_of_times_purchased
+        self.number_of_times_purchased = models.F("number_of_times_purchased") - 1
+        self.save()
+        if num_of_times_purchased_before + 1 == self.number_of_times_purchased:
+            return 1
+
+
+class Catagory(models.Model):
+
+    class Meta:
+        ordering = ["-id"]
+
+    date_created = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return u"{0} - {1}".format(self.name, self.company_came_from)
+
 
 class Budget(models.Model):
 

@@ -36,7 +36,7 @@ function update_dom(){
           item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchased + '</span>';
           item_markup += '<span class="times_purchased pull-right">$ '+price+'</span>'
           item_markup += '</form>';
-          
+
         }
         $(".items").html(item_markup);
         var purchased_items = "";
@@ -109,7 +109,7 @@ function send_new_item(form, purchase){
         $("#header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
         create_action("Create Item", "Create Item: "+name, "undo add item");
         $("#item_form_header").html("Add New Item");
-      } 
+      }
     },
     failure: function(){
       console.log("fail");
@@ -211,4 +211,23 @@ function create_action(title, object_name, undo_handler){
         },
     })
     update_dom();
+}
+
+function show_options(th){
+    var options = '<div class="options pull-right"><span onclick="hide_options(this)" class="fa fa-arrow-right"></span>&emsp;';
+    options += '<span onclick="edit()">Edit</span>&emsp;<span onclick="del()">Delete</span></div>';
+    var options_div = $(th);
+    options_div.replaceWith(options);
+}
+function hide_options(th){
+    var a_options = "<span>&#8594;</span>";
+    var options_div = $(th);
+    var par = options_div.parent().filter(".options");
+    par.replaceWith("<div class='options pull-right' onclick='show_options(this)'><span class='fa fa-arrow-left'></span></div>")
+}
+function edit(){
+    console.log("foo");
+}
+function del(){
+    console.log("bar");
 }

@@ -23,7 +23,7 @@
     <form id="{{ i.id }}" class="item col-sm-12 col-lg-12" action="{% url 'api_items' %}" method="POST">
         {% csrf_token %}
         <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
-        <div class="options pull-right">&#8594;</div>
+        <div class="options pull-right" onclick="show_options(this)"><span class='fa fa-arrow-left'></span></div>
         <div class='purchase_btn col-sm-4 pull-right' onclick='purchase_item({{ i.id }})'>Purchase</div>
         <span class="times_purchased pull-right">$ {{ i.price }}</span>
         <span class="times_purchased pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
@@ -49,19 +49,6 @@
 $(document).ready(function(){
   var csrf = "{% csrf_token %}";
   $.cookie("csrfmiddlewaretoken", csrf);
-  var options = "<span class='fa fa-edit'></span>";
-  $(".options").click(function(){
-    console.log($("this:first-child"));
-    $(this).html(options);
-    // if(this.contains(options)){
-    //   console.log("True");
-    // }else{
-    //   
-    // }
-  });
-  $(".edit").click(function(){
-    $(this).html("edited");
-  });
 });
 </script>
 {% endblock %}
