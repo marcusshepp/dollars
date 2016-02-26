@@ -13,6 +13,13 @@
     <form class="formmy item_form" action="{% url 'items' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
       <p><label for="name">Name: </label><input type="text" name="name" max_length="250"/ class="pull-right"></p>
       <p><label for="company_came_from">Company: </label><input type="text" name="company_came_from" max_length="50" class="pull-right"></p>
+      <p><label for="catagory">Catagory: </label>
+         <select name="catagory" class="pull-right catagory">
+           {% for catagory in catagories %}
+            <option name="catagory" value="{{ catagory.id }}">{{ catagory.name }}</option>
+           {% endfor %}
+         </select>
+      </p>
       <p><label for="price">Price: </label><input type="number" name="price" step="0.01" class="pull-right"></p>
       <input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">
       <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">

@@ -100,7 +100,7 @@ class Catagory(models.Model):
     name = models.CharField(max_length=100)
 
     def __unicode__(self):
-        return u"{0} - {1}".format(self.name, self.company_came_from)
+        return u"{0}".format(self.name)
 
 
 class Budget(models.Model):

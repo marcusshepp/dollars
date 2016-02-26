@@ -92,7 +92,8 @@ function send_new_item(form, purchase){
   var form_data = $(form).serializeArray();
   var name = form_data[1].value;
   var company_came_from = form_data[2].value;
-  var price = form_data[3].value;
+  var catagory_id = form_data[3].value;
+  var price = form_data[4].value;
   $.ajax({
     type: 'POST',
     url: '/item/',
@@ -101,6 +102,7 @@ function send_new_item(form, purchase){
       "name": name,
       "company_came_from": company_came_from,
       "price": price,
+      "catagory_id": catagory_id,
       "purchase": purchase,
     },
     success: function(data){

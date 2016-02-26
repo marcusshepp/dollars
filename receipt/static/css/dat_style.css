@@ -123,10 +123,11 @@
 @media only screen
 and (max-width : 790px) {
     .item{
-        height: 200%;
-        width: auto;;
+        /*height: 200%;*/
+        /*width: auto;*/
         padding-bottom: 70px;
         font-size: 125%;
+        position: relative;
     }
     .item span{
         display: none;
@@ -155,7 +156,7 @@ and (max-width : 790px) {
         height: auto;
         width: 125px;
         position: relative;
-        z-index: 2;
+        z-index: 100;
     }
     .options:hover{
         height: auto;

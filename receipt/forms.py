@@ -12,7 +12,7 @@ class ItemForm(forms.ModelForm):
 
     class Meta:
         model = Item
-        fields = ["name", "company_came_from", "price"]
+        fields = ["name", "company_came_from", "price", "catagory"]
 
 
 class ActionForm(forms.ModelForm):

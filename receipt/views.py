@@ -12,7 +12,8 @@ from .models import (
     Pic,
     Item,
     Purchase,
-    Action)
+    Action,
+    Catagory)
 
 
 class HelpMeWithMyData(object):
@@ -76,10 +77,17 @@ class ItemView(TemplateView):
                 total += i.item_purchased.price
             context["total"] = total
             context["purchased_length"] = purchases.count()
+        catagories = Catagory.objects.all()
+        if catagories:
+            context["catagories"] = catagories
         return render(request, self.template_name, context)
 
     def post(self, request, *a, **kw):
+        """ Add a new Item """
         context = dict()
+        request.POST = request.POST.copy()
+        if request.POST.get("catagory_id", None):
+            request.POST["catagory"] = int(request.POST.pop("catagory_id")[0])
         form = ItemForm(request.POST)
         if form.is_valid():
             form.save()
