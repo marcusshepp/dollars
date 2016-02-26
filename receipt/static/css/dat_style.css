@@ -98,6 +98,7 @@
   background-color: white;
   border-radius: 4px 4px 4px 4px;
   box-shadow: 2px 2px 2px #888888;
+  font-size: 80%;
 }
 .options:hover{
   margin-left: 2px;
@@ -107,11 +108,11 @@
   box-shadow: 2px 2px 2px #888888;
   cursor: pointer;
 }
-.options span{
+.options div{
   padding: 5px 5px 5px 5px;
   border-radius: 8px 8px 8px 8px;
 }
-.options span:hover{
+.options div:hover{
   background-color: #C2C2C2;
 }
 .line{

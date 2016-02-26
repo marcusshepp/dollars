@@ -11,7 +11,7 @@ var csrf_func = function(){
   var csrf_element = wrapper.firstChild;
   return csrf_element.value;
 }
-/* DOM UPDATING INTERVALS */
+
 function update_dom(){
   /*
   UPDATES DOM
@@ -60,6 +60,7 @@ function update_dom(){
       },
   });
 }
+/* DOM UPDATING INTERVALS */
 // setInterval(update_dom, 3000);
 
 setInterval(function(){
@@ -102,7 +103,6 @@ function send_new_item(form, purchase){
       "purchase": purchase,
     },
     success: function(data){
-      console.log(data);
       if (data.invalid_form_data){
         $("#item_form_header").html("<p class='text-danger'>Invalid Form</p>");
       } else if (data.success) {
@@ -157,8 +157,6 @@ function undo(undo_handler){
                 "undo_handler": undo_handler,
             },
             success: function(data){
-                console.log("successful undo");
-                console.log(data.item_purchased);
                 $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + data.item_purchased + "&emsp; Deleted<span class='fa fa-check'></></p>");
                 update_dom();
             },
@@ -167,7 +165,6 @@ function undo(undo_handler){
             },
         })
     } else if (undo_handler == "undo add item") {
-      console.log("UNDO ADD ITEM");
         $.ajax({
             type: 'POST',
             url: '/api/actions/',
@@ -178,8 +175,6 @@ function undo(undo_handler){
                 "undo_handler": undo_handler,
             },
             success: function(data){
-                console.log("successful undo");
-                console.log("data.deleted_item_name: ", data.deleted_item_name);
                 $("#header").html("<p style='color: green;'>Item:&emsp;" + data.deleted_item_name + "&emsp; Deleted<span class='fa fa-check'></></p>");
                 update_dom();
             },
@@ -213,17 +208,21 @@ function create_action(title, object_name, undo_handler){
     update_dom();
 }
 
-function show_options(th){
-    var options = '<div class="options pull-right"><span onclick="edit()">Edit</span>&emsp;<span onclick="del()">Delete</span>&emsp;';
-    options += '<div onclick="hide_options(this)" class="fa fa-arrow-right"></div></div>';
+function show_options(th, id){
+    var options = '<div class="options pull-right">'
+    options += '<div>Purchase w New Price</div>'
+    options += '<div onclick="edit()">Edit</div>&emsp;<div onclick="del()">Delete</div>&emsp;';
+    options += '<div onclick="hide_options(this, '+id+')" class="">...</div></div>';
     var options_div = $(th);
     options_div.replaceWith(options);
+    $("#"+id).find("span").hide();
 }
-function hide_options(th){
+function hide_options(th, id){
     var a_options = "<span>&#8594;</span>";
     var options_div = $(th);
     var par = options_div.parent().filter(".options");
-    par.replaceWith("<div class='options pull-right' onclick='show_options(this)'><div class='fa fa-arrow-left'></div></div>")
+    par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class='fa fa-arrow-left'></div></div>")
+    $("#"+id).find("span").show();
 }
 function edit(){
     console.log("foo");
