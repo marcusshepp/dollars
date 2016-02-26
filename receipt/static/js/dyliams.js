@@ -63,7 +63,7 @@ function update_dom(){
 /* DOM UPDATING INTERVALS */
 // setInterval(update_dom, 3000);
 
-setInterval(function(){
+function update_undo(){
     var latest_action_div = $("#latest_action");
     $.ajax({
       url: '/api/actions/',
@@ -82,7 +82,8 @@ setInterval(function(){
         console.log("fail");
       },
     });
-}, 3000);
+}
+// setInterval(update_undo, 3000);
 
 function send_new_item(form, purchase){
   /*
@@ -242,17 +243,18 @@ function purchase_w_new_price(th, id){
     $(th).parent().html(markup);
 }
 function post_purchase_w_new_price(th, id){
-    console.log($(th).find("input[type='number']")[0]);
-    // $.ajax({
-    //     url: "/api/items/",
-    //     type: "POST",
-    //     data: {
-    //         "csrfmiddlewaretoken":csrf_func(),
-    //         "id": id,
-    //         "purchase_price": price
-    //     },
-    //     success: function(){
-    //         console.log("success");
-    //     },
-    // });
+    var new_price = $("#"+id).find(":input")[1].value;
+    console.log(new_price);
+    $.ajax({
+        url: "/api/items/",
+        type: "POST",
+        data: {
+            "csrfmiddlewaretoken":csrf_func(),
+            "id": id,
+            "amount_payed": new_price
+        },
+        success: function(){
+            console.log("success");
+        },
+    });
 }

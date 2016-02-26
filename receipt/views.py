@@ -124,8 +124,8 @@ class ItemEndPoint(TemplateView):
         item.increase_number_of_times_purchased()
         purchase_data = dict()
         purchase_data["item_purchased"] = item
-        if request.POST.get("purchase_price", None):
-            purchase_data["amount_payed"] = request.POST.get("purchase_price")
+        if request.POST.get("amount_payed", None):
+            purchase_data["amount_payed"] = request.POST.get("amount_payed")
         else: purchase_data["amount_payed"] = item.price
         purchased_item = Purchase(**purchase_data)
         purchased_item.save()

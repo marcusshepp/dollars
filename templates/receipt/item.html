@@ -33,10 +33,11 @@
 </div>
 <span id="purchases_header"><h3>Purchases Made: All Time ({{purchased_length}})</h3></span>
 <div id="purchased_items">
-    {% for i in purchased_items %}
+    {% for purchase in purchased_items %}
     <div class="row purchases">
-        <div class="col-md-3 col-lg-3">{{ i.item_purchased }}</div>
-        <div class="col-md-3 col-lg-3">{{ i.date_display }}</div>
+        <div class="col-md-3 col-lg-3">{{ purchase.item_purchased }}</div>
+        <div class="col-md-3 col-lg-3">{{ purchase.date_display }}</div>
+        <div class="col-md-3 col-lg-3">{{ purchase.amount_payed }}</div>
     </div>
     <div class="purchase_border"></div>
     {% endfor %}
