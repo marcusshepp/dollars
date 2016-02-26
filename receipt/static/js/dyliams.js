@@ -236,11 +236,13 @@ function purchase_w_new_price(th, id){
     markup += "name='price' ";
     markup += "step='0.01' />";
     markup += "<input type='button' ";
-    markup += "onclick='post_purchase_w_new_price(this)' "
+    markup += "onclick='post_purchase_w_new_price(this, "+id+")' "
     markup += "value='Submit' />"
     markup += "<div onclick='hide_options(this, "+id+")'>...</div>";
     $(th).parent().html(markup);
-    // console.log($(th).parent().html("hi"));
+}
+function post_purchase_w_new_price(th, id){
+    console.log($(th).find("input[type='number']")[0]);
     // $.ajax({
     //     url: "/api/items/",
     //     type: "POST",
