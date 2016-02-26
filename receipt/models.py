@@ -19,7 +19,7 @@ class Action(models.Model):
 
     def __unicode__(self):
         return "{}".format(self.title)
-    
+
     @classmethod
     def latest_action(cls):
         objs = Action.objects.all()
@@ -51,6 +51,7 @@ class Purchase(models.Model):
 
     date_created = models.DateTimeField(auto_now_add=True)
     item_purchased = models.ForeignKey("Item")
+    amount_payed = models.DecimalField(max_digits=19, decimal_places=2)
 
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")

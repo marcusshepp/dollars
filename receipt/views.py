@@ -105,17 +105,17 @@ class ItemEndPoint(TemplateView):
         data["prices"] = [i.price for i in items]
         data["length"] = items.count()
         data["times_purchased"] = [i.number_of_times_purchased for i in items]
-        purchased = Purchase.objects.all()
-        if purchased:
-            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchased]
-            data["purchased_date_created"] = [i.date_display() for i in purchased]
-            data["purchased_length"] = purchased.count()
+        purchases = Purchase.objects.all()
+        if purchases:
+            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
+            data["purchased_date_created"] = [i.date_display() for i in purchases]
+            data["purchased_length"] = purchases.count()
         else:
             data["purchased_length"] = 0
         # total
         total = 0
-        for i in purchased:
-            total += i.item_purchased.price
+        for purchase in purchases:
+            total += purchase.amount_payed
         data["total"] = total
         return JsonResponse(data)
 
