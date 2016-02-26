@@ -48,6 +48,8 @@
   box-shadow: 2px 2px 2px #888888;
   padding: 5px 0px 5px 15px;
   text-align: center;
+  height: auto;
+  width: 120px;
 }
 .purchase_btn:hover{
   background-color: #C7FFD1;
@@ -124,18 +126,18 @@ and (max-width : 790px) {
         height: 200%;
         width: auto;;
         padding-bottom: 70px;
-    }
-    .item > div{
-        height: auto;
-        width: 50%;
-        margin-right: 50px;
-        font-size: 110%;
+        font-size: 125%;
     }
     .item span{
         display: none;
     }
     .items{
         margin-top: 15px;
+    }
+    .purchase_btn{
+      height: auto;
+      width: 125px;
+      font-size: 110%;
     }
     .purchase_btn:hover{
         background-color: #C7FFD1;
@@ -148,5 +150,17 @@ and (max-width : 790px) {
     }
     .undo{
         height: inherit;
+    }
+    .options{
+        height: auto;
+        width: 125px;
+        position: relative;
+        z-index: 2;
+    }
+    .options:hover{
+        height: auto;
+        width: 125px;
+        position: relative;
+        z-index: 5;
     }
 }

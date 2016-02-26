@@ -211,9 +211,9 @@ function create_action(title, object_name, undo_handler){
 
 function show_options(th, id){
     var options = '<div class="options pull-right">'
-    options += '<div onclick="purchase_w_new_price(this, '+id+')">Purchase w New Price</div>'
+    options += '<div onclick="hide_options(this, '+id+')" class="">...</div>';
     options += '<div onclick="edit()">Edit</div>&emsp;<div onclick="del()">Delete</div>&emsp;';
-    options += '<div onclick="hide_options(this, '+id+')" class="">...</div></div>';
+    options += '<div onclick="purchase_w_new_price(this, '+id+')">Purchase w New Price</div></div>';
     var options_div = $(th);
     options_div.replaceWith(options);
     $("#"+id).find("span").hide();
@@ -223,7 +223,7 @@ function hide_options(th, id){
     var options_div = $(th);
     var par = options_div.parent().filter(".options");
     par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class='fa fa-arrow-left'></div></div>")
-    $("#"+id).find("span").show();
+    $("#"+id).find("span").show(); // IDK WHAT TO DO WITH THIS ATM 
 }
 function edit(){
     console.log("foo");
@@ -244,7 +244,6 @@ function purchase_w_new_price(th, id){
 }
 function post_purchase_w_new_price(th, id){
     var new_price = $("#"+id).find(":input")[1].value;
-    console.log(new_price);
     $.ajax({
         url: "/api/items/",
         type: "POST",
@@ -255,6 +254,9 @@ function post_purchase_w_new_price(th, id){
         },
         success: function(){
             console.log("success");
+            var name = $("#item_"+id).html();
+            $("#header").html("<p style='color: green;'>Purchase Made for: " + name + "&emsp; Amount Played: "+new_price+"<span class='fa fa-check'></></p>");
+            create_action("Purchase", "Make purchase: "+name, "undo purchase");
         },
     });
 }
