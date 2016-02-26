@@ -122,7 +122,12 @@ class ItemEndPoint(TemplateView):
     def post(self, request, *a, **kw):
         item = Item.objects.get(id=request.POST["id"])
         item.increase_number_of_times_purchased()
-        purchased_item = Purchase(item_purchased=item)
+        purchase_data = dict()
+        purchase_data["item_purchased"] = item
+        if request.POST.get("purchase_price", None):
+            purchase_data["amount_payed"] = request.POST.get("purchase_price")
+        else: purchase_data["amount_payed"] = item.price
+        purchased_item = Purchase(**purchase_data)
         purchased_item.save()
         data = dict()
         data["purchased"] = True

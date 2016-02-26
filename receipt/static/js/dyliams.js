@@ -61,7 +61,7 @@ function update_dom(){
   });
 }
 /* DOM UPDATING INTERVALS */
-setInterval(update_dom, 3000);
+// setInterval(update_dom, 3000);
 
 setInterval(function(){
     var latest_action_div = $("#latest_action");
@@ -210,7 +210,7 @@ function create_action(title, object_name, undo_handler){
 
 function show_options(th, id){
     var options = '<div class="options pull-right">'
-    options += '<div onclick="purchase_w_new_price('+id+')">Purchase w New Price</div>'
+    options += '<div onclick="purchase_w_new_price(this, '+id+')">Purchase w New Price</div>'
     options += '<div onclick="edit()">Edit</div>&emsp;<div onclick="del()">Delete</div>&emsp;';
     options += '<div onclick="hide_options(this, '+id+')" class="">...</div></div>';
     var options_div = $(th);
@@ -230,17 +230,27 @@ function edit(){
 function del(){
     console.log("bar");
 }
-function purchase_w_new_price(id){
-    console.log("pop");
-    $.ajax({
-        url: "/api/items/",
-        type: "POST",
-        data: {
-            "csrfmiddlewaretoken":csrf_func(),
-            "id": id,
-        },
-        success: function(){
-            console.log("success");
-        },
-    });
+function purchase_w_new_price(th, id){
+    var markup = "<input ";
+    markup += "type='number' ";
+    markup += "name='price' ";
+    markup += "step='0.01' />";
+    markup += "<input type='button' ";
+    markup += "onclick='post_purchase_w_new_price(this)' "
+    markup += "value='Submit' />"
+    markup += "<div onclick='hide_options(this, "+id+")'>...</div>";
+    $(th).parent().html(markup);
+    // console.log($(th).parent().html("hi"));
+    // $.ajax({
+    //     url: "/api/items/",
+    //     type: "POST",
+    //     data: {
+    //         "csrfmiddlewaretoken":csrf_func(),
+    //         "id": id,
+    //         "purchase_price": price
+    //     },
+    //     success: function(){
+    //         console.log("success");
+    //     },
+    // });
 }
