@@ -225,7 +225,7 @@ function hide_options(th, id){
     var options_div = $(th);
     var par = options_div.parent().filter(".options");
     par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class='fa fa-arrow-left'></div></div>")
-    $("#"+id).find("span").show(); // IDK WHAT TO DO WITH THIS ATM 
+    $("#"+id).find("span").show(); // IDK WHAT TO DO WITH THIS ATM
 }
 function edit(){
     console.log("foo");
@@ -246,13 +246,14 @@ function purchase_w_new_price(th, id){
 }
 function post_purchase_w_new_price(th, id){
     var new_price = $("#"+id).find(":input")[1].value;
+    console.log($(th).find("input[type='number']")[0]);
     $.ajax({
         url: "/api/items/",
         type: "POST",
         data: {
             "csrfmiddlewaretoken":csrf_func(),
             "id": id,
-            "amount_payed": new_price
+            "amount_payed": new_price,
         },
         success: function(){
             console.log("success");
