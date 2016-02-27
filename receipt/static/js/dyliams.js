@@ -214,7 +214,7 @@ function create_action(title, object_name, undo_handler){
 function show_options(th, id){
     var options = '<div class="options pull-right">'
     options += '<div onclick="hide_options(this, '+id+')" class="">...</div>';
-    options += '<div onclick="edit()">Edit</div>&emsp;<div onclick="del()">Delete</div>&emsp;';
+    options += '<div onclick="edit('+id+')">Edit</div>&emsp;<div onclick="del('+id+')">Delete</div>&emsp;';
     options += '<div onclick="purchase_w_new_price(this, '+id+')">Purchase w New Price</div></div>';
     var options_div = $(th);
     options_div.replaceWith(options);
@@ -227,10 +227,53 @@ function hide_options(th, id){
     par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class='fa fa-arrow-left'></div></div>")
     $("#"+id).find("span").show(); // IDK WHAT TO DO WITH THIS ATM
 }
-function edit(){
-    console.log("foo");
+function build_edit_form(catagory_names, catagory_ids, catagory_length, name, company, catagory, price){
+    var form_str = "";
+    form_str += '<h4 id="item_form_header">Editing Item</h4>';
+    form_str += '<form class="formmy item_form" enctype="multipart/form-data">';
+    form_str += '<p><label for="name">Name: </label><input type="text" name="name" ';
+    form_str += 'max_length="250" class="pull-right" value="'+company+'" /></p>';
+    form_str += '<p><label for="company_came_from">Company: </label><input value="'+name+'" ';
+    form_str += 'type="text" name="company_came_from" max_length="50" class="pull-right"></p>';
+    form_str += '<p><label for="catagory">Catagory: </label>';
+    form_str += '<select name="catagory" class="pull-right catagory">';
+    for (var i = 0; i < catagory_length; i++){
+        form_str += '<option name="catagory" value="'+catagory_ids[i]+'">'+catagory_names[i]+'</option>';
+    }
+    form_str += '</select>';
+    form_str += '</p>';
+    form_str += '<p><label for="price">Price: </label><input ';
+    form_str += 'type="number" value='+price+' name="price" step="0.01" class="pull-right"></p>';
+    form_str += '<input type="button" value="Edit" class="btn btn-default" onclick="edit_item(this.form, false)">';
+    form_str += '</form>';
+    $(".item_form_container").html(form_str);
 }
-function del(){
+function edit(id){
+    console.log(id);
+    $.ajax({
+        url: "/api/items_edit/",
+        type: "POST",
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "id": id,
+        },
+        success: function(data){
+            if(data.no_id == true){
+                console.log("no id :(");
+            } else {
+                build_edit_form(
+                    data.catagory_names,
+                    data.catagory_ids,
+                    data.catagory_length,
+                    data.item_name,
+                    data.item_catagory_name,
+                    data.item_catagory_id,
+                    data.item_price)
+            }
+        },
+    })
+}
+function del(id){
     console.log("bar");
 }
 function purchase_w_new_price(th, id){
@@ -246,17 +289,17 @@ function purchase_w_new_price(th, id){
 }
 function post_purchase_w_new_price(th, id){
     var new_price = $("#"+id).find(":input")[1].value;
-    console.log($(th).find("input[type='number']")[0]);
+    // console.log($(th).find("input[type='number']")[0]);
     $.ajax({
         url: "/api/items/",
         type: "POST",
         data: {
-            "csrfmiddlewaretoken":csrf_func(),
+            "csrfmiddlewaretoken": csrf_func(),
             "id": id,
             "amount_payed": new_price,
         },
         success: function(){
-            console.log("success");
+            // console.log("success");
             var name = $("#item_"+id).html();
             $("#header").html("<p style='color: green;'>Purchase Made for: " + name + "&emsp; Amount Played: "+new_price+"<span class='fa fa-check'></></p>");
             create_action("Purchase", "Make purchase: "+name, "undo purchase");

@@ -8,7 +8,7 @@
 </div>
 {{ form.errors }}
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-6 item_form_container">
     <h4 id="item_form_header">Add New Item</h4>
     <form class="formmy item_form" action="{% url 'items' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
       <p><label for="name">Name: </label><input type="text" name="name" max_length="250"/ class="pull-right"></p>

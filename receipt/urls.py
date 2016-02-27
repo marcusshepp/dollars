@@ -6,8 +6,10 @@ from .views import (
     PicsView,
     ItemView,
     ItemEndPoint,
+    ItemManEndPoint,
     ActionEndPoint,
-    Actions)
+    Actions,
+    )
 
 urlpatterns = [
     url(r'^$', Home.as_view(), name="home"),
@@ -15,5 +17,6 @@ urlpatterns = [
     url(r'^item/$', ItemView.as_view(), name="items"),
     url(r'^actions/$', Actions.as_view(), name="actions"),
     url(r'^api/items/$', ItemEndPoint.as_view(), name="api_items"),
+    url(r'^api/items_edit/$', ItemManEndPoint.as_view(), name="api_items_edit"),
     url(r'^api/actions/$', ActionEndPoint.as_view(), name="api_actions"),
 ]
