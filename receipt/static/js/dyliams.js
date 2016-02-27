@@ -268,13 +268,29 @@ function edit(id){
                     data.item_name,
                     data.item_catagory_name,
                     data.item_catagory_id,
-                    data.item_price)
+                    data.item_price);
             }
+            update_dom();
         },
     })
 }
 function del(id){
-    console.log("bar");
+    $.ajax({
+        url: "/api/items_edit/",
+        type: "POST",
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "id": id,
+            "delete_item": 1,
+        },
+        success: function(){
+            // console.log("success");
+            var name = $("#item_"+id).html();
+            $("#header").html("<p style='color: green;'>Deleted Item: " + name + "<span class='fa fa-check'></></p>");
+            // create_action("Purchase", "Make purchase: "+name, "undo purchase");
+            update_dom();
+        },
+    });
 }
 function purchase_w_new_price(th, id){
     var markup = "<input ";

@@ -182,6 +182,9 @@ class ItemManEndPoint(View):
                     data["catagory_ids"] = [
                         catagory.id for catagory in catagories]
                     data["catagory_length"] = catagories.count()
+            delete_item = get_post(request, "delete_item")
+            if delete_item:
+                item.delete()
         else:
             data["no_id"] = True
         return JsonResponse(data)
