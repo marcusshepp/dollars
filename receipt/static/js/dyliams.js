@@ -14,9 +14,11 @@ var csrf_func = function(){
 
 function update_dom(){
   /*
+  
   UPDATES DOM
   Ajax request to the items API.
   Populates the page with available items & purchases & total.
+
   */
   $.ajax({
       type: "GET",
