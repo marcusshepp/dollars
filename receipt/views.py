@@ -257,9 +257,9 @@ class ActionEndPoint(View):
 
 class PurchaseTableEndPoint(View):
 
-    def purchase_json_resp(self, request):
+    def purchase_json_resp(self, purchases=None):
+        """ Accepts a purchase query and returns a json object """
         data = dict()
-        purchases = Purchase.objects.all()
         if purchases:
             data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
             data["purchased_date_created"] = [i.date_display() for i in purchases]
@@ -273,9 +273,26 @@ class PurchaseTableEndPoint(View):
             data["purchased_length"] = 0
         return JsonResponse(data)
 
+    def filter_by_catagory(self, request):
+        data = dict()
+        catagory_name = get_post(request, "catagory_name")
+        if catagory_name:
+            items = Item.objects.filter(catagory__name=catagory_name)
+            purchases = list()
+            for item in items:
+                purchase = Purchase.objects.filter(item_purchased__name=item.name)
+                if purchase:
+                    purchases.append(purchase)
+            if purchases:
+                data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases[0]]
+        return JsonResponse(data)
+
     def get(self, request, *a, **kw):
         return self.purchase_json_resp(request)
 
     def post(self, request, *a, **kw):
         data = dict()
+        catagory_name = get_post(request, "catagory_name")
+        if catagory_name:
+            self.filter_by_catagory(request)
         return JsonResponse(data)

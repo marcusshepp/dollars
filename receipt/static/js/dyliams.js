@@ -382,12 +382,14 @@ function filter_purchase_tbl_by_catagory(catagory_name){
         url: "/api/purchases/",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
+            "catagory_name": catagory_name,
         },
-        success: function(){
+        success: function(data){
+            console.log(data)
             console.log("success");
         },
         failure: function(){
-            console.log("failure");
+            console.log("failure @ filter_purchase_tbl_by_catagory");
         },
     })
 }
