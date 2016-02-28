@@ -120,6 +120,9 @@
 .line{
     border-left: .2 solid black;
 }
+.purchase_filters{
+    margin: 0px 1px 5px 1px;
+}
 @media only screen
 and (max-width : 790px) {
     .item{

@@ -39,9 +39,10 @@
   </div>
 </div>
 <span id="purchases_header"><h3>Purchases Made: All Time ({{purchased_length}})</h3></span>
-<input type="button" name="name" value="PRESS ME" onclick="update_purchase_tbl()">
+<input type="button" name="name" value="Update" onclick="update_purchase_tbl()" class="purchase_filters">
+<span>Filters:</span>
 {% for catagory in catagories %}
-<input type="button" name="name" value="{{ catagory.name }}" onclick="filter_purchase_tbl_by_catagory('{{ catagory.name }}')">
+<input type="button" name="name" value="{{ catagory.name }}" onclick="filter_purchase_tbl_by_catagory('{{ catagory.name }}')" class="purchase_filters">
 {% endfor %}
 <div id="purchased_items">
     {% for purchase in purchased_items %}
