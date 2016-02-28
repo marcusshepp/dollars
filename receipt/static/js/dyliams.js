@@ -14,7 +14,7 @@ var csrf_func = function(){
 
 function update_dom(){
   /*
-  
+
   UPDATES DOM
   Ajax request to the items API.
   Populates the page with available items & purchases & total.
@@ -122,9 +122,8 @@ function send_new_item(form, purchase){
     },
   });
   document.getElementsByClassName('item_form')[0].reset();
-  update_dom()
+  update_dom();
 };
-
 function purchase_item(id){
   /*
   Creates a new purchase object by POST with Ajax.
@@ -230,13 +229,13 @@ function hide_options(th, id){
     par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class='fa fa-arrow-left'></div></div>")
     $("#"+id).find("span").show(); // IDK WHAT TO DO WITH THIS ATM
 }
-function build_edit_form(catagory_names, catagory_ids, catagory_length, name, company, catagory, price){
+function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id, name, company, catagory, price){
     var form_str = "";
-    form_str += '<h4 id="item_form_header">Editing Item</h4>';
+    form_str += '<h4 id="item_form_header">Editing Item: '+name+'</h4>';
     form_str += '<form class="formmy item_form" enctype="multipart/form-data">';
     form_str += '<p><label for="name">Name: </label><input type="text" name="name" ';
-    form_str += 'max_length="250" class="pull-right" value="'+company+'" /></p>';
-    form_str += '<p><label for="company_came_from">Company: </label><input value="'+name+'" ';
+    form_str += 'max_length="250" class="pull-right" value="'+name+'" /></p>';
+    form_str += '<p><label for="company_came_from">Company: </label><input value="'+company+'" ';
     form_str += 'type="text" name="company_came_from" max_length="50" class="pull-right"></p>';
     form_str += '<p><label for="catagory">Catagory: </label>';
     form_str += '<select name="catagory" class="pull-right catagory">';
@@ -247,7 +246,7 @@ function build_edit_form(catagory_names, catagory_ids, catagory_length, name, co
     form_str += '</p>';
     form_str += '<p><label for="price">Price: </label><input ';
     form_str += 'type="number" value='+price+' name="price" step="0.01" class="pull-right"></p>';
-    form_str += '<input type="button" value="Edit" class="btn btn-default" onclick="edit_item(this.form, false)">';
+    form_str += '<input type="button" value="Save" class="btn btn-default" onclick="edit_item(this.form, '+item_id+')">';
     form_str += '</form>';
     $(".item_form_container").html(form_str);
 }
@@ -262,20 +261,51 @@ function edit(id){
         },
         success: function(data){
             if(data.no_id == true){
-                console.log("no id :(");
+                console.log("no id :^(");
             } else {
                 build_edit_form(
                     data.catagory_names,
                     data.catagory_ids,
                     data.catagory_length,
+                    data.item_id,
                     data.item_name,
-                    data.item_catagory_name,
+                    data.company_name,
                     data.item_catagory_id,
                     data.item_price);
             }
             update_dom();
         },
     })
+}
+function edit_item(form, id){
+    var form_data = $(form).serializeArray();
+    // console.log(form_data);
+    var name = form_data[0].value;
+    var company_came_from = form_data[1].value;
+    var catagory_id = form_data[2].value;
+    var price = form_data[3].value;
+    $.ajax({
+        url: "/api/items_edit/",
+        type: "POST",
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "id": id,
+            "edit": true,
+            "name": name,
+            "company_came_from": company_came_from,
+            "price": price,
+            "catagory_id": catagory_id,
+        },
+        success: function(data){
+            // console.log("success");
+            var name = $("#item_"+id).html();
+            $("#header").html("<p style='color: green;'>Edit Item: " + name + "<span class='fa fa-check'></></p>");
+            // create_action("Purchase", "Make purchase: "+name, "undo purchase");
+            update_dom();
+            document.getElementsByClassName('item_form')[0].reset();
+            build_edit_form(data.catagory_names, data.catagory_ids, data.catagory_length, "", "", "", "", "")
+        },
+    });
 }
 function del(id){
     $.ajax({

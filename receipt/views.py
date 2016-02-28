@@ -168,13 +168,15 @@ class ItemManEndPoint(View):
         data = dict()
         idd = get_post(request, "id")
         if idd:
-            item = Item.objects.get(id=int(idd))
+            item = Item.objects.filter(id=int(idd))
             if item:
-                data["item_name"] = item.name
-                data["item_price"] = item.price
-                data["item_catagory_id"] = item.catagory.id
-                data["item_catagory_name"] = item.catagory.name
-                data["company"] = item.company_came_from
+                data["item_id"] = item[0].id
+                data["item_name"] = item[0].name
+                data["item_price"] = item[0].price
+                data["company_name"] = item[0].company_came_from
+                data["item_catagory_id"] = item[0].catagory.id
+                data["item_catagory_name"] = item[0].catagory.name
+                data["company"] = item[0].company_came_from
                 catagories = Catagory.objects.all()
                 if catagories:
                     data["catagory_names"] = [
@@ -184,7 +186,15 @@ class ItemManEndPoint(View):
                     data["catagory_length"] = catagories.count()
             delete_item = get_post(request, "delete_item")
             if delete_item:
-                item.delete()
+                item[0].delete()
+            edit = get_post(request, "edit")
+            if edit:
+                item.update(name=get_post(request, "name"))
+                item.update(
+                    company_came_from=get_post(request, "company_came_from"))
+                item.update(price=get_post(request, "price"))
+                item.update(catagory=Catagory.objects.get(
+                    id=get_post(request, "catagory_id")))
         else:
             data["no_id"] = True
         return JsonResponse(data)
