@@ -9,7 +9,7 @@ from .views import (
     ItemManEndPoint,
     ActionEndPoint,
     Actions,
-    )
+    PurchaseTableEndPoint)
 
 urlpatterns = [
     url(r'^$', Home.as_view(), name="home"),
@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^api/items/$', ItemEndPoint.as_view(), name="api_items"),
     url(r'^api/items_edit/$', ItemManEndPoint.as_view(), name="api_items_edit"),
     url(r'^api/actions/$', ActionEndPoint.as_view(), name="api_actions"),
+    url(r'^api/purchases/$', PurchaseTableEndPoint.as_view(), name="api_purchases"),
 ]

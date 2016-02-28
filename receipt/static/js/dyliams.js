@@ -42,21 +42,7 @@ function update_dom(){
 
         }
         $(".items").html(item_markup);
-        var purchased_items = "";
-        for(var i = 0; i < data.purchased_length; i++){
-          purchased_items += '<div class="row purchases">';
-          purchased_items += "<div class='col-md-3 col-lg-3'>" + data.purchased_items_names[i] + "</div>"
-          purchased_items += "<div class='col-md-3 col-lg-3'>" + data.purchased_date_created[i] + "</div>"
-          purchased_items += "</div>";
-          purchased_items += '<div class="purchase_border"></div>'
-        }
-        $("#purchased_items").html(purchased_items);
-        if (data.total == 0){
-            $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
-        } else {
-            $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
-        }
-        $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
+        update_purchase_tbl();
       },
       failure: function(){
         console.log("fail");
@@ -354,4 +340,54 @@ function post_purchase_w_new_price(th, id){
             create_action("Purchase", "Make purchase: "+name, "undo purchase");
         },
     });
+}
+function build_table(purchased_items_names, purchased_date_created, purchased_length, amount_payed){
+    var purchased_items = "";
+    for(var i = 0; i < purchased_length; i++){
+      purchased_items += '<div class="row purchases">';
+      purchased_items += "<div class='col-md-3 col-lg-3'>" + purchased_items_names[i] + "</div>"
+      purchased_items += "<div class='col-md-3 col-lg-3'>" + purchased_date_created[i] + "</div>"
+      purchased_items += "<div class='col-md-3 col-lg-3'>" + amount_payed[i] + "</div>"
+      purchased_items += "</div>";
+      purchased_items += '<div class="purchase_border"></div>';
+    }
+    return purchased_items;
+}
+function update_purchase_tbl(){
+    console.log("updating purchase table");
+    $.ajax({
+        type: "GET",
+        url: "/api/purchases/",
+        success: function(data){
+            var purchased_items = build_table(  data.purchased_items_names,
+                                                data.purchased_date_created,
+                                                data.purchased_length,
+                                                data.amount_payed);
+            $("#purchased_items").html(purchased_items);
+            if (data.total == 0){
+                $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
+            } else {
+                $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
+            }
+            $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
+        },
+        failure: function(){
+            console.log("fail @ update_purchase_tbl");
+        },
+    })
+}
+function filter_purchase_tbl_by_catagory(catagory_name){
+    $.ajax({
+        type: "POST",
+        url: "/api/purchases/",
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+        },
+        success: function(){
+            console.log("success");
+        },
+        failure: function(){
+            console.log("failure");
+        },
+    })
 }

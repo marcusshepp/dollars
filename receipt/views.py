@@ -123,18 +123,6 @@ class ItemEndPoint(TemplateView):
         data["prices"] = [i.price for i in items]
         data["length"] = items.count()
         data["times_purchased"] = [i.number_of_times_purchased for i in items]
-        purchases = Purchase.objects.all()
-        if purchases:
-            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
-            data["purchased_date_created"] = [i.date_display() for i in purchases]
-            data["purchased_length"] = purchases.count()
-        else:
-            data["purchased_length"] = 0
-        # total
-        total = 0
-        for purchase in purchases:
-            total += purchase.amount_payed
-        data["total"] = total
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
@@ -264,4 +252,30 @@ class ActionEndPoint(View):
                     data["deleted_item_name"] = latest_item_name
                     self.delete_latest_action()
         data["success"] = True
+        return JsonResponse(data)
+
+
+class PurchaseTableEndPoint(View):
+
+    def purchase_json_resp(self, request):
+        data = dict()
+        purchases = Purchase.objects.all()
+        if purchases:
+            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
+            data["purchased_date_created"] = [i.date_display() for i in purchases]
+            data["amount_payed"] = [i.amount_payed for i in purchases]
+            data["purchased_length"] = purchases.count()
+            total = 0
+            for purchase in purchases:
+                total += purchase.amount_payed
+            data["total"] = total
+        else:
+            data["purchased_length"] = 0
+        return JsonResponse(data)
+
+    def get(self, request, *a, **kw):
+        return self.purchase_json_resp(request)
+
+    def post(self, request, *a, **kw):
+        data = dict()
         return JsonResponse(data)
