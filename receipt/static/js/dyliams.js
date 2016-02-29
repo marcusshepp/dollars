@@ -83,7 +83,6 @@ function send_new_item(form, purchase){
   var company_came_from = form_data[2].value;
   var catagory_id = form_data[3].value;
   var price = form_data[4].value;
-  console.log(price);
   $.ajax({
     type: 'POST',
     url: '/item/',
@@ -213,7 +212,7 @@ function hide_options(th, id){
     var a_options = "<span>&#8594;</span>";
     var options_div = $(th);
     var par = options_div.parent().filter(".options");
-    par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class='fa fa-arrow-left'></div></div>")
+    par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class=''>...</div></div>")
     $("#"+id).find("span").show(); // IDK WHAT TO DO WITH THIS ATM
 }
 function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id, name, company, catagory, price){
@@ -394,11 +393,13 @@ function filter_purchase_tbl_by_catagory(catagory_name){
                                                 data.amount_payed);
             $("#purchased_items").html(purchased_items);
             if (data.total == 0){
-                $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
+                $("#total").html("<span>$&emsp;" + data.total.toFixed(2) + "</span>");
             } else {
-                $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
+                $("#total").html("<span>$&emsp;" + data.total + "</span>");
             }
-            $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
+            var purchase_y_total = "";
+            purchase_y_total += "<h3>Purchases Made: All Time ("+data.purchased_length+")";
+            $("#purchases_header").html([purchase_y_total]);
         },
         failure: function(){
             console.log("failure @ filter_purchase_tbl_by_catagory");

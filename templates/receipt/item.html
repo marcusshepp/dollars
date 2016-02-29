@@ -30,7 +30,7 @@
     <form id="{{ i.id }}" class="item col-sm-12 col-lg-12" action="{% url 'api_items' %}" method="POST">
         {% csrf_token %}
         <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
-        <div class="options pull-right" onclick="show_options(this, {{i.id}})"><div class='fa fa-arrow-left'></div></div>
+        <div class="options pull-right" onclick="show_options(this, {{i.id}})"><div class=''>...</div></div>
         <div class='purchase_btn pull-right' onclick='purchase_item({{ i.id }})'>Purchase</div>
         <span class="times_purchased pull-right">$ {{ i.price }}</span>
         <span class="times_purchased pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
@@ -38,8 +38,8 @@
     {% endfor %}
   </div>
 </div>
-<span id="purchases_header"><h3>Purchases Made: All Time ({{purchased_length}})</h3></span>
-<input type="button" name="name" value="Update" onclick="update_purchase_tbl()" class="purchase_filters">
+<h4 id="purchases_header"><span>Purchases Made: All Time ({{purchased_length}})</span><span> Total:</span><span id="total" class="total"> Calculating Total...</span></h4>
+<input type="button" name="name" value="Refresh" onclick="update_purchase_tbl()" class="purchase_filters">
 <span>Filters:</span>
 {% for catagory in catagories %}
 <input type="button" name="name" value="{{ catagory.name }}" onclick="filter_purchase_tbl_by_catagory('{{ catagory.name }}')" class="purchase_filters">
@@ -54,8 +54,6 @@
     <div class="purchase_border"></div>
     {% endfor %}
 </div>
-<h3>Total</h3>
-<span id="total" class="total">Calculating Total...</span>
 <script type="text/javascript" src="{% static 'js/dyliams.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
 <script type="text/javascript">

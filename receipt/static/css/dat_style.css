@@ -115,7 +115,7 @@
   border-radius: 8px 8px 8px 8px;
 }
 .options div:hover{
-  background-color: #C2C2C2;
+  background-color: white;
 }
 .line{
     border-left: .2 solid black;

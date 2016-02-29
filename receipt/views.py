@@ -104,15 +104,12 @@ class ItemView(TemplateView):
             context["success"] = True
             if get_post(request, "purchase") == "true":
                 item = Item.objects.get(name=request.POST["name"])
-                print get_post(request, "price")
+                item.increase_number_of_times_purchased()
                 data = {"amount_payed": get_post(request, "price"),
                         "item_purchased": item.id}
                 form = PurchaseForm(data)
-                print form
                 if form.is_valid():
-                    print "valid"
                     form.save()
-                else: print "INVALID"
                 context["purchased"] = True
         else:
             context["invalid_form_data"] = True
@@ -288,12 +285,13 @@ class PurchaseTableEndPoint(View):
             items = Item.objects.filter(catagory__name=catagory_name)
             purchases = list()
             for item in items:
-                purchase = Purchase.objects.filter(item_purchased__name=item.name)
-                if purchase:
-                    purchases = [p for p in purchase]
+                purchases_q = Purchase.objects.filter(item_purchased__name=item.name)
+                if purchases_q:
+                    for purchase in purchases_q:
+                        purchases.append(purchase)
             if purchases:
                 data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
-                data["purchased_date_created"] = [i.date_created for i in purchases]
+                data["purchased_date_created"] = [i.date_display() for i in purchases]
                 data["purchased_length"] = len(purchases)
                 total = 0
                 for purchase in purchases:
