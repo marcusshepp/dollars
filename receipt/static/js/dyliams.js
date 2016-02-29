@@ -83,6 +83,7 @@ function send_new_item(form, purchase){
   var company_came_from = form_data[2].value;
   var catagory_id = form_data[3].value;
   var price = form_data[4].value;
+  console.log(price);
   $.ajax({
     type: 'POST',
     url: '/item/',
@@ -387,6 +388,17 @@ function filter_purchase_tbl_by_catagory(catagory_name){
         success: function(data){
             console.log(data)
             console.log("success");
+            var purchased_items = build_table(  data.purchased_items_names,
+                                                data.purchased_date_created,
+                                                data.purchased_length,
+                                                data.amount_payed);
+            $("#purchased_items").html(purchased_items);
+            if (data.total == 0){
+                $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
+            } else {
+                $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
+            }
+            $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
         },
         failure: function(){
             console.log("failure @ filter_purchase_tbl_by_catagory");

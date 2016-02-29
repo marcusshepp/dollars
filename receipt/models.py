@@ -64,7 +64,7 @@ class Item(models.Model):
         unique_together = ("name", "company_came_from", "catagory")
 
     date_created = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, unique=True)
     company_came_from = models.CharField(max_length=50, null=True, blank=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)

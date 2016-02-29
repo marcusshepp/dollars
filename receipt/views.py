@@ -7,7 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import (
     PicForm,
     ItemForm,
-    ActionForm)
+    ActionForm,
+    PurchaseForm)
 from .models import (
     Pic,
     Item,
@@ -103,7 +104,15 @@ class ItemView(TemplateView):
             context["success"] = True
             if get_post(request, "purchase") == "true":
                 item = Item.objects.get(name=request.POST["name"])
-                Purchase.objects.create(item_purchased=item)
+                print get_post(request, "price")
+                data = {"amount_payed": get_post(request, "price"),
+                        "item_purchased": item.id}
+                form = PurchaseForm(data)
+                print form
+                if form.is_valid():
+                    print "valid"
+                    form.save()
+                else: print "INVALID"
                 context["purchased"] = True
         else:
             context["invalid_form_data"] = True
@@ -273,26 +282,33 @@ class PurchaseTableEndPoint(View):
             data["purchased_length"] = 0
         return JsonResponse(data)
 
-    def filter_by_catagory(self, request):
+    def filter_by_catagory(self, catagory_name):
         data = dict()
-        catagory_name = get_post(request, "catagory_name")
         if catagory_name:
             items = Item.objects.filter(catagory__name=catagory_name)
             purchases = list()
             for item in items:
                 purchase = Purchase.objects.filter(item_purchased__name=item.name)
                 if purchase:
-                    purchases.append(purchase)
+                    purchases = [p for p in purchase]
             if purchases:
-                data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases[0]]
+                data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
+                data["purchased_date_created"] = [i.date_created for i in purchases]
+                data["purchased_length"] = len(purchases)
+                total = 0
+                for purchase in purchases:
+                    total += purchase.amount_payed
+                data["total"] = total
+                data["amount_payed"] = [i.amount_payed for i in purchases]
         return JsonResponse(data)
 
     def get(self, request, *a, **kw):
-        return self.purchase_json_resp(request)
+        purchases = Purchase.objects.all()
+        return self.purchase_json_resp(purchases)
 
     def post(self, request, *a, **kw):
         data = dict()
         catagory_name = get_post(request, "catagory_name")
         if catagory_name:
-            self.filter_by_catagory(request)
+            return self.filter_by_catagory(catagory_name)
         return JsonResponse(data)
