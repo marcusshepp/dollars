@@ -16,6 +16,9 @@ class Migration(migrations.Migration):
         data = {"name": "Computer/Technology"}
         tech_catagory = Catagory(**data)
         tech_catagory.save()
+        data = {"name": "School Supplies"}
+        school_supplies = Catagory(**data)
+        school_supplies.save()
 
         I = apps.get_model("receipt", "Item")
         data = {"name": "Coffee",
@@ -31,10 +34,10 @@ class Migration(migrations.Migration):
                 "catagory": food_catagory}
         item = I(**data)
         item.save()
-        data = {"name": "Lunch",
-                "company_came_from": "RFOC",
+        data = {"name": "Book",
+                "company_came_from": "",
                 "price": 8.00,
-                "catagory": food_catagory}
+                "catagory": school_supplies}
         item = I(**data)
         item.save()
         data = {"name": "Veggie Sub",
