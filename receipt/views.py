@@ -95,7 +95,7 @@ class ItemView(TemplateView):
             for catagory_name in catagory_names:
                 catagory = Catagory.objects.get(name=catagory_name)
                 catagory_context.append(catagory)
-            context["catagories"] = catagory_context
+            context["set_catagories"] = catagory_context
         return render(request, self.template_name, context)
 
     def post(self, request, *a, **kw):
