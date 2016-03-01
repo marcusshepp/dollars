@@ -320,4 +320,8 @@ class CatagoryEndPoint(View):
 
     def post(self, request, *a, **kw):
         data = dict()
+        if get_post(request, "catagory_name"):
+            cata = Catagory.objects.get_or_create(name=get_post(request, "catagory_name"))
+            if cata:
+                data["success"] = True
         return JsonResponse(data)

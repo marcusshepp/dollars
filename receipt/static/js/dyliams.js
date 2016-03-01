@@ -417,4 +417,29 @@ function build_catagory_form(){
     $(".add_catagory").replaceWith('<input type="button" value="Add" class="pull-right" onclick="add_new_catagory()" />')
 }
 function add_new_catagory(){
+    var catagory_value = $(".add_catagory_input").val();
+    if (!catagory_value){
+        $("#item_form_header").html("<p class='text-danger'>Please enter a value for a Catagory.</p>");
+    }
+    else {
+        $.ajax({
+            type: "POST",
+            url: "/api/catagories/",
+            data: {
+                "csrfmiddlewaretoken": csrf_func(),
+                "catagory_name": catagory_value,
+            },
+            success: function(data){
+                console.log("success");
+                if(data.success){
+                    $("#header").html("<p class='text-success'>Successfully Added: "+catagory_value+"</p>");
+                } else {
+                    $("#header").html("<p class='text-danger'>FAIL</p>");
+                }
+            },
+            failure: function(){
+                console.log("failue @ add_new_catagory");
+            },
+        });
+    }
 }

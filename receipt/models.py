@@ -97,7 +97,7 @@ class Item(models.Model):
 class Catagory(models.Model):
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ["name"]
 
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=100)
@@ -105,6 +105,8 @@ class Catagory(models.Model):
     def __unicode__(self):
         return u"{0}".format(self.name)
 
+    def string(self):
+        return str(self.__unicode__()).upper()
 
 class Budget(models.Model):
 

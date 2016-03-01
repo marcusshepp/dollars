@@ -16,7 +16,7 @@
       <p><label for="catagory">Catagory: </label><span class="add_catagory fa fa-plus pull-right" onclick="build_catagory_form()"></span>
          <select name="catagory" class="pull-right catagory">
            {% for catagory in catagories %}
-            <option name="catagory" value="{{ catagory.id }}">{{ catagory.name }}</option>
+            <option name="catagory" value="{{ catagory.id }}">{{ catagory.string }}</option>
            {% endfor %}
          </select>
       </p>
