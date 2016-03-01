@@ -310,3 +310,14 @@ class PurchaseTableEndPoint(View):
         if catagory_name:
             return self.filter_by_catagory(catagory_name)
         return JsonResponse(data)
+
+
+class CatagoryEndPoint(View):
+
+    def get(self, request, *a, **kw):
+        data = dict()
+        return JsonResponse(data)
+
+    def post(self, request, *a, **kw):
+        data = dict()
+        return JsonResponse(data)

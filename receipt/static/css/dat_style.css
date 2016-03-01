@@ -17,7 +17,11 @@
   padding: 15px 25px 20px 15px;
 }
 .item_form p label input {
-  margin-left: 50px !important;
+  margin-left: 40px !important;
+}
+form p *{
+    width: 49%;
+    height: auto;
 }
 #header{
   opacity: .9;
@@ -127,6 +131,23 @@
     padding: 5px 5px 5px 5px;
     font-size: 120%;
     margin-left: 10px;
+}
+.add_catagory{
+   background-color: #99FFAC;
+   padding: 3px 3px 3px 3px;
+}
+.add_catagory:hover{
+   background-color: #C7FFD1;
+   padding: 3px 3px 3px 3px;
+}
+.catagory{
+    /*height: auto;
+    width: 26%;*/
+}
+.add_catagory_input{
+    /*height: auto;
+    width: 21%;*/
+    /*margin-right: 1px;*/
 }
 @media only screen
 and (max-width : 790px) {

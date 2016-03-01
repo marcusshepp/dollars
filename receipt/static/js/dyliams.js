@@ -411,3 +411,10 @@ function filter_purchase_tbl_by_catagory(catagory_name){
         },
     })
 }
+function build_catagory_form(){
+    console.log();
+    $(".catagory").replaceWith("<input type='text' placeholder='Enter New Catagory' class='add_catagory_input pull-right' />");
+    $(".add_catagory").replaceWith('<input type="button" value="Add" class="pull-right" onclick="add_new_catagory()" />')
+}
+function add_new_catagory(){
+}
