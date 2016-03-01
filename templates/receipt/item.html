@@ -45,7 +45,7 @@
 <input type="button" name="name" value="{{ catagory.name }}" onclick="filter_purchase_tbl_by_catagory('{{ catagory.name }}')" class="purchase_filters">
 {% endfor %}
 <div id="purchased_items">
-    <div class="total">Total: '{{ total }}'</div>
+    <div class="total">Total: {{ total }}</div>
     {% for purchase in purchased_items %}
     <div class="row purchases">
         <div class="col-md-3 col-lg-3">{{ purchase.item_purchased }}</div>

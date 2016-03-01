@@ -46,6 +46,12 @@ class Migration(migrations.Migration):
                 "catagory": food_catagory}
         item = I(**data)
         item.save()
+        data = {"name": "Keyboard",
+                "company_came_from": "Amazon",
+                "price": 20.00,
+                "catagory": tech_catagory}
+        item = I(**data)
+        item.save()
 
         Purchase = apps.get_model("receipt", "Purchase")
         coffee = I.objects.get(name="Coffee")

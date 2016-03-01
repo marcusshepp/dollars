@@ -81,7 +81,7 @@ class ItemView(TemplateView):
             context["purchased_items"] = purchases
             total = 0
             for i in purchases:
-                total += i.item_purchased.price
+                total += i.amount_payed
             context["total"] = total
             context["purchased_length"] = purchases.count()
         catagories = Catagory.objects.all()
