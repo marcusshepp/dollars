@@ -15,7 +15,7 @@
       <p><label for="company_came_from">Company: </label><input type="text" placeholder="Where does this come from?" name="company_came_from" max_length="50" class="pull-right"></p>
       <p><label for="catagory">Catagory: </label><span class="add_catagory fa fa-plus pull-right" onclick="build_catagory_form()"></span>
          <select name="catagory" class="pull-right catagory">
-           {% for catagory in catagories %}
+           {% for catagory in all_catagories %}
             <option name="catagory" value="{{ catagory.id }}">{{ catagory.string }}</option>
            {% endfor %}
          </select>

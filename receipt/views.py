@@ -86,7 +86,16 @@ class ItemView(TemplateView):
             context["purchased_length"] = purchases.count()
         catagories = Catagory.objects.all()
         if catagories:
-            context["catagories"] = catagories
+            context["all_catagories"] = catagories
+            catagory_names = list()
+            for purchase in purchases:
+                catagory_names.append(purchase.item_purchased.catagory.name)
+            catagory_names = set(catagory_names)
+            catagory_context = list()
+            for catagory_name in catagory_names:
+                catagory = Catagory.objects.get(name=catagory_name)
+                catagory_context.append(catagory)
+            context["catagories"] = catagory_context
         return render(request, self.template_name, context)
 
     def post(self, request, *a, **kw):
