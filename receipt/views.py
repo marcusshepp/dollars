@@ -325,6 +325,11 @@ class CatagoryEndPoint(View):
 
     def get(self, request, *a, **kw):
         data = dict()
+        catagories = Catagory.objects.all()
+        if catagories:
+            data["catagory_length"] = catagories.count()
+            data["catagory_names"] = [catagory.string() for catagory in catagories]
+            data["catagory_ids"] = [catagory.id for catagory in catagories]
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):

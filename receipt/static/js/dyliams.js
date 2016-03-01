@@ -412,7 +412,7 @@ function filter_purchase_tbl_by_catagory(catagory_name){
     })
 }
 function build_catagory_form(){
-    console.log();
+    console.log("building cata form");
     // $(".item_form").hide();
     var catagory_form = "";
     catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
@@ -420,8 +420,36 @@ function build_catagory_form(){
     catagory_form += '<p><span><input type="button" value="Add" class="add_catagory_btn" onclick="add_new_catagory(); unbuild_catagory_form();" /></span></p>';
     $(".item_form").html(catagory_form);
 }
+function build_item_form(cata_length, cata_names, cata_ids){
+  var item_form = "";
+  item_form += '<p><label for="name">Name: </label><input type="text" placeholder="Name of Item" name="name" max_length="250"/ class="pull-right"></p>';
+  item_form += '<p><label for="company_came_from">Company: </label><input type="text" placeholder="Where does this come from?" name="company_came_from" max_length="50" class="pull-right"></p>';
+  item_form += '<p><label for="catagory">Catagory: </label><span class="add_catagory fa fa-plus pull-right" onclick="build_catagory_form()"></span>';
+  item_form += '<select name="catagory" class="pull-right catagory">';
+  for (var i = 0; i < cata_length; i++){
+    item_form += '<option name="catagory" value="'+cata_ids[i]+'">'+cata_names[i]+'</option>';
+  }
+  item_form += '</select></p>';
+  item_form += '<p><label for="price">Price: </label><input type="number" placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
+  item_form += '<input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">';
+  item_form += '<input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">';
+  console.log(item_form);
+  $(".item_form").html(item_form);
+}
 function unbuild_catagory_form(){
-    console.log("foobar");
+  var catagory_length = 0;
+  var catagory_names = [];
+  var catagory_ids = [];
+  $.ajax({
+    type: "GET",
+    url: "/api/catagories/",
+    success: function(data){
+      build_item_form(data.catagory_length, data.catagory_names, data.catagory_ids);
+    },
+    failure: function(){
+      console.log("failue @ unbuild_catagory_form");
+    },
+  });
 }
 function add_new_catagory(){
     var catagory_value = $(".add_catagory_input").val();
