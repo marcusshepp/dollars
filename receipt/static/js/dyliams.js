@@ -413,8 +413,15 @@ function filter_purchase_tbl_by_catagory(catagory_name){
 }
 function build_catagory_form(){
     console.log();
-    $(".catagory").replaceWith("<input type='text' placeholder='Enter New Catagory' class='add_catagory_input pull-right' />");
-    $(".add_catagory").replaceWith('<input type="button" value="Add" class="pull-right" onclick="add_new_catagory()" />')
+    // $(".item_form").hide();
+    var catagory_form = "";
+    catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
+    catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='add_catagory_input pull-right' /></span></p>";
+    catagory_form += '<p><span><input type="button" value="Add" class="add_catagory_btn" onclick="add_new_catagory(); unbuild_catagory_form();" /></span></p>';
+    $(".item_form").html(catagory_form);
+}
+function unbuild_catagory_form(){
+    console.log("foobar");
 }
 function add_new_catagory(){
     var catagory_value = $(".add_catagory_input").val();

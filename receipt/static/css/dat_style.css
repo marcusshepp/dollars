@@ -15,6 +15,7 @@
   background-color: #B5EDFF;
   border-radius: 2px 2px 125px 2px;
   padding: 15px 25px 20px 15px;
+
 }
 .item_form p label input {
   margin-left: 40px !important;
@@ -22,6 +23,7 @@
 form p *{
     width: 49%;
     height: auto;
+    /*margin: 0px 0px 0px 0px;*/
 }
 #header{
   opacity: .9;
@@ -134,11 +136,25 @@ form p *{
 }
 .add_catagory{
    background-color: #99FFAC;
-   padding: 3px 3px 3px 3px;
+   /*padding: 1px 1px 1px 1px;*/
+   width: inherit;
+   height: 60%;
 }
 .add_catagory:hover{
    background-color: #C7FFD1;
-   padding: 3px 3px 3px 3px;
+   /*padding: 3px 3px 3px 3px;*/
+}
+.add_catagory_btn{
+   background-color: #99FFAC;
+   /*padding: 1px 1px 1px 1px;*/
+   width: auto;
+   height: auto;
+   margin-left: 460px;
+   margin-top: 15px;
+}
+.add_catagory:hover{
+   background-color: #C7FFD1;
+   /*padding: 3px 3px 3px 3px;*/
 }
 .catagory{
     /*height: auto;
