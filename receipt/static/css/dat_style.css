@@ -123,6 +123,11 @@
 .purchase_filters{
     margin: 0px 1px 5px 1px;
 }
+.total{
+    padding: 5px 5px 5px 5px;
+    font-size: 120%;
+    margin-left: 10px;
+}
 @media only screen
 and (max-width : 790px) {
     .item{

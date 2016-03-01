@@ -341,8 +341,9 @@ function post_purchase_w_new_price(th, id){
         },
     });
 }
-function build_table(purchased_items_names, purchased_date_created, purchased_length, amount_payed){
+function build_table(purchased_items_names, purchased_date_created, purchased_length, amount_payed, total){
     var purchased_items = "";
+    purchased_items += '<div class="total">Total: '+ total +'</div>';
     for(var i = 0; i < purchased_length; i++){
       purchased_items += '<div class="row purchases">';
       purchased_items += "<div class='col-md-3 col-lg-3'>" + purchased_items_names[i] + "</div>"
@@ -351,6 +352,7 @@ function build_table(purchased_items_names, purchased_date_created, purchased_le
       purchased_items += "</div>";
       purchased_items += '<div class="purchase_border"></div>';
     }
+
     return purchased_items;
 }
 function update_purchase_tbl(){
@@ -359,10 +361,12 @@ function update_purchase_tbl(){
         type: "GET",
         url: "/api/purchases/",
         success: function(data){
+            console.log(data);
             var purchased_items = build_table(  data.purchased_items_names,
                                                 data.purchased_date_created,
                                                 data.purchased_length,
-                                                data.amount_payed);
+                                                data.amount_payed,
+                                                data.total);
             $("#purchased_items").html(purchased_items);
             if (data.total == 0){
                 $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
@@ -390,7 +394,8 @@ function filter_purchase_tbl_by_catagory(catagory_name){
             var purchased_items = build_table(  data.purchased_items_names,
                                                 data.purchased_date_created,
                                                 data.purchased_length,
-                                                data.amount_payed);
+                                                data.amount_payed,
+                                                data.total);
             $("#purchased_items").html(purchased_items);
             if (data.total == 0){
                 $("#total").html("<span>$&emsp;" + data.total.toFixed(2) + "</span>");
