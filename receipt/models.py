@@ -71,7 +71,10 @@ class Item(models.Model):
     catagory = models.ForeignKey("Catagory")
 
     def __unicode__(self):
-        return u"{0} - {1}".format(self.name, self.company_came_from)
+        string = u"{}".format(self.name)
+        if self.company_came_from:
+            string += u" from {}".format(self.company_came_from)
+        return string
 
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
