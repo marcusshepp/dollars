@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('args')
-        # parser.add_argument('args')
+        parser.add_argument('num')
         # r = requests.get()
 
     def handle(self, *args, **options):
@@ -32,7 +32,9 @@ class Command(BaseCommand):
             request = requests.get(lorem)
             text = request.text.split("\n")
             paragraph_tags = [line for line in text if "<p>" in line]
-            num = 10
+            if options.get("num", None):
+                num = int(options["num"])
+            else: num = 10
             # create catagories
             catagory_names = gen_names(paragraph_tags, num)
             catagories = [Catagory.objects.get_or_create(name=name)[0] for name in catagory_names]
@@ -47,7 +49,9 @@ class Command(BaseCommand):
                 Purchase.objects.get_or_create(
                     item_purchased=random.choice(items)[0], 
                     amount_payed=random.randrange(0, 100)) for _ in xrange(random.randrange(10, 25))]
-
+            print "{} Items have been created.".format(len(items))
+            print "{} Purchases have been created.".format(len(purchases))
+            print "{} Catagories have been created.".format(len(catagories))
         elif arg == "import":
             print "importing..."
 
