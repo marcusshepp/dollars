@@ -106,7 +106,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date_created', models.DateTimeField(auto_now_add=True)),
-                ('name', models.CharField(max_length=250, unique=True)),
+                ('name', models.CharField(max_length=25, unique=True)),
                 ('company_came_from', models.CharField(blank=True, max_length=50, null=True)),
                 ('price', models.DecimalField(decimal_places=2, max_digits=19)),
                 ('number_of_times_purchased', models.IntegerField(blank=True, default=0)),

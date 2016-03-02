@@ -1,3 +1,4 @@
 TODO:
 - purchase # of item btn
 - purchase w different name btn
+- refresh should also refresh the catagory filters
