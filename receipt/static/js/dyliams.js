@@ -12,7 +12,7 @@ var csrf_func = function(){
   return csrf_element.value;
 }
 
-function update_dom(){
+function get_items(){
   /*
 
   UPDATES DOM
@@ -24,33 +24,40 @@ function update_dom(){
       type: "GET",
       url: "/api/items",
       success: function(data){
-        var item_markup = "";
-        for (var i = 0; i < data.length; i++){
-          var name = data.names[i];
-          var company = data.companies[i];
-          var price = data.prices[i];
-          var times_purchased = data.times_purchased[i];
-          var id = data.id[i];
-          item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
-          item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
-          item_markup += '<div class="pull-left" id="item_' + id + '">' + name + '</div>';
-          item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')"><div class="fa fa-arrow-left"></div></div>'
-          item_markup += "<div class='purchase_btn pull-right' onclick='purchase_item("+id+")'>"+"Purchase"+"</div>"
-          item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchased + '</span>';
-          item_markup += '<span class="times_purchased pull-right">$ '+price+'</span>'
-          item_markup += '</form>';
-
-        }
-        $(".items").html(item_markup);
-        update_purchase_tbl();
+        build_items(data.length,
+                    data.names,
+                    data.companies,
+                    data.prices,
+                    data.times_purchased,
+                    data.ids);
       },
       failure: function(){
         console.log("fail");
       },
   });
 }
+function build_items(length, names, companies, prices, times_purchased, ids){
+    var item_markup = "";
+    for (var i = 0; i < length; i++){
+      var name = names[i];
+      var company = companies[i];
+      var price = prices[i];
+      var times_purchased = times_purchased[i];
+      var id = id[i];
+      item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
+      item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
+      item_markup += '<div class="pull-left" id="item_' + id + '">' + name + '</div>';
+      item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')"><div class="fa fa-arrow-left"></div></div>'
+      item_markup += "<div class='purchase_btn pull-right' onclick='purchase_item("+id+")'>"+"Purchase"+"</div>"
+      item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchased + '</span>';
+      item_markup += '<span class="times_purchased pull-right">$ '+price+'</span>'
+      item_markup += '</form>';
+
+    }
+    $(".items").html(item_markup);
+}
 /* DOM UPDATING INTERVALS */
-// setInterval(update_dom, 3000);
+setInterval(get_items, 3000);
 
 function update_undo(){
     var latest_action_div = $("#latest_action");
@@ -72,7 +79,7 @@ function update_undo(){
       },
     });
 }
-// setInterval(update_undo, 3000);
+setInterval(update_undo, 3000);
 
 function send_new_item(form, purchase){
   /*
@@ -219,10 +226,10 @@ function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id,
     var form_str = "";
     form_str += '<h4 id="item_form_header">Editing Item: '+name+'</h4>';
     form_str += '<form class="formmy item_form" enctype="multipart/form-data">';
-    form_str += '<p><label for="name">Name: </label><input type="text" name="name" ';
+    form_str += '<p><label for="name">Name: </label><input type="text" name="name" placeholder="Name of Item" ';
     form_str += 'max_length="250" class="pull-right" value="'+name+'" /></p>';
     form_str += '<p><label for="company_came_from">Company: </label><input value="'+company+'" ';
-    form_str += 'type="text" name="company_came_from" max_length="50" class="pull-right"></p>';
+    form_str += 'type="text" name="company_came_from" max_length="50" placeholder="Where does this come from?" class="pull-right"></p>';
     form_str += '<p><label for="catagory">Catagory: </label>';
     form_str += '<select name="catagory" class="pull-right catagory">';
     for (var i = 0; i < catagory_length; i++){
@@ -231,8 +238,8 @@ function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id,
     form_str += '</select>';
     form_str += '</p>';
     form_str += '<p><label for="price">Price: </label><input ';
-    form_str += 'type="number" value='+price+' name="price" step="0.01" class="pull-right"></p>';
-    form_str += '<input type="button" value="Save" class="btn btn-default" onclick="edit_item(this.form, '+item_id+')">';
+    form_str += 'type="number" value="'+price+'" placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
+    form_str += '<input type="button" value="Save" class="edit_save_btn btn btn-default" onclick="edit_item(this.form, '+item_id+')">';
     form_str += '</form>';
     $(".item_form_container").html(form_str);
 }
@@ -259,7 +266,6 @@ function edit(id){
                     data.item_catagory_id,
                     data.item_price);
             }
-            update_dom();
         },
     })
 }
@@ -287,9 +293,14 @@ function edit_item(form, id){
             var name = $("#item_"+id).html();
             $("#header").html("<p style='color: green;'>Edit Item: " + name + "<span class='fa fa-check'></></p>");
             // create_action("Purchase", "Make purchase: "+name, "undo purchase");
-            update_dom();
+            get_items();
             document.getElementsByClassName('item_form')[0].reset();
             build_edit_form(data.catagory_names, data.catagory_ids, data.catagory_length, "", "", "", "", "")
+            var item_form_btns = "";
+            item_form_btns += '<input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">';
+            item_form_btns += '<input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">';
+            $(".edit_save_btn").replaceWith(item_form_btns);
+            get_items();
         },
     });
 }
@@ -412,8 +423,6 @@ function filter_purchase_tbl_by_catagory(catagory_name){
     })
 }
 function build_catagory_form(){
-    console.log("building cata form");
-    // $(".item_form").hide();
     var catagory_form = "";
     catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
     catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='add_catagory_input pull-right' /></span></p>";
@@ -433,13 +442,9 @@ function build_item_form(cata_length, cata_names, cata_ids){
   item_form += '<p><label for="price">Price: </label><input type="number" placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
   item_form += '<input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">';
   item_form += '<input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">';
-  console.log(item_form);
   $(".item_form").html(item_form);
 }
 function unbuild_catagory_form(){
-  var catagory_length = 0;
-  var catagory_names = [];
-  var catagory_ids = [];
   $.ajax({
     type: "GET",
     url: "/api/catagories/",
@@ -465,7 +470,6 @@ function add_new_catagory(){
                 "catagory_name": catagory_value,
             },
             success: function(data){
-                console.log("success");
                 if(data.success){
                     $("#header").html("<p class='text-success'>Successfully Added: "+catagory_value+"</p>");
                 } else {

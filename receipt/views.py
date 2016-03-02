@@ -132,7 +132,7 @@ class ItemEndPoint(TemplateView):
     def get(self, request, *a, **kw):
         items = Item.objects.all()
         data = dict()
-        data["id"] = [i.id for i in items]
+        data["ids"] = [i.id for i in items]
         data["names"] = [i.name for i in items]
         data["companies"] = [i.company_came_from for i in items]
         data["prices"] = [i.price for i in items]
