@@ -54,8 +54,6 @@ function build_items(length, names, companies, prices, times_purchased, ids){
     }
     $(".items").html(item_markup);
 }
-/* DOM UPDATING INTERVALS */
-setInterval(get_items(), 3000);
 
 function update_undo(){
     var latest_action_div = $("#latest_action");
@@ -77,8 +75,9 @@ function update_undo(){
       },
     });
 }
-setInterval(update_undo(), 3000);
-
+/* DOM UPDATING INTERVALS */
+setInterval(get_items, 3000);
+setInterval(update_undo, 3000);
 function send_new_item(form, purchase){
   /*
   Ajax POST to items API. View then creates a new item object.
