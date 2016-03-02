@@ -14,6 +14,7 @@ docutils==0.12
 gnureadline==6.3.3
 ipython==4.1.1
 ipython-genutils==0.1.0
+requests==2.9.1
 itsdangerous==0.24
 mercurial==3.1.2
 nester==1.0.0
