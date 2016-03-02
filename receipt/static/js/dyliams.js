@@ -1,6 +1,7 @@
 $(document).ready(function(){
   // console.log($("#foo").value);
   $("#foo").value = "foo";
+  get_items();
 });
 
 var csrf_func = function(){
@@ -43,14 +44,15 @@ function build_items(length, names, companies, prices, times_purchased, ids){
       var times_purchase = times_purchased[i];
       var id = ids[i];
       item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
-      item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
-      item_markup += '<div class="pull-left" id="item_' + id + '">' + name + '</div>';
-      item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')"><div class="fa fa-arrow-left"></div></div>'
-      item_markup += "<div class='purchase_btn pull-right' onclick='purchase_item("+id+")'>"+"Purchase"+"</div>"
-      item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchase + '</span>';
+      // item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
+      item_markup += '<div class="pull-left" id="item_' + id + '">' + name;
+      item_markup += '</div>';
+      item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')">...</div>';
+      item_markup += '<div class="purchase_btn pull-right" onclick="purchase_item('+id+')">Purchase</div>';
       item_markup += '<span class="times_purchased pull-right">$ '+price+'</span>'
+      item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchase + '</span>';
+      item_markup += '</div>';
       item_markup += '</form>';
-
     }
     $(".items").html(item_markup);
 }
@@ -76,8 +78,8 @@ function update_undo(){
     });
 }
 /* DOM UPDATING INTERVALS */
-setInterval(get_items, 3000);
-setInterval(update_undo, 3000);
+// setInterval(get_items, 3000);
+// setInterval(update_undo, 3000);
 function send_new_item(form, purchase){
   /*
   Ajax POST to items API. View then creates a new item object.
