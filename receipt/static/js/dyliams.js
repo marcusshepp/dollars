@@ -14,11 +14,9 @@ var csrf_func = function(){
 
 function get_items(){
   /*
-
   UPDATES DOM
   Ajax request to the items API.
   Populates the page with available items & purchases & total.
-
   */
   $.ajax({
       type: "GET",
@@ -42,14 +40,14 @@ function build_items(length, names, companies, prices, times_purchased, ids){
       var name = names[i];
       var company = companies[i];
       var price = prices[i];
-      var times_purchased = times_purchased[i];
-      var id = id[i];
+      var times_purchase = times_purchased[i];
+      var id = ids[i];
       item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
       item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
       item_markup += '<div class="pull-left" id="item_' + id + '">' + name + '</div>';
       item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')"><div class="fa fa-arrow-left"></div></div>'
       item_markup += "<div class='purchase_btn pull-right' onclick='purchase_item("+id+")'>"+"Purchase"+"</div>"
-      item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchased + '</span>';
+      item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchase + '</span>';
       item_markup += '<span class="times_purchased pull-right">$ '+price+'</span>'
       item_markup += '</form>';
 
@@ -57,7 +55,7 @@ function build_items(length, names, companies, prices, times_purchased, ids){
     $(".items").html(item_markup);
 }
 /* DOM UPDATING INTERVALS */
-setInterval(get_items, 3000);
+setInterval(get_items(), 3000);
 
 function update_undo(){
     var latest_action_div = $("#latest_action");
@@ -79,7 +77,7 @@ function update_undo(){
       },
     });
 }
-setInterval(update_undo, 3000);
+setInterval(update_undo(), 3000);
 
 function send_new_item(form, purchase){
   /*
@@ -108,6 +106,7 @@ function send_new_item(form, purchase){
         $("#header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
         create_action("Create Item", "Create Item: "+name, "undo add item");
         $("#item_form_header").html("Add New Item");
+        get_items()
       }
     },
     failure: function(){
@@ -115,7 +114,6 @@ function send_new_item(form, purchase){
     },
   });
   document.getElementsByClassName('item_form')[0].reset();
-  update_dom();
 };
 function purchase_item(id){
   /*
@@ -203,7 +201,7 @@ function create_action(title, object_name, undo_handler){
           console.log("fail");
         },
     })
-    update_dom();
+    get_items();
 }
 
 function show_options(th, id){
