@@ -60,7 +60,7 @@ class Item(models.Model):
 
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=25, unique=True)
-    company_came_from = models.CharField(max_length=50, null=True, blank=True)
+    company_came_from = models.CharField(max_length=25, null=True, blank=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)
     catagory = models.ForeignKey("Catagory")
@@ -95,13 +95,13 @@ class Catagory(models.Model):
         ordering = ["name"]
 
     date_created = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=25)
 
     def __unicode__(self):
         return u"{0}".format(self.name)
 
     def string(self):
-        return str(self.__unicode__()).upper()
+        return unicode(self.__unicode__()).upper()
 
 class Budget(models.Model):
 

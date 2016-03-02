@@ -32,15 +32,21 @@ class Command(BaseCommand):
             request = requests.get(lorem)
             text = request.text.split("\n")
             paragraph_tags = [line for line in text if "<p>" in line]
-            num = 2
+            num = 10
+            # create catagories
             catagory_names = gen_names(paragraph_tags, num)
             catagories = [Catagory.objects.get_or_create(name=name)[0] for name in catagory_names]
+            # create items
             items = create_items(gen_names(paragraph_tags, num),
                                  gen_names(paragraph_tags, num),
                                  [random.randrange(0, 100) for x in range(num)],
                                  [catagory.id for catagory in catagories],
                                  num)
-            print items
+            # create purchases
+            purchases = [
+                Purchase.objects.get_or_create(
+                    item_purchased=random.choice(items)[0], 
+                    amount_payed=random.randrange(0, 100)) for _ in xrange(random.randrange(10, 25))]
 
         elif arg == "import":
             print "importing..."
@@ -80,13 +86,17 @@ def create_items(names, companies_came_from, prices, catagory_ids, num):
     items = list()
     for i in range(num):
         data = dict()
-        data["name"] = names[i]
-        data["company_came_from"] = companies_came_from[i]
-        data["price"] = prices[i]
-        catagory = Catagory.objects.get(id=catagory_ids[i])
-        data["catagory"] = catagory
-        item = Item.objects.get_or_create(**data)
-        items.append(item)
+        item_that_might_already_be_created = Item.objects.filter(name=names[i])
+        if item_that_might_already_be_created.exists():
+            break
+        else:
+            data["name"] = names[i]
+            data["company_came_from"] = companies_came_from[i]
+            data["price"] = prices[i]
+            catagory = Catagory.objects.get(id=catagory_ids[i])
+            data["catagory"] = catagory
+            item = Item.objects.get_or_create(**data)
+            items.append(item)
     return items
 
 def gen_names(text, num):
