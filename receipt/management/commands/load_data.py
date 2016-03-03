@@ -103,6 +103,9 @@ def create_items(names, companies_came_from, prices, catagory_ids, num):
     return items
 
 def gen_names(text, num):
+    """
+    Generates string input for CharField's.
+    """
     names = list()
     for i in range(num):
         para_index = random.randrange(1, len(text)-1)

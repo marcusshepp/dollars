@@ -26,6 +26,7 @@
     </form>
   </div>
   <div class="items col-md-6">
+    {% if items %}
     {% for i in items %}
     <form id="{{ i.id }}" class="item col-sm-12 col-lg-12" action="{% url 'api_items' %}" method="POST">
         {% csrf_token %}
@@ -36,6 +37,9 @@
         <span class="times_purchased pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
     </form>
     {% endfor %}
+    {% else %}
+    <h4 class="no_items">You haven't created any Items yet.</h4>
+    {% endif %}
   </div>
 </div>
 <h4 id="purchases_header"><span>Purchases Made: All Time ({{purchased_length}})</span></h4>
@@ -46,14 +50,20 @@
 {% endfor %}
 <div id="purchased_items">
     <div class="total">Total: {{ total }}</div>
-    {% for purchase in purchased_items %}
-    <div class="row purchases">
-        <div class="col-md-3 col-lg-3">{{ purchase.item_purchased }}</div>
-        <div class="col-md-3 col-lg-3">{{ purchase.date_display }}</div>
-        <div class="col-md-3 col-lg-3">{{ purchase.amount_payed }}</div>
-    </div>
-    <div class="purchase_border"></div>
-    {% endfor %}
+    <table border="1">
+        <tr>
+            <td>Item Purchased</td>
+            <td>Date Purchased</td>
+            <td>Amount Spent</td>
+        </tr>
+        {% for purchase in purchased_items %}
+        <tr>
+            <td>{{ purchase.item_purchased }}</td>
+            <td>{{ purchase.date_display }}</td>
+            <td>{{ purchase.amount_payed }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 <script type="text/javascript" src="{% static 'js/dyliams.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>

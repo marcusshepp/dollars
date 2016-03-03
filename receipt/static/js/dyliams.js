@@ -2,6 +2,7 @@ $(document).ready(function(){
   // console.log($("#foo").value);
   $("#foo").value = "foo";
   get_items();
+  update_undo();
 });
 
 var csrf_func = function(){
@@ -36,25 +37,30 @@ function get_items(){
   });
 }
 function build_items(length, names, companies, prices, times_purchased, ids){
-    var item_markup = "";
-    for (var i = 0; i < length; i++){
-      var name = names[i];
-      var company = companies[i];
-      var price = prices[i];
-      var times_purchase = times_purchased[i];
-      var id = ids[i];
-      item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
-      // item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
-      item_markup += '<div class="pull-left" id="item_' + id + '">' + name;
-      item_markup += '</div>';
-      item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')">...</div>';
-      item_markup += '<div class="purchase_btn pull-right" onclick="purchase_item('+id+')">Purchase</div>';
-      item_markup += '<span class="times_purchased pull-right">$ '+price+'</span>'
-      item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchase + '</span>';
-      item_markup += '</div>';
-      item_markup += '</form>';
+    if (length > 0){
+        var item_markup = "";
+        for (var i = 0; i < length; i++){
+          var name = names[i];
+          var company = companies[i];
+          var price = prices[i];
+          var times_purchase = times_purchased[i];
+          var id = ids[i];
+          item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
+          // item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
+          item_markup += '<div class="pull-left" id="item_' + id + '">' + name;
+          item_markup += '</div>';
+          item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')">...</div>';
+          item_markup += '<div class="purchase_btn pull-right" onclick="purchase_item('+id+')">Purchase</div>';
+          item_markup += '<span class="times_purchased pull-right">$ '+price+'</span>'
+          item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchase + '</span>';
+          item_markup += '</div>';
+          item_markup += '</form>';
+        }
+        $(".items").html(item_markup);
+    } else {
+        $(".items").html('<h4 class="no_items">You haven\'t created any Items yet.</h4>');
     }
-    $(".items").html(item_markup);
+
 }
 
 function update_undo(){
@@ -354,15 +360,20 @@ function post_purchase_w_new_price(th, id){
 function build_table(purchased_items_names, purchased_date_created, purchased_length, amount_payed, total){
     var purchased_items = "";
     purchased_items += '<div class="total">Total: '+ total +'</div>';
+    purchased_items += '<table border="1">';
+    purchased_items += '<tr>';
+    purchased_items += '<td>Item Purchased</td>';
+    purchased_items += '<td>Date Purchased</td>';
+    purchased_items += '<td>Amount Spent</td>';
+    purchased_items += '</tr>';
     for(var i = 0; i < purchased_length; i++){
-      purchased_items += '<div class="row purchases">';
-      purchased_items += "<div class='col-md-3 col-lg-3'>" + purchased_items_names[i] + "</div>"
-      purchased_items += "<div class='col-md-3 col-lg-3'>" + purchased_date_created[i] + "</div>"
-      purchased_items += "<div class='col-md-3 col-lg-3'>" + amount_payed[i] + "</div>"
-      purchased_items += "</div>";
-      purchased_items += '<div class="purchase_border"></div>';
+      purchased_items += '<tr>';
+      purchased_items += "<td>" + purchased_items_names[i] + "</td>"
+      purchased_items += "<td>" + purchased_date_created[i] + "</td>"
+      purchased_items += "<td>" + amount_payed[i] + "</td>"
+      purchased_items += '</tr>';
     }
-
+    purchased_items += '</table>';
     return purchased_items;
 }
 function update_purchase_tbl(){

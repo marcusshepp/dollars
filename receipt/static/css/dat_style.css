@@ -35,16 +35,21 @@ form p *{
 .purchases{
   padding-left: 15px;
   padding-top: 15px;
+  background-color: white;
+  color: black;
+  /*padding: 5px 5px 5px 5px;*/
+  height: auto;
+  width: 80%;
 }
 .purchase_border{
   border-bottom: .2px solid black;
   width: 35%;
   margin-left: 25px;
-  margin-right: auto;
+  /*margin-right: auto;*/
 }
 .purchases div{
   border-radius: 2px 2px 2px 2px;
-  margin: 0px 0px 15px 0px;
+  /*margin: 0px 0px 15px 0px;*/
 }
 .purchase_btn{
   background-color: #99FFAC;
