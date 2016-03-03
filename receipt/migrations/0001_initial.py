@@ -7,64 +7,9 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-    def create_items(apps, schema_editor):
-        """ Used to create some common items/catagories on init """
-        Catagory = apps.get_model("receipt", "Catagory")
-        data = {"name": "Food"}
-        food_catagory = Catagory(**data)
-        food_catagory.save()
-        data = {"name": "Computer/Technology"}
-        tech_catagory = Catagory(**data)
-        tech_catagory.save()
-        data = {"name": "School Supplies"}
-        school_supplies = Catagory(**data)
-        school_supplies.save()
-
-        I = apps.get_model("receipt", "Item")
-        data = {"name": "Coffee",
-                "company_came_from": "Java City",
-                "price": 1.75,
-                "catagory": food_catagory}
-        item = I(**data)
-        print item.price
-        item.save()
-        data = {"name": "Tofu",
-                "company_came_from": "Hunan House",
-                "price": 10.00,
-                "catagory": food_catagory}
-        item = I(**data)
-        item.save()
-        data = {"name": "Book",
-                "company_came_from": "",
-                "price": 8.00,
-                "catagory": school_supplies}
-        item = I(**data)
-        item.save()
-        data = {"name": "Veggie Sub",
-                "company_came_from": "Subway",
-                "price": 5.00,
-                "catagory": food_catagory}
-        item = I(**data)
-        item.save()
-        data = {"name": "Keyboard",
-                "company_came_from": "Amazon",
-                "price": 20.00,
-                "catagory": tech_catagory}
-        item = I(**data)
-        item.save()
-
-        Purchase = apps.get_model("receipt", "Purchase")
-        coffee = I.objects.get(name="Coffee")
-        coffee_purchase = Purchase(
-            item_purchased=coffee, amount_payed=coffee.price)
-        coffee_purchase.save()
-        coffee = I.objects.get(name="Coffee")
-        coffee.price = 2.00
-        coffee.save()
-        another_coffee_purchase = Purchase(
-            item_purchased=coffee, amount_payed=coffee.price)
-        another_coffee_purchase.save()
-
+    def foo(apps, schema_editor):
+        """ Kept for reference. """
+        pass
     initial = True
 
     dependencies = [
@@ -140,5 +85,5 @@ class Migration(migrations.Migration):
             name='item',
             unique_together=set([('name', 'company_came_from', 'catagory')]),
         ),
-        migrations.RunPython(create_items),
+        migrations.RunPython(foo),
     ]
