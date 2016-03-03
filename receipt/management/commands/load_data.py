@@ -63,18 +63,25 @@ class Command(BaseCommand):
             file_name = options.get("third_arg", None)
             if file_name:
                 if type(file_name) == str: # pointless str test?
+                    path = os.path.join("receipt/data/", file_name)
                     items = Item.objects.all()
                     catagories = Catagory.objects.all()
                     purchases = Purchase.objects.all()
                     # actions = Actions.objects.all()
                     chained_query = list(chain(items, catagories, purchases))
-                    path = os.path.join("receipt/data/", file_name)
                     XMLSerializer = serializers.get_serializer("xml")
                     xml_serializer = XMLSerializer()
                     with open(path+".xml", 'w') as out:
                         xml_serializer.serialize(chained_query, stream=out)
         elif arg == "import":
             print "importing..."
+            file_name = options.get("third_arg", None)
+            if file_name:
+                if type(file_name) == str: # pointless str test?
+                    path = os.path.join("receipt/data/", file_name)
+                    with open(path+".xml", 'r') as out:
+                        for objec in serializers.deserialize("xml", out):
+                            objec.save()
         else: print "use args -- `import` or `export`"
 
 
