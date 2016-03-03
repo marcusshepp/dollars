@@ -3,8 +3,10 @@ import csv
 import random
 import requests
 from datetime import date
+from itertools import chain
 
 from django.core.management.base import BaseCommand
+from django.core import serializers
 
 from receipt.models import (
     Purchase,
@@ -20,7 +22,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('args')
-        parser.add_argument('num')
+        parser.add_argument('third_arg')
         # r = requests.get()
 
     def handle(self, *args, **options):
@@ -32,8 +34,8 @@ class Command(BaseCommand):
             request = requests.get(lorem)
             text = request.text.split("\n")
             paragraph_tags = [line for line in text if "<p>" in line]
-            if options.get("num", None):
-                num = int(options["num"])
+            if options.get("third_arg", None):
+                num = int(options["third_arg"])
             else: num = 10
             # create catagories
             catagory_names = gen_names(paragraph_tags, num)
@@ -47,42 +49,32 @@ class Command(BaseCommand):
             # create purchases
             purchases = [
                 Purchase.objects.get_or_create(
-                    item_purchased=random.choice(items)[0], 
+                    item_purchased=random.choice(items)[0],
                     amount_payed=random.randrange(0, 100)) for _ in xrange(random.randrange(10, 25))]
             print "{} Items have been created.".format(len(items))
             print "{} Purchases have been created.".format(len(purchases))
             print "{} Catagories have been created.".format(len(catagories))
-        elif arg == "import":
-            print "importing..."
-
-            # games = Game.objects.all()
-            # file_name = "quick-games-{}.csv".format(date.today())
-            # path = os.path.join("match/fixtures/", file_name)
-            # with open(path, 'w') as f:
-            # 	try:
-            # 		writer = csv.writer(f)
-            # 		for g in games:
-            # 			writer.writerow(
-            # 				(g.user_played, g.enemy_laner, g.enemy_jungler, g.winner, g.date_played, g.note))
-            # 	finally:
-            # 		f.close()
-            # print path
         elif arg == "export":
             print "Exporting..."
-            # try:
-            # 	path = args[1]
-            # 	with csv.reader(str(path)) as f:
-            # 		for row in f:
-            # 			game = {}
-            # 			game["user_played"] = row[0]
-            # 			game["enemy_laner"] = row[1]
-            # 			game["enemy_jungler"] = row[2]
-            # 			game["winner"] = row[3]
-            # 			game["date_played"] = row[4]
-            # 			game["note"] = row[4]
-            # 			Game.objects.create(**game)
-            # except IndexError:
-            # 	print "provide path to data"
+            """
+            Writes Items + Catagories + Purchases to a file in XML.
+            ex: m load_data export <file name>
+            """
+            file_name = options.get("third_arg", None)
+            if file_name:
+                if type(file_name) == str: # pointless str test?
+                    items = Item.objects.all()
+                    catagories = Catagory.objects.all()
+                    purchases = Purchase.objects.all()
+                    # actions = Actions.objects.all()
+                    chained_query = list(chain(items, catagories, purchases))
+                    path = os.path.join("receipt/data/", file_name)
+                    XMLSerializer = serializers.get_serializer("xml")
+                    xml_serializer = XMLSerializer()
+                    with open(path+".xml", 'w') as out:
+                        xml_serializer.serialize(chained_query, stream=out)
+        elif arg == "import":
+            print "importing..."
         else: print "use args -- `import` or `export`"
 
 
