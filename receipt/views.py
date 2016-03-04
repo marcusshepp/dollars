@@ -27,6 +27,8 @@ def page_it(request, queryset, number_per_page):
     if page:
         try:
             objecs = paginator.page(page)
+        except PageNotAnInteger:
+            objecs = paginator.page(1)
         except EmptyPage:
             objecs = paginator.page(paginator.num_pages)
         return objecs
