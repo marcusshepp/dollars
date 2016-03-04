@@ -1,7 +1,7 @@
 $(document).ready(function(){
   // console.log($("#foo").value);
   $("#foo").value = "foo";
-  // get_items();
+  get_items();
   // update_undo();
 });
 
@@ -27,6 +27,9 @@ function get_items(){
   $.ajax({
       type: "GET",
       url: "/api/items",
+      data: {
+        'FOO': 'BAR',
+      },
       success: function(data){
         build_items(data.length,
                     data.names,
@@ -210,7 +213,7 @@ function create_action(title, object_name, undo_handler){
           console.log("fail");
         },
     })
-    get_items();
+    // get_items();
 }
 
 function show_options(th, id){

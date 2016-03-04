@@ -20,8 +20,9 @@ from .models import (
 
 def get_post(request, name):
     return request.POST.get(name, None)
-
-def page_it(request, namespace, queryset, number_per_page):
+def get_session(request, name):
+    return request.session.get(name, None)
+def page_it(request, namespace, queryset, number_per_page, per_determined_page_number=None):
     paginator = Paginator(queryset, number_per_page)
     page = request.GET.get(namespace+"_page", None)
     if page:
@@ -33,6 +34,14 @@ def page_it(request, namespace, queryset, number_per_page):
             objecs = paginator.page(paginator.num_pages)
         return objecs
     else: return paginator.page(1)
+def get_page_number(queryset, number_per_page, per_determined_page_number):
+    paginator = Paginator(queryset, number_per_page)
+    return paginator.page(per_determined_page_number)
+def increase_page_number_session_var(request, name):
+    value = get_session(request, name)
+    if value:
+        request.session[name] += 1
+    
 
 
 class Home(TemplateView):
@@ -140,6 +149,7 @@ class ItemEndPoint(TemplateView):
     template_name = "receipt/item.html"
 
     def get(self, request, *a, **kw):
+        print request.session.items()
         items = Item.objects.all()
         data = dict()
         data["ids"] = [i.id for i in items]
