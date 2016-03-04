@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import csrf_exempt
@@ -20,10 +21,16 @@ from .models import (
 def get_post(request, name):
     return request.POST.get(name, None)
 
-
-class HelpMeWithMyData(object):
-    pass
-
+def page_it(request, queryset, number_per_page):
+    paginator = Paginator(queryset, number_per_page)
+    page = request.GET.get("page", None)
+    if page:
+        try:
+            objecs = paginator.page(page)
+        except EmptyPage:
+            objecs = paginator.page(paginator.num_pages)
+        return objecs
+    else: return paginator.page(1)
 
 class Home(TemplateView):
 
@@ -75,7 +82,7 @@ class ItemView(TemplateView):
         context["form"] = ItemForm
         items = Item.objects.all()
         if items:
-            context["items"] = items
+            context["items"] = page_it(request, items, 5)
         purchases = Purchase.objects.all()
         if purchases:
             context["purchased_items"] = purchases

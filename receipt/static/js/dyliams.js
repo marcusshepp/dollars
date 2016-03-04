@@ -1,9 +1,13 @@
 $(document).ready(function(){
   // console.log($("#foo").value);
   $("#foo").value = "foo";
-  get_items();
-  update_undo();
+  // get_items();
+  // update_undo();
 });
+
+/* DOM UPDATING INTERVALS */
+// setInterval(get_items, 3000);
+// setInterval(update_undo, 3000);
 
 var csrf_func = function(){
   /* Grab cookie containing {% csrf_token %} django specific */
@@ -83,9 +87,7 @@ function update_undo(){
       },
     });
 }
-/* DOM UPDATING INTERVALS */
-// setInterval(get_items, 3000);
-// setInterval(update_undo, 3000);
+
 function send_new_item(form, purchase){
   /*
   Ajax POST to items API. View then creates a new item object.
