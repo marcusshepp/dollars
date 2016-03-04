@@ -40,11 +40,11 @@
       <div class="item_pagination">
         <span class="step_links">
           {% if items.has_previous %}
-          <a href="?page={{items.previous_page_number}}">Prev</a>
+          <a href="?items_page={{items.previous_page_number}}">Prev</a>
           {% endif %}
           <span class="current_item_step">Page {{ items.number }} of {{ items.paginator.num_pages }}</span>
           {% if items.has_next %}
-          <a href="?page={{ items.next_page_number }}">next</a>
+          <a href="?items_page={{ items.next_page_number }}">next</a>
           {% endif %}
         </span>
       </div>
@@ -75,6 +75,17 @@
         </tr>
         {% endfor %}
     </table>
+    <div class="purchased_items_pagination">
+      <span class="step_links">
+        {% if purchased_items.has_previous %}
+        <a href="?purchased_items_page={{purchased_items.previous_page_number}}">Prev</a>
+        {% endif %}
+        <span class="current_purchased_items_step">Page {{ purchased_items.number }} of {{ purchased_items.paginator.num_pages }}</span>
+        {% if purchased_items.has_next %}
+        <a href="?purchased_items_page={{ purchased_items.next_page_number }}">next</a>
+        {% endif %}
+      </span>
+    </div>
 </div>
 <script type="text/javascript" src="{% static 'js/dyliams.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>

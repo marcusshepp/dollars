@@ -21,9 +21,9 @@ from .models import (
 def get_post(request, name):
     return request.POST.get(name, None)
 
-def page_it(request, queryset, number_per_page):
+def page_it(request, namespace, queryset, number_per_page):
     paginator = Paginator(queryset, number_per_page)
-    page = request.GET.get("page", None)
+    page = request.GET.get(namespace+"_page", None)
     if page:
         try:
             objecs = paginator.page(page)
@@ -33,6 +33,7 @@ def page_it(request, queryset, number_per_page):
             objecs = paginator.page(paginator.num_pages)
         return objecs
     else: return paginator.page(1)
+
 
 class Home(TemplateView):
 
@@ -84,10 +85,10 @@ class ItemView(TemplateView):
         context["form"] = ItemForm
         items = Item.objects.all()
         if items:
-            context["items"] = page_it(request, items, 5)
+            context["items"] = page_it(request, "items", items, 5)
         purchases = Purchase.objects.all()
         if purchases:
-            context["purchased_items"] = purchases
+            context["purchased_items"] = page_it(request, "purchased_items", purchases, 5)
             total = 0
             for i in purchases:
                 total += i.amount_payed
