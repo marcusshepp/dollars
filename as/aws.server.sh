@@ -1,1 +1,1 @@
-ssh -i marcusshep.pem ubuntu@ec2-52-10-250-107.us-west-2.compute.amazonaws.com
+ssh -i marcusshepdotcom.pem ubuntu@ec2-52-26-186-87.us-west-2.compute.amazonaws.com
