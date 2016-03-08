@@ -1,3 +1,6 @@
+HOSTED @ http://52.26.186.87/
+
+
 TODO:
 - purchase # of item btn
 - purchase w different name btn
