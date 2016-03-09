@@ -146,6 +146,7 @@ function purchase_item(id){
           var name = $("#item_" + form.id).html()
           $("#header").html("<p style='color: green;'>Purchase Made:&emsp;" + name + "&emsp;<span class='fa fa-check'></></p>");
           create_action("Purchase", "Make purchase: "+name, "undo purchase");
+          update_purchase_tbl();
       },
       error: function(){
           console.log("failure");
