@@ -96,10 +96,10 @@ function send_new_item(form, purchase){
   Ajax POST to items API. View then creates a new item object.
   */
   var form_data = $(form).serializeArray();
-  var name = form_data[1].value;
-  var company_came_from = form_data[2].value;
-  var catagory_id = form_data[3].value;
-  var price = form_data[4].value;
+  var name = form_data[0].value;
+  var company_came_from = form_data[1].value;
+  var catagory_id = form_data[2].value;
+  var price = form_data[3].value;
   $.ajax({
     type: 'POST',
     url: '/',
