@@ -2,7 +2,6 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from .views import (
-    Home,
     PicsView,
     ItemView,
     ItemEndPoint,
@@ -13,9 +12,8 @@ from .views import (
     CatagoryEndPoint)
 
 urlpatterns = [
-    url(r'^$', Home.as_view(), name="home"),
+    url(r'^$', ItemView.as_view(), name="items"),
     url(r'^pics/$', PicsView.as_view(), name="pics"),
-    url(r'^item/$', ItemView.as_view(), name="items"),
     url(r'^actions/$', Actions.as_view(), name="actions"),
     url(r'^api/items/$', ItemEndPoint.as_view(), name="api_items"),
     url(r'^api/items_edit/$', ItemManEndPoint.as_view(), name="api_items_edit"),
