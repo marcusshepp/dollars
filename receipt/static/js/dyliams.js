@@ -6,8 +6,8 @@ $(document).ready(function(){
 });
 
 /* DOM UPDATING INTERVALS */
-// setInterval(get_items, 3000);
-// setInterval(update_undo, 3000);
+setInterval(get_items, 3000);
+setInterval(update_undo, 3000);
 
 var csrf_func = function(){
   /* Grab cookie containing {% csrf_token %} django specific */
