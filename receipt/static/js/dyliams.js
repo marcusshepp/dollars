@@ -102,7 +102,7 @@ function send_new_item(form, purchase){
   var price = form_data[4].value;
   $.ajax({
     type: 'POST',
-    url: '/item/',
+    url: '/',
     data: {
       "csrfmiddlewaretoken": csrf_func(),
       "name": name,
