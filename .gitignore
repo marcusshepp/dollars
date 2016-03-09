@@ -69,3 +69,5 @@ target/
 .python-version
 
 db*
+ 
+ dollars/settings.py
