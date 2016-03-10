@@ -165,10 +165,8 @@ form p *{
     /*height: auto;
     width: 26%;*/
 }
-.add_catagory_input{
-    /*height: auto;
-    width: 21%;*/
-    /*margin-right: 1px;*/
+.new_catagory_input{
+    margin-top: 10px;
 }
 @media only screen
 and (max-width : 790px) {

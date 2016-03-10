@@ -444,7 +444,7 @@ function build_catagory_form(){
     catagory_form += "<span class='add_catagory fa fa-close pull-right' onclick='unbuild_catagory_form()'></span>";
     catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
     catagory_form += "<input type='text' style='display: none;' />";
-    catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='add_catagory_input pull-right' /></span></p>";
+    catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='new_catagory_input pull-right' /></span></p>";
     catagory_form += '<input type="button" value="Add" class="btn btn-default" onclick="add_new_catagory(); unbuild_catagory_form();">';
     $(".item_form").html(catagory_form);
 }
@@ -476,7 +476,7 @@ function unbuild_catagory_form(){
   });
 }
 function add_new_catagory(){
-    var catagory_value = $(".add_catagory_input").val();
+    var catagory_value = $(".new_catagory_input").val();
     if (!catagory_value){
         $("#item_form_header").html("<p class='text-danger'>Please enter a value for a Catagory.</p>");
     }
