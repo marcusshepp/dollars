@@ -175,7 +175,7 @@ and (max-width : 790px) {
     .item{
         /*height: 200%;*/
         /*width: auto;*/
-        padding-bottom: 70px;
+        padding: 0px 0px 70px 0px;
         font-size: 125%;
         position: relative;
     }

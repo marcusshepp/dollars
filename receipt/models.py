@@ -59,8 +59,8 @@ class Item(models.Model):
         unique_together = ("name", "company_came_from", "catagory")
 
     date_created = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=25, unique=True)
-    company_came_from = models.CharField(max_length=25, null=True, blank=True)
+    name = models.CharField(max_length=15, unique=True)
+    company_came_from = models.CharField(max_length=10, null=True, blank=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)
     catagory = models.ForeignKey("Catagory")
