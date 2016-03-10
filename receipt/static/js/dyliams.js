@@ -6,8 +6,8 @@ $(document).ready(function(){
 });
 
 /* DOM UPDATING INTERVALS */
-setInterval(get_items, 3000);
-setInterval(update_undo, 3000);
+setInterval(get_items, 10000);
+setInterval(update_undo, 10000);
 
 var csrf_func = function(){
   /* Grab cookie containing {% csrf_token %} django specific */
@@ -338,6 +338,7 @@ function purchase_w_new_price(th, id){
     markup += "type='number' ";
     markup += "name='price' ";
     markup += "step='0.01' />";
+    markup += "<input type='text' style='display: none;' />"
     markup += "<input type='button' ";
     markup += "onclick='post_purchase_w_new_price(this, "+id+")' "
     markup += "value='Submit' />"
@@ -441,6 +442,7 @@ function filter_purchase_tbl_by_catagory(catagory_name){
 function build_catagory_form(){
     var catagory_form = "";
     catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
+    catagory_form += "<input type='text' style='display: none;' />";
     catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='add_catagory_input pull-right' /></span></p>";
     catagory_form += '<p><span><input type="button" value="Add" class="add_catagory_btn" onclick="add_new_catagory(); unbuild_catagory_form();" /></span></p>';
     $(".item_form").html(catagory_form);
