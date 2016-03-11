@@ -144,6 +144,9 @@ form p *{
    /*padding: 1px 1px 1px 1px;*/
    width: inherit;
    height: 60%;
+   box-shadow: 2px 2px 2px #888888;
+   padding: 2px 2px 2px 2px;
+   border-radius: 3px 3px 3px 3px;
 }
 .add_catagory:hover{
    background-color: #C7FFD1;
@@ -160,6 +163,7 @@ form p *{
 .add_catagory:hover{
    background-color: #C7FFD1;
    /*padding: 3px 3px 3px 3px;*/
+   cursor: pointer;
 }
 .catagory{
     /*height: auto;
