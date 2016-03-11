@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.core.validators import MinLengthValidator
 
 
 class Action(models.Model):
@@ -59,7 +60,7 @@ class Item(models.Model):
         unique_together = ("name", "company_came_from", "catagory")
 
     date_created = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=15, unique=True)
+    name = models.CharField(max_length=15, unique=True, validators=[MinLengthValidator(4)])
     company_came_from = models.CharField(max_length=10, null=True, blank=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)
@@ -95,7 +96,7 @@ class Catagory(models.Model):
         ordering = ["name"]
 
     date_created = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=25, validators=[MinLengthValidator(4)])
 
     def __unicode__(self):
         return u"{0}".format(self.name)
