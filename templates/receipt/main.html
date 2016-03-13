@@ -22,47 +22,8 @@
       {{ form.errors }}
       <div class="row">
         <div class="col-md-6 item_form_container">
-          <h4 id="item_form_header">Add New Item</h4>
-          <form class="formmy item_form" action="{% url 'items' %}" method="POST" enctype="multipart/form-data">
-            <p><label for="name">Name: </label><input type="text" placeholder="Name of Item" name="name" max_length="250"/ class="pull-right"></p>
-            <p><label for="company_came_from">Company: </label><input type="text" placeholder="Where does this come from?" name="company_came_from" max_length="50" class="pull-right"></p>
-            <p><label for="catagory">Catagory: </label><span class="add_catagory fa fa-plus pull-right" onclick="build_catagory_form();">add catagory</span>
-               <select name="catagory" class="pull-right catagory">
-                 {% for catagory in all_catagories %}
-                  <option name="catagory" value="{{ catagory.id }}">{{ catagory.string }}</option>
-                 {% endfor %}
-               </select>
-            </p>
-            <p><label for="price">Price: </label><input type="number" placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>
-            <input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">
-            <input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">
-          </form>
         </div>
         <div class="items col-md-6">
-          {% if items %}
-            {% for i in items %}
-            <form id="{{ i.id }}" class="item col-sm-12 col-lg-12" action="{% url 'api_items' %}" method="POST">
-                <div class="pull-left" id="item_{{i.id}}">{{ i.name }}</div>
-                <div class="options pull-right" onclick="show_options(this, {{i.id}})">...</div>
-                <div class='purchase_btn pull-right' onclick='purchase_item({{ i.id }})'>Purchase</div>
-                <span class="times_purchased pull-right">$ {{ i.price }}</span>
-                <span class="times_purchased pull-right"># of purchases: {{ i.number_of_times_purchased }}</span>
-            </form>
-            {% endfor %}
-            <div class="item_pagination">
-              <span class="step_links">
-                {% if items.has_previous %}
-                <a href="?items_page={{items.previous_page_number}}">Prev</a>
-                {% endif %}
-                <span class="current_item_step">Page {{ items.number }} of {{ items.paginator.num_pages }}</span>
-                {% if items.has_next %}
-                <a href="?items_page={{ items.next_page_number }}">next</a>
-                {% endif %}
-              </span>
-            </div>
-          {% else %}
-            <h4 class="no_items">You haven't created any Items yet.</h4>
-          {% endif %}
         </div>
       </div>
       <h4 id="purchases_header"><span>Purchases Made: All Time ({{purchased_length}})</span></h4>
@@ -72,44 +33,19 @@
       <input type="button" name="name" value="{{ catagory.name }}" onclick="filter_purchase_tbl_by_catagory('{{ catagory.name }}')" class="purchase_filters">
       {% endfor %}
       <div id="purchased_items">
-          <div class="total">Total: {{ total }}</div>
-          <table border="1">
-              <tr>
-                  <td>Item Purchased</td>
-                  <td>Date Purchased</td>
-                  <td>Amount Spent</td>
-              </tr>
-              {% for purchase in purchased_items %}
-              <tr>
-                  <td>{{ purchase.item_purchased }}</td>
-                  <td>{{ purchase.date_display }}</td>
-                  <td>{{ purchase.amount_payed }}</td>
-              </tr>
-              {% endfor %}
-          </table>
-          <div class="purchased_items_pagination">
-            <span class="step_links">
-              {% if purchased_items.has_previous %}
-              <a href="?purchased_items_page={{purchased_items.previous_page_number}}">Prev</a>
-              {% endif %}
-              <span class="current_purchased_items_step">Page {{ purchased_items.number }} of {{ purchased_items.paginator.num_pages }}</span>
-              {% if purchased_items.has_next %}
-              <a href="?purchased_items_page={{ purchased_items.next_page_number }}">next</a>
-              {% endif %}
-            </span>
-          </div>
       </div>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
       <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
       <script type="text/javascript" src="{% static 'js/csrf.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/docready.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/items/main.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/purchases/main.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/actions/main.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/items/items-main.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/purchases/purchases-main.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/actions/actions-main.js' %}"></script>
       <script type="text/javascript">
       $(document).ready(function(){
         var csrf = "{% csrf_token %}";
         $.cookie("csrfmiddlewaretoken", csrf);
+        init_items();
+        init_purchases();
       });
       </script>
     </div>

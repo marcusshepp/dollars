@@ -1,3 +1,7 @@
+function init_purchases(){
+    update_purchase_tbl();
+}
+
 
 function build_table(purchased_items_names, purchased_date_created, purchased_length, amount_payed, total){
     var purchased_items = "";

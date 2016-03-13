@@ -1,5 +1,10 @@
 /* Items
  */
+function init_items(){
+    get_items();
+    unbuild_catagory_form();
+}
+
 
  function get_items(){
    /*
@@ -36,7 +41,6 @@
            var times_purchase = times_purchased[i];
            var id = ids[i];
            item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
-           // item_markup += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrf_func() + '" />';
            item_markup += '<div class="pull-left" id="item_' + id + '">' + name;
            item_markup += '</div>';
            item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')">...</div>';
@@ -217,7 +221,7 @@ function del(id){
             var name = $("#item_"+id).html();
             $("#header").html("<p style='color: green;'>Deleted Item: " + name + "<span class='fa fa-check'></></p>");
             // create_action("Purchase", "Make purchase: "+name, "undo purchase");
-            update_dom();
+            get_items();
         },
     });
 }
@@ -282,6 +286,8 @@ function purchase_item(id){
 
 function build_item_form(cata_length, cata_names, cata_ids){
   var item_form = "";
+  item_form += '<h4 id="item_form_header">Add New Item</h4>';
+  item_form += '<form class="formmy item_form" action="" method="POST" enctype="multipart/form-data">';
   item_form += '<p><label for="name">Name: </label><input type="text" placeholder="Name of Item" name="name" max_length="250"/ class="pull-right"></p>';
   item_form += '<p><label for="company_came_from">Company: </label><input type="text" placeholder="Where does this come from?" name="company_came_from" max_length="50" class="pull-right"></p>';
   item_form += '<p><label for="catagory">Catagory: </label><span class="add_catagory fa fa-plus pull-right" onclick="build_catagory_form()"></span>';
@@ -293,7 +299,8 @@ function build_item_form(cata_length, cata_names, cata_ids){
   item_form += '<p><label for="price">Price: </label><input type="number" placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
   item_form += '<input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">';
   item_form += '<input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">';
-  $(".item_form").html(item_form);
+  item_form += '</form>';
+  $(".item_form_container").html(item_form);
 }
 
 /*
