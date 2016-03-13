@@ -205,15 +205,19 @@ and (max-width : 790px) {
         height: inherit;
     }
     .options{
-        height: auto;
+        height: 50px;
         width: 125px;
         position: relative;
         z-index: 100;
+        padding-left: 50px;
+        padding-top: 13px;
     }
     .options:hover{
-        height: auto;
+        height: 50px;
         width: 125px;
         position: relative;
-        z-index: 5;
+        z-index: 100;
+        padding-left: 50px;
+        padding-top: 13px;
     }
 }

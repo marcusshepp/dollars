@@ -3,11 +3,14 @@ $(document).ready(function(){
   $("#foo").value = "foo";
   get_items();
   // update_undo();
+  $(".options").click(function(){
+     $(this) 
+  });
 });
 
 /* DOM UPDATING INTERVALS */
-setInterval(get_items, 10000);
-setInterval(update_undo, 10000);
+// setInterval(get_items, 10000);
+// setInterval(update_undo, 10000);
 
 var csrf_func = function(){
   /* Grab cookie containing {% csrf_token %} django specific */
@@ -231,7 +234,6 @@ function hide_options(th, id){
     var options_div = $(th);
     var par = options_div.parent().filter(".options");
     par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class=''>...</div></div>")
-    $("#"+id).find("span").show(); // IDK WHAT TO DO WITH THIS ATM
 }
 function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id, name, company, catagory, price){
     var form_str = "";
