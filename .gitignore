@@ -69,5 +69,6 @@ target/
 .python-version
 
 db*
- 
- dollars/settings.py
+
+dollars/settings.py
+.opt/
