@@ -90,7 +90,7 @@ def create_items(names, companies_came_from, prices, catagory_ids, num):
     for i in range(num):
         data = dict()
         item_that_might_already_be_created = Item.objects.filter(name=names[i])
-        if item_that_might_already_be_created.exists() and not names[i].contains("/>"):
+        if item_that_might_already_be_created.exists() and not str(names[i]).contains("/>"):
             break
         else:
             data["name"] = names[i]

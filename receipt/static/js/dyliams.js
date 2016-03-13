@@ -6,8 +6,8 @@ $(document).ready(function(){
 });
 
 /* DOM UPDATING INTERVALS */
-setInterval(get_items, 3000);
-setInterval(update_undo, 3000);
+setInterval(get_items, 10000);
+setInterval(update_undo, 10000);
 
 var csrf_func = function(){
   /* Grab cookie containing {% csrf_token %} django specific */
@@ -146,6 +146,7 @@ function purchase_item(id){
           var name = $("#item_" + form.id).html()
           $("#header").html("<p style='color: green;'>Purchase Made:&emsp;" + name + "&emsp;<span class='fa fa-check'></></p>");
           create_action("Purchase", "Make purchase: "+name, "undo purchase");
+          update_purchase_tbl();
       },
       error: function(){
           console.log("failure");
@@ -337,6 +338,7 @@ function purchase_w_new_price(th, id){
     markup += "type='number' ";
     markup += "name='price' ";
     markup += "step='0.01' />";
+    markup += "<input type='text' style='display: none;' />"
     markup += "<input type='button' ";
     markup += "onclick='post_purchase_w_new_price(this, "+id+")' "
     markup += "value='Submit' />"
@@ -439,9 +441,11 @@ function filter_purchase_tbl_by_catagory(catagory_name){
 }
 function build_catagory_form(){
     var catagory_form = "";
+    catagory_form += "<span class='add_catagory fa fa-close pull-right' onclick='unbuild_catagory_form()'></span>";
     catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
-    catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='add_catagory_input pull-right' /></span></p>";
-    catagory_form += '<p><span><input type="button" value="Add" class="add_catagory_btn" onclick="add_new_catagory(); unbuild_catagory_form();" /></span></p>';
+    catagory_form += "<input type='text' style='display: none;' />";
+    catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='new_catagory_input pull-right' /></span></p>";
+    catagory_form += '<input type="button" value="Add" class="btn btn-default" onclick="add_new_catagory(); unbuild_catagory_form();">';
     $(".item_form").html(catagory_form);
 }
 function build_item_form(cata_length, cata_names, cata_ids){
@@ -472,7 +476,7 @@ function unbuild_catagory_form(){
   });
 }
 function add_new_catagory(){
-    var catagory_value = $(".add_catagory_input").val();
+    var catagory_value = $(".new_catagory_input").val();
     if (!catagory_value){
         $("#item_form_header").html("<p class='text-danger'>Please enter a value for a Catagory.</p>");
     }

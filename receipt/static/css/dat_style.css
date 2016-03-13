@@ -144,6 +144,9 @@ form p *{
    /*padding: 1px 1px 1px 1px;*/
    width: inherit;
    height: 60%;
+   box-shadow: 2px 2px 2px #888888;
+   padding: 2px 2px 2px 2px;
+   border-radius: 3px 3px 3px 3px;
 }
 .add_catagory:hover{
    background-color: #C7FFD1;
@@ -160,22 +163,21 @@ form p *{
 .add_catagory:hover{
    background-color: #C7FFD1;
    /*padding: 3px 3px 3px 3px;*/
+   cursor: pointer;
 }
 .catagory{
     /*height: auto;
     width: 26%;*/
 }
-.add_catagory_input{
-    /*height: auto;
-    width: 21%;*/
-    /*margin-right: 1px;*/
+.new_catagory_input{
+    margin-top: 10px;
 }
 @media only screen
 and (max-width : 790px) {
     .item{
         /*height: 200%;*/
         /*width: auto;*/
-        padding-bottom: 70px;
+        padding: 0px 0px 70px 0px;
         font-size: 125%;
         position: relative;
     }

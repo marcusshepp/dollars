@@ -8,3 +8,4 @@ TODO:
 - click attr to see more text
 - filter by cata btn
 - filter by search btn
+- split up dyliams.js into multiple files
