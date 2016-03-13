@@ -41,52 +41,11 @@ def increase_page_number_session_var(request, name):
     value = get_session(request, name)
     if value:
         request.session[name] += 1
-    
 
 
-class Home(TemplateView):
+class MainView(TemplateView):
 
-    template_name = "receipt/form.html"
-
-    def get(self, request, *a, **kw):
-        context = dict()
-        context["form"] = PicForm
-        return render(request, self.template_name, context)
-
-    def post(self, request, *a, **kw):
-        context = dict()
-        f = PicForm(request.POST, request.FILES)
-        context["form"] = f
-        if f.is_valid():
-            new_picture = Pic(docfile=request.FILES["docfile"])
-            new_picture.save()
-        return render(request, self.template_name, context)
-
-
-class PicsView(TemplateView):
-
-    template_name = "receipt/pics.html"
-
-    def get(self, request, *a, **kw):
-        super(PicsView, self).get(request, *a, **kw)
-        p = Pic.objects.all()[0]
-        context["pic"] = p
-        return render(request, self.template_name, context)
-
-
-class Actions(TemplateView):
-
-    template_name = "receipt/actions.html"
-
-    def get(self, request, *a, **kw):
-        context = dict()
-        context["actions"] = Action.objects.all()
-        return render(request, self.template_name)
-
-
-class ItemView(TemplateView):
-
-    template_name = "receipt/item.html"
+    template_name = "receipt/main.html"
 
     def get(self, request, *a, **kw):
         """ Renders the page w `total`, `# of purch`, `catagories` """
