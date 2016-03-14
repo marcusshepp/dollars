@@ -13,41 +13,50 @@
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> -->
   </head>
-  <body>
-    <div class="container">
-      <div class="row">
-          <h1 class="col-xs-6 page-header" id="header">Guru Development	&#174;</h1>
-          <div id="latest_action" class="undo col-md-2 col-xs-2 pull-right" onclick="undo(none, none)">Loading Last Action...</div>
-      </div>
-      {{ form.errors }}
-      <div class="row">
-        <div class="col-md-6 item_form_container">
-        </div>
-        <div class="items col-md-6">
-        </div>
-      </div>
-      <h4 id="purchases_header"><span>Purchases Made: All Time ({{purchased_length}})</span></h4>
-      <input type="button" name="name" value="Refresh" onclick="update_purchase_tbl()" class="purchase_filters">
-      <span>Filters:</span>
-      {% for catagory in set_catagories %}
-      <input type="button" name="name" value="{{ catagory.name }}" onclick="filter_purchase_tbl_by_catagory('{{ catagory.name }}')" class="purchase_filters">
-      {% endfor %}
-      <div id="purchased_items">
-      </div>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-      <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/csrf.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/items/items-main.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/purchases/purchases-main.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/actions/actions-main.js' %}"></script>
-      <script type="text/javascript">
-      $(document).ready(function(){
+<body>
+
+    <h1 class="page-header" id="header">
+        Guru Development	&#174;
+    </h1>
+
+    <h2 id="latest_action" class="undo" onclick="undo(none, none)">
+        Loading Last Action...
+    </h2>
+
+    <div class="item_form_container">
+
+    </div>
+
+    <div class="items">
+
+    </div>
+
+    <h4 id="purchases_header"><span>Purchases Made: All Time ({{purchased_length}})</span></h4>
+    <input type="button" name="name" value="Refresh" onclick="update_purchase_tbl()" class="purchase_filters">
+    <span>Filters:</span>
+    {% for catagory in set_catagories %}
+    <input type="button" name="name" value="{{ catagory.name }}" onclick="filter_purchase_tbl_by_catagory('{{ catagory.name }}')" class="purchase_filters">
+    {% endfor %}
+    <div id="purchased_items">
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/csrf.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/items/items-form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/items/items-list.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/purchases/purchases-main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/actions/actions-main.js' %}"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
         var csrf = "{% csrf_token %}";
         $.cookie("csrfmiddlewaretoken", csrf);
-        init_items();
+        console.log("ready");
+        init_item_list();
         init_purchases();
-      });
-      </script>
-    </div>
-  </body>
+    });
+    </script>
+
+</body>
 </html>
