@@ -52,7 +52,6 @@
     $(document).ready(function(){
         var csrf = "{% csrf_token %}";
         $.cookie("csrfmiddlewaretoken", csrf);
-        console.log("ready");
         init_item_form();
         init_item_list();
         init_purchases();

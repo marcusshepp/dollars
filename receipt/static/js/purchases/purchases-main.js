@@ -23,12 +23,10 @@ function build_table(purchased_items_names, purchased_date_created, purchased_le
     return purchased_items;
 }
 function update_purchase_tbl(){
-    console.log("updating purchase table");
     $.ajax({
         type: "GET",
         url: "/api/purchases/",
         success: function(data){
-            console.log(data);
             var purchased_items = build_table(  data.purchased_items_names,
                                                 data.purchased_date_created,
                                                 data.purchased_length,
@@ -56,8 +54,6 @@ function filter_purchase_tbl_by_catagory(catagory_name){
             "catagory_name": catagory_name,
         },
         success: function(data){
-            console.log(data)
-            console.log("success");
             var purchased_items = build_table(  data.purchased_items_names,
                                                 data.purchased_date_created,
                                                 data.purchased_length,

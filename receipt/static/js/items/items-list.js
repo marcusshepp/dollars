@@ -56,43 +56,6 @@ function init_item_list(){
 
  }
 
- function send_new_item(form, purchase){
-   /*
-   Ajax POST to items API. View then creates a new item object.
-   */
-   var form_data = $(form).serializeArray();
-   var name = form_data[0].value;
-   var company_came_from = form_data[1].value;
-   var catagory_id = form_data[2].value;
-   var price = form_data[3].value;
-   $.ajax({
-     type: 'POST',
-     url: '/',
-     data: {
-       "csrfmiddlewaretoken": csrf_func(),
-       "name": name,
-       "company_came_from": company_came_from,
-       "price": price,
-       "catagory_id": catagory_id,
-       "purchase": purchase,
-     },
-     success: function(data){
-       if (data.invalid_form_data){
-         $("#item_form_header").html("<p class='text-danger'>Invalid Form</p>");
-       } else if (data.success) {
-         $("#header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
-         create_action("Create Item", "Create Item: "+name, "undo add item");
-         $("#item_form_header").html("Add New Item");
-         get_items()
-       }
-     },
-     failure: function(){
-       console.log("fail");
-     },
-   });
-   document.getElementsByClassName('item_form')[0].reset();
- };
-
 function show_options(th, id){
     var options = '<div class="options pull-right">'
     options += '<div onclick="hide_options(this, '+id+')" class="">...</div>';
