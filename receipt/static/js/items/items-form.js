@@ -30,7 +30,7 @@ function build_item_form(cata_length, cata_names, cata_ids){
     item_form += '<p><label for="name">Name: </label><input type="text" ';
     item_form += 'placeholder="Name of Item" name="name" max_length="250"/ class=""></p>';
     item_form += '<p><label for="company_came_from">Company: </label><input type="text" placeholder="Where does this come from?" name="company_came_from" max_length="50" class=""></p>';
-    item_form += '<p><label for="catagory">Catagory: </label><span class="add_catagory" onclick="build_catagory_form()"></span>';
+    item_form += '<p><label for="catagory">Catagory: </label><span class="add_catagory" onclick="build_catagory_form()">Add</span>';
     item_form += '<select name="catagory" class="catagory">';
     for (var i = 0; i < cata_length; i++){
         item_form += '<option name="catagory" value="'+cata_ids[i]+'">'+cata_names[i]+'</option>';

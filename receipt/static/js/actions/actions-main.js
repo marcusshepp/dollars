@@ -1,4 +1,4 @@
-function update_undo(){
+function init_undo(){
     var latest_action_div = $("#latest_action");
     $.ajax({
       url: '/api/actions/',
@@ -32,7 +32,6 @@ function undo(undo_handler){
             },
             success: function(data){
                 $("#header").html("<p style='color: green;'>Purchase for:&emsp;" + data.item_purchased + "&emsp; Deleted<span class='fa fa-check'></></p>");
-                update_dom();
             },
             error: function(){
                 console.log("failure");

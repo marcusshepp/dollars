@@ -39,14 +39,12 @@ function init_item_list(){
            var price = prices[i];
            var times_purchase = times_purchased[i];
            var id = ids[i];
-           item_markup += '<form id="' + id + '" class="item col-sm-12 col-lg-12" action="api/items/" method="POST">';
-           item_markup += '<div class="pull-left" id="item_' + id + '">' + name;
-           item_markup += '</div>';
-           item_markup += '<div class="options pull-right" onclick="show_options(this, '+id+')">...</div>';
-           item_markup += '<div class="purchase_btn pull-right" onclick="purchase_item('+id+')">Purchase</div>';
-           item_markup += '<span class="times_purchased pull-right">$ '+price+'</span>'
-           item_markup += '<span class="times_purchased pull-right"># of purchases: ' + times_purchase + '</span>';
-           item_markup += '</div>';
+           item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
+           item_markup += '<div class="" >' + name + '</div>';
+           item_markup += '<div class="options" onclick="show_options(this, '+id+')">...</div>';
+           item_markup += '<div class="purchase_btn" onclick="purchase_item('+id+')">Purchase</div>';
+           item_markup += '<span class="times_purchased">$ '+price+'</span>'
+           item_markup += '<span class="times_purchased"># of purchases: ' + times_purchase + '</span>';
            item_markup += '</form>';
          }
          $(".items").html(item_markup);
@@ -60,7 +58,8 @@ function show_options(th, id){
     var options = '<div class="options pull-right">'
     options += '<div onclick="hide_options(this, '+id+')" class="">...</div>';
     options += '<div onclick="edit('+id+')">Edit</div>&emsp;<div onclick="del('+id+')">Delete</div>&emsp;';
-    options += '<div onclick="purchase_w_new_price(this, '+id+')">Purchase w New Price</div></div>';
+    options += '<div onclick="purchase_w_new_price(this, '+id+')">Purchase w New Price</div>';
+    options += '</div>';
     var options_div = $(th);
     options_div.replaceWith(options);
     $("#"+id).find("span").hide();
@@ -184,8 +183,9 @@ function purchase_w_new_price(th, id){
     $(th).parent().html(markup);
 }
 function post_purchase_w_new_price(th, id){
-    var new_price = $("#"+id).find(":input")[1].value;
-    // console.log($(th).find("input[type='number']")[0]);
+    console.log($('#item_'+id));
+    var new_price = $("#item_"+id).find(":input")[0].value;
+    console.log(new_price);
     $.ajax({
         url: "/api/items/",
         type: "POST",

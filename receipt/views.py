@@ -309,7 +309,6 @@ class CatagoryEndPoint(View):
             data["catagory_length"] = catagories.count()
             data["catagory_names"] = [catagory.string() for catagory in catagories]
             data["catagory_ids"] = [catagory.id for catagory in catagories]
-            print data.items()
         else:
             data["catagory_length"] = 0
         return JsonResponse(data)
