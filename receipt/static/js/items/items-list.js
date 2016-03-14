@@ -2,7 +2,6 @@
  */
 function init_item_list(){
     get_items();
-    unbuild_catagory_form();
 }
 
 
@@ -94,22 +93,6 @@ function init_item_list(){
    document.getElementsByClassName('item_form')[0].reset();
  };
 
-function build_item_form(cata_length, cata_names, cata_ids){
-    var item_form = "";
-    item_form += '<p><label for="name">Name: </label><input type="text" ';
-    item_form += 'placeholder="Name of Item" name="name" max_length="250"/ class="pull-right"></p>';
-    item_form += '<p><label for="company_came_from">Company: </label><input type="text" placeholder="Where does this come from?" name="company_came_from" max_length="50" class="pull-right"></p>';
-    item_form += '<p><label for="catagory">Catagory: </label><span class="add_catagory fa fa-plus pull-right" onclick="build_catagory_form()"></span>';
-    item_form += '<select name="catagory" class="pull-right catagory">';
-    for (var i = 0; i < cata_length; i++){
-        item_form += '<option name="catagory" value="'+cata_ids[i]+'">'+cata_names[i]+'</option>';
-    }
-    item_form += '</select></p>';
-    item_form += '<p><label for="price">Price: </label><input type="number" placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
-    item_form += '<input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">';
-    item_form += '<input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">';
-    $(".item_form").html(item_form);
-}
 function show_options(th, id){
     var options = '<div class="options pull-right">'
     options += '<div onclick="hide_options(this, '+id+')" class="">...</div>';
