@@ -105,7 +105,7 @@ class MainView(TemplateView):
 
 class ItemEndPoint(TemplateView):
 
-    template_name = "receipt/item.html"
+    template_name = "receipt/main.html"
 
     def get(self, request, *a, **kw):
         print request.session.items()
