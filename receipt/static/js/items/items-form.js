@@ -29,16 +29,21 @@ function build_item_form(cata_length, cata_names, cata_ids){
     item_form += '<form class="formmy item_form" action="" method="POST" enctype="multipart/form-data">';
     item_form += '<p><label for="name">Name: </label><input type="text" ';
     item_form += 'placeholder="Name of Item" name="name" max_length="250"/ class=""></p>';
-    item_form += '<p><label for="company_came_from">Company: </label><input type="text" placeholder="Where does this come from?" name="company_came_from" max_length="50" class=""></p>';
-    item_form += '<p><label for="catagory">Catagory: </label><span class="add_catagory" onclick="build_catagory_form()">Add</span>';
+    item_form += '<p><label for="company_came_from">Company: </label>';
+    item_form += '<input type="text" placeholder="Where does this come from?" ';
+    item_form += 'name="company_came_from" max_length="50" class=""></p>';
+    item_form += '<p><label for="catagory">Catagory: </label>';
+    item_form += '<span class="add_catagory" onclick="build_catagory_form()">Add</span>';
     item_form += '<select name="catagory" class="catagory">';
     for (var i = 0; i < cata_length; i++){
         item_form += '<option name="catagory" value="'+cata_ids[i]+'">'+cata_names[i]+'</option>';
     }
     item_form += '</select></p>';
-    item_form += '<p><label for="price">Price: </label><input type="number" placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
+    item_form += '<p><label for="price">Price: </label><input type="number" ';
+    item_form += 'placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
     item_form += '<input type="button" value="Add" class="" onclick="post_new_item(this.form, false)">';
-    item_form += '<input type="button" name="name" value="Add & Purchase" class="" onclick="post_new_item(this.form, true)">';
+    item_form += '<input type="button" name="name" value="Add & Purchase"';
+    item_form += ' class="" onclick="post_new_item(this.form, true)">';
     item_form += '</form>';
     $(".item_form_container").html(item_form);
 }
@@ -62,9 +67,12 @@ function add_new_catagory(){
             },
             success: function(data){
                 if(data.success){
-                    $("#header").html("<p class='text-success'>Successfully Added: "+catagory_value+"</p>");
+                    $("#header").html("<p class=''>Successfully Added: "+catagory_value+"</p>");
+                    if(data.first){
+                        init_item_form();
+                    }
                 } else {
-                    $("#header").html("<p class='text-danger'>FAIL</p>");
+                    $("#header").html("<p class=''>FAIL</p>");
                 }
             },
             failure: function(){
@@ -84,15 +92,15 @@ function build_catagory_form(no_catagories){
     if(no_catagories) {
         catagory_form += " ";
     } else {
-        catagory_form += "<span class='add_catagory fa fa-close pull-right' onclick='init_item_form()'>back</span>";
+        catagory_form += "<span class='add_catagory' onclick='init_item_form()'>back</span>";
     }
     catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
     catagory_form += "<input type='text' style='display: none;' />";
-    catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='new_catagory_input pull-right' /></span></p>";
+    catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='new_catagory_input' /></span></p>";
     if(no_catagories) {
-        catagory_form += '<input type="button" value="Add First Catagory" class="btn btn-default" onclick="add_new_catagory(); init_item_form();">';
+        catagory_form += '<input type="button" value="Add First Catagory" class="" onclick="add_new_catagory(); init_item_form();">';
     } else {
-        catagory_form += '<input type="button" value="Add" class="btn btn-default" onclick="add_new_catagory(); init_item_form();">';
+        catagory_form += '<input type="button" value="Add" class="" onclick="add_new_catagory(); init_item_form();">';
     }
     catagory_form += "</form>";
     $(".item_form_container").html(catagory_form);
@@ -120,9 +128,9 @@ function post_new_item(form, purchase){
     },
     success: function(data){
       if (data.invalid_form_data){
-        $("#item_form_header").html("<p class='text-danger'>Invalid Form</p>");
+        $("#item_form_header").html("<p class=''>Invalid Form</p>");
       } else if (data.success) {
-        $("#header").html("<p class='text-success'>Successfully Added: " + name +  "</p>");
+        $("#header").html("<p class=''>Successfully Added: " + name +  "</p>");
         create_action("Create Item", "Create Item: "+name, "undo add item");
         $("#item_form_header").html("Add New Item");
         get_items()
