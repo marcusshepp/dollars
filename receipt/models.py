@@ -66,6 +66,11 @@ class Item(models.Model):
     number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)
     catagory = models.ForeignKey("Catagory")
 
+    # EXPERIMENT
+    # "numberperpage pagenumber"
+    # eg "100 100"
+    page = models.CharField(max_length=7, null=True, blank=True)
+
     def __unicode__(self):
         string = u"{}".format(self.name)
         if self.company_came_from:
@@ -104,8 +109,21 @@ class Catagory(models.Model):
     def string(self):
         return unicode(self.__unicode__()).upper()
 
-class Budget(models.Model):
 
-    date_created = models.DateTimeField(auto_now_add=True)
-    monthly_paycheck = models.DecimalField(max_digits=19, decimal_places=2)
-    monthly_saving_desired = models.DecimalField(max_digits=19, decimal_places=2)
+class Start(models.Model):
+    """
+    Is this the start of the application?
+    """
+    is_start_of_app = models.BooleanField(default=False)
+
+
+class WhatPage(models.Model):
+    """
+    Where was the User looking last?
+    """
+    obj = models.CharField(max_length=15)
+    page_number = models.IntegerField()
+    number_per_page = models.IntegerField()
+
+    def __unicode__(self):
+        return u"{0}-{1} per page, page number {2}".format(self.obj, self.number_per_page, self.page_number)

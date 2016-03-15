@@ -1,6 +1,5 @@
 HOSTED @ http://52.26.186.87/
 
-
 TODO:
 - purchase # of item btn
 - purchase w different name btn
@@ -8,4 +7,3 @@ TODO:
 - click attr to see more text
 - filter by cata btn
 - filter by search btn
-- split up dyliams.js into multiple files

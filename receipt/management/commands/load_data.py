@@ -82,6 +82,12 @@ class Command(BaseCommand):
                     with open(path+".xml", 'r') as out:
                         for objec in serializers.deserialize("xml", out):
                             objec.save()
+        elif arg == "delete":
+            print "deleting:"
+            [i.delete() for i in Purchase.objects.all()]
+            [i.delete() for i in Catagory.objects.all()]
+            [i.delete() for i in Item.objects.all()]
+            [i.delete() for i in Action.objects.all()]
         else: print "use args -- `import` or `export`"
 
 

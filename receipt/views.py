@@ -15,6 +15,7 @@ from .models import (
     Item,
     Purchase,
     Action,
+    Start,
     Catagory)
 
 
@@ -46,6 +47,21 @@ def increase_page_number_session_var(request, name):
 class MainView(TemplateView):
 
     template_name = "receipt/main.html"
+
+    def dispatch(self, request, *a, **kw):
+        start = Start.objects.all()
+        if not start:
+            """
+            *** INIT ***
+            This is where the first get request ever comes in.
+            Because this will only execute once the app has started.
+            """
+            Start.objects.create(is_start_of_app=False)
+            request.session["purchases_page_number"] = 0
+            request.session["items_page_number"] = 0
+            request.session["purchases_number_per_page"] = 0
+            request.session["items_number_per_page"] = 0
+        return super(MainView, self).dispatch(request, *a, **kw)
 
     def get(self, request, *a, **kw):
         """ Renders the page w `total`, `# of purch`, `catagories` """
@@ -103,9 +119,7 @@ class MainView(TemplateView):
         return JsonResponse(context)
 
 
-class ItemEndPoint(TemplateView):
-
-    template_name = "receipt/item.html"
+class ItemEndPoint(View):
 
     def get(self, request, *a, **kw):
         print request.session.items()
@@ -130,6 +144,7 @@ class ItemEndPoint(TemplateView):
         purchased_item = Purchase(**purchase_data)
         purchased_item.save()
         data = dict()
+        data["item_name"] = item.name
         data["purchased"] = True
         return JsonResponse(data)
 
@@ -309,11 +324,16 @@ class CatagoryEndPoint(View):
             data["catagory_length"] = catagories.count()
             data["catagory_names"] = [catagory.string() for catagory in catagories]
             data["catagory_ids"] = [catagory.id for catagory in catagories]
+        else:
+            data["catagory_length"] = 0
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
         data = dict()
         if get_post(request, "catagory_name"):
+            catas = Catagory.objects.all()
+            if not catas:
+                data["first"] = True
             cata = Catagory.objects.get_or_create(name=get_post(request, "catagory_name"))
             if cata:
                 data["success"] = True
