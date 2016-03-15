@@ -162,10 +162,8 @@ function del(id){
             "delete_item": 1,
         },
         success: function(){
-            // console.log("success");
             var name = $("#item_"+id).html();
-            $("#header").html("<p style='color: green;'>Deleted Item: " + name + "<span class='fa fa-check'></></p>");
-            // create_action("Purchase", "Make purchase: "+name, "undo purchase");
+            $("#header").html("<p>Deleted Item: " + name + "<span class=''></></p>");
             get_items();
         },
     });
@@ -183,9 +181,7 @@ function purchase_w_new_price(th, id){
     $(th).parent().html(markup);
 }
 function post_purchase_w_new_price(th, id){
-    console.log($('#item_'+id));
     var new_price = $("#item_"+id).find(":input")[0].value;
-    console.log(new_price);
     $.ajax({
         url: "/api/items/",
         type: "POST",
@@ -195,9 +191,8 @@ function post_purchase_w_new_price(th, id){
             "amount_payed": new_price,
         },
         success: function(){
-            // console.log("success");
-            var name = $("#item_"+id).html();
-            $("#header").html("<p style='color: green;'>Purchase Made for: " + name + "&emsp; Amount Played: "+new_price+"<span class='fa fa-check'></></p>");
+            var name = $("#item_"+id).find("div")[0].innerText;
+            $("#header").html("<p>Purchase Made for: " + name + " Amount Played: "+new_price+"<span class=''></></p>");
             create_action("Purchase", "Make purchase: "+name, "undo purchase");
         },
     });
