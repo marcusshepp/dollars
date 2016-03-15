@@ -130,6 +130,7 @@ class ItemEndPoint(TemplateView):
         purchased_item = Purchase(**purchase_data)
         purchased_item.save()
         data = dict()
+        data["item_name"] = item.name
         data["purchased"] = True
         return JsonResponse(data)
 

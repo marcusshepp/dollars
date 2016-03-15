@@ -55,9 +55,10 @@ function init_item_list(){
  }
 
 function show_options(th, id){
-    var options = '<div class="options pull-right">'
+    var options = '<div class="options">'
     options += '<div onclick="hide_options(this, '+id+')" class="">...</div>';
-    options += '<div onclick="edit('+id+')">Edit</div>&emsp;<div onclick="del('+id+')">Delete</div>&emsp;';
+    options += '<div onclick="edit('+id+')">Edit</div>';
+    options += '<div onclick="del('+id+')">Delete</div>';
     options += '<div onclick="purchase_w_new_price(this, '+id+')">Purchase w New Price</div>';
     options += '</div>';
     var options_div = $(th);
@@ -119,7 +120,6 @@ function edit(id){
 }
 function edit_item(form, id){
     var form_data = $(form).serializeArray();
-    // console.log(form_data);
     var name = form_data[0].value;
     var company_came_from = form_data[1].value;
     var catagory_id = form_data[2].value;
@@ -137,8 +137,8 @@ function edit_item(form, id){
             "catagory_id": catagory_id,
         },
         success: function(data){
-            // console.log("success");
-            var name = $("#item_"+id).html();
+            var name = $("#item_"+id).find(":input");
+            console.log(name);
             $("#header").html("<p style='color: green;'>Edit Item: " + name + "<span class='fa fa-check'></></p>");
             // create_action("Purchase", "Make purchase: "+name, "undo purchase");
             get_items();
@@ -208,19 +208,18 @@ function purchase_item(id){
   Creates a new purchase object by POST with Ajax.
   Also increases the int on the btn.
   */
-  var form = $("#"+id)[0];
-  var url = form.action;
-  var form_data = $(form).serializeArray();
+  var form = $("#item_"+id)[0];
+  var item_id = form.id.substr(5);
   $.ajax({
       type: 'POST',
       url: '/api/items/',
       data: {
           "csrfmiddlewaretoken": csrf_func(),
-          "id": form.id,
+          "id": item_id,
       },
-      success: function(){
-          var name = $("#item_" + form.id).html()
-          $("#header").html("<p style='color: green;'>Purchase Made:&emsp;" + name + "&emsp;<span class='fa fa-check'></></p>");
+      success: function(data){
+          var name = data.item_name;
+          $("#header").html("<p>Purchase Made: " + name + " <span class=''></></p>");
           create_action("Purchase", "Make purchase: "+name, "undo purchase");
           update_purchase_tbl();
       },
