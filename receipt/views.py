@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import csrf_exempt
 
@@ -45,7 +47,8 @@ def increase_page_number_session_var(request, name):
 class MainView(TemplateView):
 
     template_name = "receipt/main.html"
-
+    
+    @method_decorator(login_required)
     def dispatch(self, request, *a, **kw):
         start = Start.objects.all()
         if not start:
@@ -99,6 +102,7 @@ class MainView(TemplateView):
         request.POST = request.POST.copy()
         if get_post(request, "catagory_id"):
             request.POST["catagory"] = int(request.POST.pop("catagory_id")[0])
+        request.POST["user"] = request.user.id
         form = ItemForm(request.POST)
         if form.is_valid():
             form.save()
@@ -236,6 +240,7 @@ class ActionEndPoint(View):
         data = dict()
         request.POST = request.POST.copy()
         if get_post(request, "create_action"):
+            request.POST["user"] = request.user.id
             form = ActionForm(request.POST)
             if get_post(request, "description"):
                 form.description = data["description"]
@@ -318,6 +323,7 @@ class CatagoryEndPoint(View):
         data = dict()
         catagories = Catagory.objects.all()
         if catagories:
+            catagories = catagories.filter(user_id=request.user.id)
             data["catagory_length"] = catagories.count()
             data["catagory_names"] = [catagory.string() for catagory in catagories]
             data["catagory_ids"] = [catagory.id for catagory in catagories]
@@ -331,7 +337,9 @@ class CatagoryEndPoint(View):
             catas = Catagory.objects.all()
             if not catas:
                 data["first"] = True
-            cata = Catagory.objects.get_or_create(name=get_post(request, "catagory_name"))
+            cata = Catagory.objects.get_or_create(
+                name=get_post(request, "catagory_name"),
+                user_id=request.user.id)
             if cata:
                 data["success"] = True
         return JsonResponse(data)

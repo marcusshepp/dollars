@@ -7,9 +7,6 @@ function init_item_form(){
     $.ajax({
         type: "GET",
         url: "/api/catagories/",
-        data: {
-            "Bar": "Foo",
-        },
         success: function(data){
             if (parseInt(data.catagory_length) > 0){
                 build_item_form(data.catagory_length, data.catagory_names, data.catagory_ids);
