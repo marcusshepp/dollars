@@ -7,11 +7,6 @@ from .models import (
     )
 
 
-class PicForm(forms.Form):
-
-    docfile = forms.FileField(label='Select a file',)
-
-
 class ItemForm(forms.ModelForm):
 
     class Meta:

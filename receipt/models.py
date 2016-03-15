@@ -28,18 +28,6 @@ class Action(models.Model):
             return objs.order_by('-id')[0]
 
 
-class Pic(models.Model):
-
-    class Meta:
-        pass
-
-    title = models.CharField(max_length=100)
-    docfile = models.FileField(upload_to="pics/")
-
-    def __unicode__(self):
-        return u"{}".format(self.title)
-
-
 class Purchase(models.Model):
 
     class Meta:

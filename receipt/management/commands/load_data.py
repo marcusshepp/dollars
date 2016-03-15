@@ -13,8 +13,6 @@ from receipt.models import (
     Item,
     Catagory,
     Action,
-    Pic,
-    Budget,
 )
 
 

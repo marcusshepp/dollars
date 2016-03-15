@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'receipt',
+    'accounts',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -51,7 +52,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'receipt.urls'
+ROOT_URLCONF = 'dollars.urls'
 
 TEMPLATES = [
     {

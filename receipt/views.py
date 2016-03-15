@@ -6,12 +6,10 @@ from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import (
-    PicForm,
     ItemForm,
     ActionForm,
     PurchaseForm)
 from .models import (
-    Pic,
     Item,
     Purchase,
     Action,
@@ -122,7 +120,6 @@ class MainView(TemplateView):
 class ItemEndPoint(View):
 
     def get(self, request, *a, **kw):
-        print request.session.items()
         items = Item.objects.all()
         data = dict()
         data["ids"] = [i.id for i in items]
