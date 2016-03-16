@@ -9,8 +9,6 @@ WORKERS=3
 echo 'Creating Daemon process for: '$NAME
 echo 'LOGFILE: '$LOGFILE
 
-echo "removing /opt/proc/$NAME*"
-rm -rf /opt/proc/$NAME*
 
 DIRECT=/opt/proc/
 echo "does $DIRECT exist?"
@@ -21,7 +19,10 @@ if ! [[ -d $DIRECT ]]; then
     ls -la /opt/
 else
     echo "Yes it does."
+    echo "removing /opt/proc/$NAME*"
+    rm -rf /opt/proc/$NAME*
 fi
+
 
 gunicorn \
     --env DJANGO_SETTINGS_MODULE=$SETTINGS \
