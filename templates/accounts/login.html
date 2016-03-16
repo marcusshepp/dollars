@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if invalid %} 
+Please check that your username and password are correct.
+{% endif %}
+<form class="" action="" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Submit"> <a href="{% url 'register' %}">Not a Registered User?</a>
+</form>
+{% endblock body %}

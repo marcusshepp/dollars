@@ -7,9 +7,6 @@ function init_item_form(){
     $.ajax({
         type: "GET",
         url: "/api/catagories/",
-        data: {
-            "Bar": "Foo",
-        },
         success: function(data){
             if (parseInt(data.catagory_length) > 0){
                 build_item_form(data.catagory_length, data.catagory_names, data.catagory_ids);
@@ -41,9 +38,9 @@ function build_item_form(cata_length, cata_names, cata_ids){
     item_form += '</select></p>';
     item_form += '<p><label for="price">Price: </label><input type="number" ';
     item_form += 'placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
-    item_form += '<input type="button" value="Add" class="" onclick="post_new_item(this.form, false)">';
+    item_form += '<input type="button" value="Add" class="" onclick="validate_new_item(this.form, false)">';
     item_form += '<input type="button" name="name" value="Add & Purchase"';
-    item_form += ' class="" onclick="post_new_item(this.form, true)">';
+    item_form += ' class="" onclick="validate_new_item(this.form, true)">';
     item_form += '</form>';
     $(".item_form_container").html(item_form);
 }
@@ -56,8 +53,7 @@ function add_new_catagory(){
     var catagory_value = $(".new_catagory_input").val();
     if (!catagory_value){
         $("#item_form_header").html("<p class=''>Please enter a value for a Catagory.</p>");
-    }
-    else {
+    } else {
         $.ajax({
             type: "POST",
             url: "/api/catagories/",
@@ -106,7 +102,11 @@ function build_catagory_form(no_catagories){
     $(".item_form_container").html(catagory_form);
 }
 
-function post_new_item(form, purchase){
+/*
+Create new Items + Validation
+*/
+
+function validate_new_item(form, purchase){
   /*
   Ajax POST to items API. View then creates a new item object.
   */
@@ -115,6 +115,17 @@ function post_new_item(form, purchase){
   var company_came_from = form_data[1].value;
   var catagory_id = form_data[2].value;
   var price = form_data[3].value;
+  if (name.length < 4) {
+    console.log("da fuc");
+    $("#item_form_header").html("<p class=''>Item name must be longer than 3 characters.</p>");
+  } else {
+    create_new_item(name, company_came_from, price, catagory_id, purchase)
+  }
+  
+  document.getElementsByClassName('item_form')[0].reset();
+};
+
+function create_new_item(name, company_came_from, price, catagory_id, purchase){
   $.ajax({
     type: 'POST',
     url: '/',
@@ -127,18 +138,13 @@ function post_new_item(form, purchase){
       "purchase": purchase,
     },
     success: function(data){
-      if (data.invalid_form_data){
-        $("#item_form_header").html("<p class=''>Invalid Form</p>");
-      } else if (data.success) {
         $("#header").html("<p class=''>Successfully Added: " + name +  "</p>");
         create_action("Create Item", "Create Item: "+name, "undo add item");
         $("#item_form_header").html("Add New Item");
         get_items()
-      }
     },
     failure: function(){
       console.log("fail");
     },
   });
-  document.getElementsByClassName('item_form')[0].reset();
-};
+}

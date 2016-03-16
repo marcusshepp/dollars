@@ -7,14 +7,15 @@ from itertools import chain
 
 from django.core.management.base import BaseCommand
 from django.core import serializers
+from django.contrib.auth.models import User
 
 from receipt.models import (
     Purchase,
     Item,
     Catagory,
     Action,
-    Pic,
-    Budget,
+    Start,
+    WhatPage,
 )
 
 
@@ -88,6 +89,9 @@ class Command(BaseCommand):
             [i.delete() for i in Catagory.objects.all()]
             [i.delete() for i in Item.objects.all()]
             [i.delete() for i in Action.objects.all()]
+            [i.delete() for i in Start.objects.all()]
+            [i.delete() for i in WhatPage.objects.all()]
+            [i.delete() for i in User.objects.all()]
         else: print "use args -- `import` or `export`"
 
 

@@ -137,16 +137,16 @@ function edit_item(form, id){
             "catagory_id": catagory_id,
         },
         success: function(data){
-            var name = $("#item_"+id).find(":input");
-            console.log(name);
+            var name = $("#item_"+id+" div")[0].innerText;
             $("#header").html("<p style='color: green;'>Edit Item: " + name + "<span class='fa fa-check'></></p>");
-            // create_action("Purchase", "Make purchase: "+name, "undo purchase");
             get_items();
             document.getElementsByClassName('item_form')[0].reset();
             build_edit_form(data.catagory_names, data.catagory_ids, data.catagory_length, "", "", "", "", "")
             var item_form_btns = "";
-            item_form_btns += '<input type="button" value="Add" class="btn btn-default" onclick="send_new_item(this.form, false)">';
-            item_form_btns += '<input type="button" name="name" value="Add & Purchase" class="btn btn-default" onclick="send_new_item(this.form, true)">';
+            item_form_btns += '<input type="button" value="Add" ';
+            item_form_btns += 'class="" onclick="send_new_item(this.form, false)">';
+            item_form_btns += '<input type="button" name="name" value="Add & Purchase" ';
+            item_form_btns += 'class="" onclick="send_new_item(this.form, true)">';
             $(".edit_save_btn").replaceWith(item_form_btns);
             get_items();
         },
