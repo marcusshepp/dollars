@@ -35,25 +35,25 @@ gunicorn \
 
 # /etc/nginx/sites-enabled/default
 # upstream app_server {
-	# server unix:/opt/proc/mysite-gunicorn.sock;
+# 	server unix:/opt/proc/mysite-gunicorn.sock;
 # }
-
+# 
 # server {
-
-        # listen 9000;
-
-        # access_log /var/log/nginx/access.log;
-        # error_log /var/log/nginx/error.log;
-
-	# location / {
-		# proxy_pass http://app_server;
-	# }
-
-        # location /media {
-        #     root /opt/media;
-        # }
-
-        # location /static {
-        #     root /opt/static;
-	# }
+# 
+#         listen 9000;
+# 
+#         access_log /var/log/nginx/access.log;
+#         error_log /var/log/nginx/error.log;
+# 
+# 	location / {
+# 		proxy_pass http://app_server;
+# 	}
+# 
+#         location /media {
+#             root /opt/media;
+#         }
+# 
+#         location /static {
+#             root /opt/static;
+# 	}
 # }
