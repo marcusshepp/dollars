@@ -19,7 +19,7 @@ from accounts.views import (
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # receipt
-    url(r'^$', MainView.as_view(), name="items"),
+    url(r'^dollars/$', MainView.as_view(), name="items"),
     url(r'^api/items/$', ItemEndPoint.as_view(), name="api_items"),
     url(r'^api/items_edit/$', ItemManEndPoint.as_view(), name="api_items_edit"),
     url(r'^api/actions/$', ActionEndPoint.as_view(), name="api_actions"),
