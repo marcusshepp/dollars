@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import authenticate, login
 
 from .forms import (
@@ -25,7 +26,7 @@ class Login(View):
                 if user.is_active:
                     login(request, user)
                     user.is_authenticated = True
-                    return redirect('/')
+                    return redirect(reverse_lazy("main"))
         form = LoginForm
         message = 'User not authenticated'
         return render(
@@ -46,7 +47,7 @@ class Registeration(View):
         context = dict()
         if form.is_valid:
             form.save()
-            return redirect("/")
+            return redirect(reverse_lazy("main"))
         else:
             context["invalid"] = True
             return render(request, "accounts/login.html", context)
