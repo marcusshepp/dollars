@@ -13,7 +13,7 @@ function init_item_list(){
    */
    $.ajax({
        type: "GET",
-       url: "/api/items/",
+       url: "/dollars/api/items/",
        data: {
          'FOO': 'BAR',
        },
@@ -95,7 +95,7 @@ function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id,
 function edit(id){
     console.log(id);
     $.ajax({
-        url: "/api/items_edit/",
+        url: "/dollars/api/items_edit/",
         type: "POST",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
@@ -125,7 +125,7 @@ function edit_item(form, id){
     var catagory_id = form_data[2].value;
     var price = form_data[3].value;
     $.ajax({
-        url: "/api/items_edit/",
+        url: "/dollars/api/items_edit/",
         type: "POST",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
@@ -154,7 +154,7 @@ function edit_item(form, id){
 }
 function del(id){
     $.ajax({
-        url: "/api/items_edit/",
+        url: "/dollars/api/items_edit/",
         type: "POST",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
@@ -183,7 +183,7 @@ function purchase_w_new_price(th, id){
 function post_purchase_w_new_price(th, id){
     var new_price = $("#item_"+id).find(":input")[0].value;
     $.ajax({
-        url: "/api/items/",
+        url: "/dollars/api/items/",
         type: "POST",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
@@ -207,7 +207,7 @@ function purchase_item(id){
   var item_id = form.id.substr(5);
   $.ajax({
       type: 'POST',
-      url: '/api/items/',
+      url: '/dollars/api/items/',
       data: {
           "csrfmiddlewaretoken": csrf_func(),
           "id": item_id,

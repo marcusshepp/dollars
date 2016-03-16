@@ -25,7 +25,7 @@ function build_table(purchased_items_names, purchased_date_created, purchased_le
 function update_purchase_tbl(){
     $.ajax({
         type: "GET",
-        url: "/api/purchases/",
+        url: "/dollars/api/purchases/",
         success: function(data){
             var purchased_items = build_table(  data.purchased_items_names,
                                                 data.purchased_date_created,
@@ -48,7 +48,7 @@ function update_purchase_tbl(){
 function filter_purchase_tbl_by_catagory(catagory_name){
     $.ajax({
         type: "POST",
-        url: "/api/purchases/",
+        url: "/dollars/api/purchases/",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
             "catagory_name": catagory_name,

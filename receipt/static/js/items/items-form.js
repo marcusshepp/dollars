@@ -6,7 +6,7 @@ function init_item_form(){
     /* Builds Item Form ?? */
     $.ajax({
         type: "GET",
-        url: "/api/catagories/",
+        url: "/dollars/api/catagories/",
         success: function(data){
             if (parseInt(data.catagory_length) > 0){
                 build_item_form(data.catagory_length, data.catagory_names, data.catagory_ids);
@@ -56,7 +56,7 @@ function add_new_catagory(){
     } else {
         $.ajax({
             type: "POST",
-            url: "/api/catagories/",
+            url: "/dollars/api/catagories/",
             data: {
                 "csrfmiddlewaretoken": csrf_func(),
                 "catagory_name": catagory_value,
@@ -128,7 +128,7 @@ function validate_new_item(form, purchase){
 function create_new_item(name, company_came_from, price, catagory_id, purchase){
   $.ajax({
     type: 'POST',
-    url: '/',
+    url: '/dollars/',
     data: {
       "csrfmiddlewaretoken": csrf_func(),
       "name": name,

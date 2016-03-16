@@ -1,7 +1,7 @@
 function init_undo(){
     var latest_action_div = $("#latest_action");
     $.ajax({
-      url: '/api/actions/',
+      url: '/dollars/api/actions/',
       type: "GET",
       success: function(data){
           // console.log(data.latest_action_object_name);
@@ -23,7 +23,7 @@ function undo(undo_handler){
     if (undo_handler == "undo purchase"){
         $.ajax({
             type: 'POST',
-            url: '/api/actions/',
+            url: '/dollars/api/actions/',
             data: {
                 "csrfmiddlewaretoken": csrf_func(),
                 "undo": true,
@@ -40,7 +40,7 @@ function undo(undo_handler){
     } else if (undo_handler == "undo add item") {
         $.ajax({
             type: 'POST',
-            url: '/api/actions/',
+            url: '/dollars/api/actions/',
             data: {
                 "csrfmiddlewaretoken": csrf_func(),
                 "undo": true,
@@ -63,7 +63,7 @@ function undo(undo_handler){
 function create_action(title, object_name, undo_handler){
     $.ajax({
         type:"POST",
-        url:"/api/actions/",
+        url:"/dollars/api/actions/",
         data: {
             "create_action": true,
             "title": title,
