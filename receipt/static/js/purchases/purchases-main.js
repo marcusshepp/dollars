@@ -38,7 +38,6 @@ function update_purchase_tbl(){
         type: "GET",
         url: url_for_purchases(),
         success: function(data){
-            console.log(data);
             var purchased_items = build_table(  data.purchased_items_names,
                                                 data.purchased_date_created,
                                                 data.purchased_length,
@@ -62,26 +61,34 @@ function update_purchase_tbl(){
 function filter_purchase_tbl_by_catagory(catagory_id){
     $.ajax({
         type: "POST",
-        url: "/dollars/api/purchases/",
+        url: url_for_purchases(),
         data: {
             "csrfmiddlewaretoken": csrf_func(),
             "catagory_id": catagory_id,
         },
         success: function(data){
-            var purchased_items = build_table(  data.purchased_items_names,
-                                                data.purchased_date_created,
-                                                data.purchased_length,
-                                                data.amount_payed,
-                                                data.total);
-            $("#purchased_items").html(purchased_items);
-            if (data.total == 0){
-                $("#total").html("<span>$&emsp;" + data.total.toFixed(2) + "</span>");
+            if (data.no_purchases_for_query){
+              var problem = '<input type="button" name="name" value="Reload Purchase Table" onclick="update_purchase_tbl()" class="purchase_filters">';
+              problem += '<p>No purchases match this query.</p>';
+              $(".purchased_items_container").html(problem);
             } else {
-                $("#total").html("<span>$&emsp;" + data.total + "</span>");
+              var purchased_items = build_table(  data.purchased_items_names,
+                                                  data.purchased_date_created,
+                                                  data.purchased_length,
+                                                  data.amount_payed,
+                                                  data.total,
+                                                  data.cata_names_set,
+                                                  data.cata_ids_set);
+              $(".purchased_items_container").html(purchased_items);
+              if (data.total == 0){
+                  $("#total").html("<span>$&emsp;" + data.total.toFixed(2) + "</span>");
+              } else {
+                  $("#total").html("<span>$&emsp;" + data.total + "</span>");
+              }
+              var purchase_y_total = "";
+              purchase_y_total += "<h3>Purchases Made: All Time ("+data.purchased_length+")";
+              $("#purchases_header").html(purchase_y_total);
             }
-            var purchase_y_total = "";
-            purchase_y_total += "<h3>Purchases Made: All Time ("+data.purchased_length+")";
-            $("#purchases_header").html([purchase_y_total]);
         },
         failure: function(){
             console.log("failure @ filter_purchase_tbl_by_catagory");

@@ -98,7 +98,12 @@ class Catagory(TiedToUser):
 
     def string(self):
         return unicode(self.__unicode__()).upper()
-
+    
+    def has_a_purchase(self, user):
+        for purchase in Purchase.objects.filter(user_id=user.id):
+            if self.name == purchase.item_purchased.catagory.name:
+                return True
+        
 
 class Start(models.Model):
     """

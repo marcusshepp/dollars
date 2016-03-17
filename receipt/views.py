@@ -10,13 +10,16 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import (
     ItemForm,
     ActionForm,
-    PurchaseForm)
+    PurchaseForm,
+    CatagoryForm,
+)
 from .models import (
     Item,
     Purchase,
     Action,
     Start,
-    Catagory)
+    Catagory,
+)
 
 
 def get_post(request, name):
@@ -235,49 +238,51 @@ class ActionEndPoint(View):
         return JsonResponse(data)
 
 
-def cata_names(user):
-    all_catagories = Catagory.objects.filter(user_id = user.id).order_by("-id")
-    cata_names = [catagory.name for catagory in all_catagories]
+def cata_names(user, a):
+    cata_names = list()
+    all_catagories = Catagory.objects.filter(user_id=user.id).order_by("-id")
+    for catagory in all_catagories:
+        if a:
+            cata_names.append(catagory.name)
+        else:
+            if catagory.has_a_purchase(user):
+                cata_names.append(catagory.name)
     return cata_names
 
-def cata_ids(user):
-    return [catagory.id for catagory in Catagory.objects.filter(
-                                        user_id=user.id)]
+def cata_ids(user, a):
+    cata_ids = list()
+    for catagory in Catagory.objects.filter(user_id=user.id):
+        if a:
+            cata_ids.append(catagory.id)
+        else:
+            if catagory.has_a_purchase(user):
+                cata_ids.append(catagory.id)
+    return cata_ids
 
 
 class CatagoryEndPoint(View):
 
-    def cata_data_for_curr_user(self, catagories, user):
-        data = dict()
-        if catagories:
-            data["catagory_length"] = catagories.count()
-            data["catagory_names"] = [catagory.string() for catagory in catagories]
-            data["catagory_ids"] = [catagory.id for catagory in catagories]
-        else:
-            data["catagory_length"] = 0
-
     def get(self, request, *a, **kw):
         data = dict()
-        cata_names_set = set(cata_names(request.user))
-        data["cata_names_set"] = list(cata_names_set)
-        data["cata_ids_set"] = list(set(
-            [catagory.id for catagory in Catagory.objects.filter(
-            user_id=request.user.id)]))
+        data["cata_names_set"] = cata_names(request.user, True)
+        data["cata_ids_set"] = cata_ids(request.user, True)
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
         data = dict()
-        catas = Catagory.objects.all()
-        if get_post(request, "catagory_name"):
+        user = request.user
+        catas = Catagory.objects.filter(user_id=user.id)
+        cata_name = get_post(request, "catagory_name")
+        if cata_name:
             if not catas:
                 data["first"] = True
-            cata = Catagory.objects.get_or_create(
-                name    = get_post(request, "catagory_name"),
-                user_id = request.user.id)
-            if cata:
+            cata_data = dict()
+            cata_data["name"] = cata_name
+            cata_data["user"] = user.id
+            cata = CatagoryForm(cata_data)
+            if cata.is_valid():
+                cata.save()
                 data["success"] = True
-        elif get_post(request, "call_for_cata_data"):
-            data = self.cata_data_for_curr_user(catas, request.user)
         return JsonResponse(data)
 
 
@@ -295,16 +300,25 @@ class PurchaseTableEndPoint(View):
             for purchase in purchases:
                 total += purchase.amount_payed
             data["total"] = total
-            data["cata_names_set"] = list(set(cata_names(user)))
-            data["cata_ids_set"] = list(set(cata_ids(user)))
+            data["cata_names_set"] = list(set(cata_names(user, 0)))
+            data["cata_ids_set"] = list(set(cata_ids(user, 0)))
         else:
             data["purchased_length"] = 0
         return JsonResponse(data)
 
-    def filter_by_catagory(self, catagory_id, user):
+    def get(self, request, *a, **kw):
+        purchases = Purchase.objects.filter(user=request.user)
+        return self.purchase_json_resp(purchases, request.user)
+
+    def post(self, request, *a, **kw):
         data = dict()
+        user = request.user
+        catagory_id = get_post(request, "catagory_id")
         if catagory_id:
-            items = Item.objects.filter(catagory__id=catagory_id)
+            items = Item.objects.filter(
+                catagory__id=catagory_id,
+                user=user,
+                )
             purchases = list()
             for item in items:
                 purchases_q = Purchase.objects.filter(item_purchased__name=item.name)
@@ -320,17 +334,7 @@ class PurchaseTableEndPoint(View):
                     total += purchase.amount_payed
                 data["total"] = total
                 data["amount_payed"] = [i.amount_payed for i in purchases]
-                data["cata_names_set"] = list(set(cata_names(user)))
-                data["cata_ids_set"] = list(set(cata_ids(user)))
-        return data
-
-    def get(self, request, *a, **kw):
-        purchases = Purchase.objects.all()
-        return self.purchase_json_resp(purchases, request.user)
-
-    def post(self, request, *a, **kw):
-        data = dict()
-        catagory_id = get_post(request, "catagory_id")
-        if catagory_id:
-            data = self.filter_by_catagory(catagory_id, request.user)
+                data["cata_names_set"] = list(set(cata_names(user, 0)))
+                data["cata_ids_set"] = list(set(cata_ids(user, 0)))
+            else: data["no_purchases_for_query"] = True
         return JsonResponse(data)

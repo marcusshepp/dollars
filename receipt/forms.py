@@ -4,6 +4,7 @@ from .models import (
     Item,
     Action,
     Purchase,
+    Catagory,
     )
 
 
@@ -26,3 +27,10 @@ class PurchaseForm(forms.ModelForm):
     class Meta:
         model = Purchase
         fields = ["amount_payed", "item_purchased", "user"]
+
+
+class CatagoryForm(forms.ModelForm):
+
+    class Meta:
+        model = Catagory
+        fields = ["name", "user"]

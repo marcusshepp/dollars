@@ -8,7 +8,7 @@ function init_item_form(){
         type: "GET",
         url: "/dollars/api/catagories/",
         success: function(data){
-            console.log(data);
+          console.log(data);
             if (data.cata_names_set.length > 0){
                 build_item_form(data.cata_names_set, data.cata_ids_set);
             } else {
@@ -31,7 +31,7 @@ function build_item_form(cata_names, cata_ids){
     item_form += '<input type="text" placeholder="Where does this come from?" ';
     item_form += 'name="company_came_from" max_length="50" class=""></p>';
     item_form += '<p><label for="catagory">Catagory: </label>';
-    item_form += '<span class="add_catagory" onclick="build_catagory_form()">Add</span>';
+    item_form += '<span class="add_catagory" onclick="build_catagory_form(no_catagories=false)">Add</span>';
     item_form += '<select name="catagory" class="catagory">';
     for (var i = 0; i < cata_names.length; i++){
         item_form += '<option name="catagory" value="'+cata_ids[i]+'">'+cata_names[i]+'</option>';
@@ -63,12 +63,8 @@ function add_new_catagory(){
                 "catagory_name": catagory_value,
             },
             success: function(data){
-                if(data.success){
-                    $("#header").html("<p class=''>Successfully Added: "+catagory_value+"</p>");
-                    init_item_form();
-                } else {
-                    $("#header").html("<p class=''>FAIL</p>");
-                }
+                $("#header").html("<p class=''>Successfully Added: "+catagory_value+"</p>");
+                init_item_form();
             },
             failure: function(){
                 console.log("failue @ add_new_catagory");
@@ -93,7 +89,7 @@ function build_catagory_form(no_catagories){
     catagory_form += "<input type='text' style='display: none;' />";
     catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='new_catagory_input' /></span></p>";
     if(no_catagories) {
-        catagory_form += '<input type="button" value="Add First Catagory" class="" onclick="add_new_catagory(); init_item_form();">';
+        catagory_form += '<input type="button" value="Add First Catagory" class="" onclick="add_new_catagory();">';
     } else {
         catagory_form += '<input type="button" value="Add" class="" onclick="add_new_catagory();">';
     }
@@ -115,12 +111,10 @@ function validate_new_item(form, purchase){
   var catagory_id = form_data[2].value;
   var price = form_data[3].value;
   if (name.length < 4) {
-    console.log("da fuc");
     $("#item_form_header").html("<p class=''>Item name must be longer than 3 characters.</p>");
   } else {
     create_new_item(name, company_came_from, price, catagory_id, purchase)
   }
-
   document.getElementsByClassName('item_form')[0].reset();
 };
 
@@ -136,11 +130,10 @@ function create_new_item(name, company_came_from, price, catagory_id, purchase){
       "catagory_id": catagory_id,
       "purchase": purchase,
     },
-    success: function(data){
+    success: function(){
         $("#header").html("<p class=''>Successfully Added: " + name +  "</p>");
         create_action("Create Item", "Create Item: "+name, "undo add item");
-        $("#item_form_header").html("Add New Item");
-        get_items()
+        init_item_form();
     },
     failure: function(){
       console.log("fail");

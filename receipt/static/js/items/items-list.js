@@ -1,11 +1,15 @@
 /* Items
  */
+function item_list_url(){
+  return "/dollars/api/items/";
+} 
+function item_man_url(){
+  return "/dollars/api/items_edit/";
+}
 function init_item_list(){
     get_items();
 }
-
-
- function get_items(){
+function get_items(){
    /*
    UPDATES DOM
    Ajax request to the items API.
@@ -13,11 +17,12 @@ function init_item_list(){
    */
    $.ajax({
        type: "GET",
-       url: "/dollars/api/items/",
+       url: item_list_url(),
        data: {
          'FOO': 'BAR',
        },
        success: function(data){
+         console.log(data);
          build_items(data.length,
                      data.names,
                      data.companies,
@@ -29,7 +34,7 @@ function init_item_list(){
          console.log("fail");
        },
    });
- }
+}
  function build_items(length, names, companies, prices, times_purchased, ids){
      if (length > 0){
          var item_markup = "";
@@ -93,9 +98,8 @@ function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id,
     $(".item_form_container").html(form_str);
 }
 function edit(id){
-    console.log(id);
     $.ajax({
-        url: "/dollars/api/items_edit/",
+        url: item_man_url(),
         type: "POST",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
@@ -125,7 +129,7 @@ function edit_item(form, id){
     var catagory_id = form_data[2].value;
     var price = form_data[3].value;
     $.ajax({
-        url: "/dollars/api/items_edit/",
+        url: item_man_url(),
         type: "POST",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
@@ -154,7 +158,7 @@ function edit_item(form, id){
 }
 function del(id){
     $.ajax({
-        url: "/dollars/api/items_edit/",
+        url: item_man_url(),
         type: "POST",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
@@ -207,7 +211,7 @@ function purchase_item(id){
   var item_id = form.id.substr(5);
   $.ajax({
       type: 'POST',
-      url: '/dollars/api/items/',
+      url: item_list_url(),
       data: {
           "csrfmiddlewaretoken": csrf_func(),
           "id": item_id,
