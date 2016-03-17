@@ -8,7 +8,6 @@ function init_purchases(){
 
 
 function build_table(purchased_items_names, purchased_date_created, purchased_length, amount_payed, total, cata_names_set, cata_ids_set){
-    console.log(cata_names_set);
     var purchased_items = "";
     purchased_items += '<h4 id="purchases_header"><span>Purchases Made: All Time ('+purchased_length+')</span></h4>';
     purchased_items += '<input type="button" name="name" value="Refresh" onclick="update_purchase_tbl()" class="purchase_filters">';

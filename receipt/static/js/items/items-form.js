@@ -65,9 +65,7 @@ function add_new_catagory(){
             success: function(data){
                 if(data.success){
                     $("#header").html("<p class=''>Successfully Added: "+catagory_value+"</p>");
-                    if(data.first){
-                        init_item_form();
-                    }
+                    init_item_form();
                 } else {
                     $("#header").html("<p class=''>FAIL</p>");
                 }
@@ -89,7 +87,7 @@ function build_catagory_form(no_catagories){
     if(no_catagories) {
         catagory_form += " ";
     } else {
-        catagory_form += "<span class='add_catagory' onclick='init_item_form()'>back</span>";
+        catagory_form += "<span class='cata_back_btn' onclick='init_item_form()'>back</span>";
     }
     catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
     catagory_form += "<input type='text' style='display: none;' />";
@@ -97,7 +95,7 @@ function build_catagory_form(no_catagories){
     if(no_catagories) {
         catagory_form += '<input type="button" value="Add First Catagory" class="" onclick="add_new_catagory(); init_item_form();">';
     } else {
-        catagory_form += '<input type="button" value="Add" class="" onclick="add_new_catagory(); init_item_form();">';
+        catagory_form += '<input type="button" value="Add" class="" onclick="add_new_catagory();">';
     }
     catagory_form += "</form>";
     $(".item_form_container").html(catagory_form);
