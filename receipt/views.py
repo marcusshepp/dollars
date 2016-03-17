@@ -275,14 +275,16 @@ class CatagoryEndPoint(View):
         cata_name = get_post(request, "catagory_name")
         if cata_name:
             if not catas:
-                data["first"] = True
+                data["first"] = 1
             cata_data = dict()
             cata_data["name"] = cata_name
             cata_data["user"] = user.id
             cata = CatagoryForm(cata_data)
             if cata.is_valid():
                 cata.save()
-                data["success"] = True
+                data["success"] = 1
+            else:
+                data["failure"] = 1
         return JsonResponse(data)
 
 

@@ -2,11 +2,15 @@
  *
  */
 
+function catagory_url(){
+    return "/dollars/api/catagories/";
+}
+
 function init_item_form(){
-    /* Builds Item Form ?? */
+    /* Builds Item Form */
     $.ajax({
         type: "GET",
-        url: "/dollars/api/catagories/",
+        url: catagory_url(),
         success: function(data){
             if (data.cata_names_set.length > 0){
                 build_item_form(data.cata_names_set, data.cata_ids_set);
@@ -56,14 +60,16 @@ function add_new_catagory(){
     } else {
         $.ajax({
             type: "POST",
-            url: "/dollars/api/catagories/",
+            url: catagory_url(),
             data: {
                 "csrfmiddlewaretoken": csrf_func(),
                 "catagory_name": catagory_value,
             },
             success: function(data){
-                $("#header").html("<p class=''>Successfully Added: "+catagory_value+"</p>");
-                init_item_form();
+                if (data.success) {
+                    $("#header").html("<p class=''>Successfully Added: "+catagory_value+"</p>");
+                    init_item_form();
+                }
             },
             failure: function(){
                 console.log("failue @ add_new_catagory");
@@ -71,7 +77,14 @@ function add_new_catagory(){
         });
     }
 }
-
+function validate_new_catagory(){
+    var catagory_value = $(".new_catagory_input").val();
+    if (catagory_value.length < 4){
+        $('#item_form_header').html("Catagory name needs to be greater than 4 characters in length.");
+    } else {
+        add_new_catagory();
+    }
+}
 function build_catagory_form(no_catagories){
     var catagory_form = "";
     catagory_form += "<h2 id='item_form_header'>Add A Catagory</h2>";
@@ -88,9 +101,9 @@ function build_catagory_form(no_catagories){
     catagory_form += "<input type='text' style='display: none;' />";
     catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='new_catagory_input' /></span></p>";
     if(no_catagories) {
-        catagory_form += '<input type="button" value="Add First Catagory" class="" onclick="add_new_catagory();">';
+        catagory_form += '<input type="button" value="Add First Catagory" class="" onclick="validate_new_catagory();">';
     } else {
-        catagory_form += '<input type="button" value="Add" class="" onclick="add_new_catagory();">';
+        catagory_form += '<input type="button" value="Add" class="" onclick="validate_new_catagory();">';
     }
     catagory_form += "</form>";
     $(".item_form_container").html(catagory_form);
