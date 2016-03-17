@@ -133,6 +133,7 @@ function create_new_item(name, company_came_from, price, catagory_id, purchase){
         $("#header").html("<p class=''>Successfully Added: " + name +  "</p>");
         create_action("Create Item", "Create Item: "+name, "undo add item");
         init_item_form();
+        init_item_list();
     },
     failure: function(){
       console.log("fail");

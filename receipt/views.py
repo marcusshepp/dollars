@@ -96,7 +96,6 @@ class ItemEndPoint(View):
 
     def get(self, request, *a, **kw):
         items = Item.objects.filter(user=request.user)
-        print items
         data = dict()
         data["ids"] = [i.id for i in items]
         data["names"] = [i.name for i in items]

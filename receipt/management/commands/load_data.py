@@ -85,13 +85,17 @@ class Command(BaseCommand):
                             objec.save()
         elif arg == "delete":
             print "deleting..."
-            [i.delete() for i in Purchase.objects.all()]
-            [i.delete() for i in Catagory.objects.all()]
-            [i.delete() for i in Item.objects.all()]
-            [i.delete() for i in Action.objects.all()]
-            [i.delete() for i in Start.objects.all()]
-            [i.delete() for i in WhatPage.objects.all()]
-            [i.delete() for i in User.objects.all()]
+            obj = options.get("third_arg", None)
+            if obj == "item":
+                [i.delete() for i in Item.objects.all()]
+            else:
+                [i.delete() for i in Purchase.objects.all()]
+                [i.delete() for i in Catagory.objects.all()]
+                [i.delete() for i in Item.objects.all()]
+                [i.delete() for i in Action.objects.all()]
+                [i.delete() for i in Start.objects.all()]
+                [i.delete() for i in WhatPage.objects.all()]
+                [i.delete() for i in User.objects.all()]
         else: print "use args -- `import` or `export`"
 
 
