@@ -8,7 +8,6 @@ function init_item_form(){
         type: "GET",
         url: "/dollars/api/catagories/",
         success: function(data){
-          console.log(data);
             if (data.cata_names_set.length > 0){
                 build_item_form(data.cata_names_set, data.cata_ids_set);
             } else {

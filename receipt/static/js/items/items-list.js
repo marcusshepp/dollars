@@ -22,7 +22,6 @@ function get_items(){
          'FOO': 'BAR',
        },
        success: function(data){
-         console.log(data);
          build_items(data.length,
                      data.names,
                      data.companies,

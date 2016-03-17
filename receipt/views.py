@@ -288,27 +288,25 @@ class CatagoryEndPoint(View):
 
 class PurchaseTableEndPoint(View):
 
-    def purchase_json_resp(self, purchases, user):
+    def get(self, request, *a, **kw):
         """ Accepts a purchase query and returns a json object """
         data = dict()
-        if purchases:
-            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
-            data["purchased_date_created"] = [i.date_display() for i in purchases]
-            data["amount_payed"] = [i.amount_payed for i in purchases]
-            data["purchased_length"] = purchases.count()
-            total = 0
-            for purchase in purchases:
-                total += purchase.amount_payed
-            data["total"] = total
-            data["cata_names_set"] = list(set(cata_names(user, 0)))
-            data["cata_ids_set"] = list(set(cata_ids(user, 0)))
-        else:
-            data["purchased_length"] = 0
+        if not request.user.is_anonymous():
+            purchases = Purchase.objects.filter(user=request.user)
+            if purchases:
+                data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
+                data["purchased_date_created"] = [i.date_display() for i in purchases]
+                data["amount_payed"] = [i.amount_payed for i in purchases]
+                data["purchased_length"] = purchases.count()
+                total = 0
+                for purchase in purchases:
+                    total += purchase.amount_payed
+                data["total"] = total
+                data["cata_names_set"] = list(set(cata_names(user, 0)))
+                data["cata_ids_set"] = list(set(cata_ids(user, 0)))
+            else:
+                data["purchased_length"] = 0
         return JsonResponse(data)
-
-    def get(self, request, *a, **kw):
-        purchases = Purchase.objects.filter(user=request.user)
-        return self.purchase_json_resp(purchases, request.user)
 
     def post(self, request, *a, **kw):
         data = dict()

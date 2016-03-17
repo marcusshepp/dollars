@@ -38,20 +38,22 @@ function update_purchase_tbl(){
         type: "GET",
         url: url_for_purchases(),
         success: function(data){
-            var purchased_items = build_table(  data.purchased_items_names,
-                                                data.purchased_date_created,
-                                                data.purchased_length,
-                                                data.amount_payed,
-                                                data.total,
-                                                data.cata_names_set,
-                                                data.cata_ids_set);
-            $(".purchased_items_container").html(purchased_items);
-            if (data.total == 0){
-                $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
-            } else {
-                $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
+            if (data.cata_names_set){
+              var purchased_items = build_table(  data.purchased_items_names,
+                                                  data.purchased_date_created,
+                                                  data.purchased_length,
+                                                  data.amount_payed,
+                                                  data.total,
+                                                  data.cata_names_set,
+                                                  data.cata_ids_set);
+              $(".purchased_items_container").html(purchased_items);
+              if (data.total == 0){
+                  $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
+              } else {
+                  $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
+              }
+              $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
             }
-            $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
         },
         failure: function(){
             console.log("fail @ update_purchase_tbl");
