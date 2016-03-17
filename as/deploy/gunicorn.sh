@@ -1,3 +1,7 @@
+# Generates a Daemon process with Gunicorn.
+# Runs on apps built with Django==1.9
+# Marcus Shepherd <marcusshepdotcom@gmail.com>
+
 NAME=dollars
 SETTINGS=$NAME.settings
 SOCK=/opt/proc/$NAME-gunicorn.sock

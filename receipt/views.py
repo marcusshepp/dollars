@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView, View
+from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import (
@@ -21,33 +21,27 @@ from .models import (
 
 def get_post(request, name):
     return request.POST.get(name, None)
+
+def get_get(request, name):
+    return request.GET.get(name, None)
+
 def get_session(request, name):
     return request.session.get(name, None)
-def page_it(request, namespace, queryset, number_per_page, per_determined_page_number=None):
-    paginator = Paginator(queryset, number_per_page)
-    page = request.GET.get(namespace+"_page", None)
-    if page:
-        try:
-            objecs = paginator.page(page)
-        except PageNotAnInteger:
-            objecs = paginator.page(1)
-        except EmptyPage:
-            objecs = paginator.page(paginator.num_pages)
-        return objecs
-    else: return paginator.page(1)
+
 def get_page_number(queryset, number_per_page, per_determined_page_number):
     paginator = Paginator(queryset, number_per_page)
     return paginator.page(per_determined_page_number)
+
 def increase_page_number_session_var(request, name):
     value = get_session(request, name)
     if value:
         request.session[name] += 1
 
 
-class MainView(TemplateView):
+class MainView(View):
 
     template_name = "receipt/main.html"
-    
+
     @method_decorator(login_required)
     def dispatch(self, request, *a, **kw):
         start = Start.objects.all()
@@ -65,33 +59,7 @@ class MainView(TemplateView):
         return super(MainView, self).dispatch(request, *a, **kw)
 
     def get(self, request, *a, **kw):
-        """ Renders the page w `total`, `# of purch`, `catagories` """
-        context = dict()
-        context["form"] = ItemForm
-        items = Item.objects.all()
-        if items:
-            context["items"] = page_it(request, "items", items, 5)
-        purchases = Purchase.objects.all()
-        if purchases:
-            context["purchased_items"] = page_it(request, "purchased_items", purchases, 5)
-            total = 0
-            for i in purchases:
-                total += i.amount_payed
-            context["total"] = total
-            context["purchased_length"] = purchases.count()
-        catagories = Catagory.objects.all()
-        if catagories:
-            context["all_catagories"] = catagories
-            catagory_names = list()
-            for purchase in purchases:
-                catagory_names.append(purchase.item_purchased.catagory.name)
-            catagory_names = set(catagory_names)
-            catagory_context = list()
-            for catagory_name in catagory_names:
-                catagory = Catagory.objects.get(name=catagory_name)
-                catagory_context.append(catagory)
-            context["set_catagories"] = catagory_context
-        return render(request, self.template_name, context)
+        return render(request, self.template_name)
 
     def post(self, request, *a, **kw):
         """
@@ -267,9 +235,55 @@ class ActionEndPoint(View):
         return JsonResponse(data)
 
 
+def cata_names(user):
+    all_catagories = Catagory.objects.filter(user_id = user.id).order_by("-id")
+    cata_names = [catagory.name for catagory in all_catagories]
+    return cata_names
+
+def cata_ids(user):
+    return [catagory.id for catagory in Catagory.objects.filter(
+                                        user_id=user.id)]
+
+
+class CatagoryEndPoint(View):
+
+    def cata_data_for_curr_user(self, catagories, user):
+        data = dict()
+        if catagories:
+            data["catagory_length"] = catagories.count()
+            data["catagory_names"] = [catagory.string() for catagory in catagories]
+            data["catagory_ids"] = [catagory.id for catagory in catagories]
+        else:
+            data["catagory_length"] = 0
+
+    def get(self, request, *a, **kw):
+        data = dict()
+        cata_names_set = set(cata_names(request.user))
+        data["cata_names_set"] = list(cata_names_set)
+        data["cata_ids_set"] = list(set(
+            [catagory.id for catagory in Catagory.objects.filter(
+            user_id=request.user.id)]))
+        return JsonResponse(data)
+
+    def post(self, request, *a, **kw):
+        data = dict()
+        catas = Catagory.objects.all()
+        if get_post(request, "catagory_name"):
+            if not catas:
+                data["first"] = True
+            cata = Catagory.objects.get_or_create(
+                name    = get_post(request, "catagory_name"),
+                user_id = request.user.id)
+            if cata:
+                data["success"] = True
+        elif get_post(request, "call_for_cata_data"):
+            data = self.cata_data_for_curr_user(catas, request.user)
+        return JsonResponse(data)
+
+
 class PurchaseTableEndPoint(View):
 
-    def purchase_json_resp(self, purchases=None):
+    def purchase_json_resp(self, purchases, user):
         """ Accepts a purchase query and returns a json object """
         data = dict()
         if purchases:
@@ -281,14 +295,16 @@ class PurchaseTableEndPoint(View):
             for purchase in purchases:
                 total += purchase.amount_payed
             data["total"] = total
+            data["cata_names_set"] = list(set(cata_names(user)))
+            data["cata_ids_set"] = list(set(cata_ids(user)))
         else:
             data["purchased_length"] = 0
         return JsonResponse(data)
 
-    def filter_by_catagory(self, catagory_name):
+    def filter_by_catagory(self, catagory_id):
         data = dict()
-        if catagory_name:
-            items = Item.objects.filter(catagory__name=catagory_name)
+        if catagory_id:
+            items = Item.objects.filter(catagory__id=catagory_id)
             purchases = list()
             for item in items:
                 purchases_q = Purchase.objects.filter(item_purchased__name=item.name)
@@ -304,43 +320,17 @@ class PurchaseTableEndPoint(View):
                     total += purchase.amount_payed
                 data["total"] = total
                 data["amount_payed"] = [i.amount_payed for i in purchases]
-        return JsonResponse(data)
+                data["cata_names_set"] = list(set(cata_names(request.user)))
+                data["cata_ids_set"] = list(set(cata_ids(request.user)))
+        return data
 
     def get(self, request, *a, **kw):
         purchases = Purchase.objects.all()
-        return self.purchase_json_resp(purchases)
+        return self.purchase_json_resp(purchases, request.user)
 
     def post(self, request, *a, **kw):
         data = dict()
-        catagory_name = get_post(request, "catagory_name")
-        if catagory_name:
-            return self.filter_by_catagory(catagory_name)
-        return JsonResponse(data)
-
-
-class CatagoryEndPoint(View):
-
-    def get(self, request, *a, **kw):
-        data = dict()
-        catagories = Catagory.objects.all()
-        if catagories:
-            catagories = catagories.filter(user_id=request.user.id)
-            data["catagory_length"] = catagories.count()
-            data["catagory_names"] = [catagory.string() for catagory in catagories]
-            data["catagory_ids"] = [catagory.id for catagory in catagories]
-        else:
-            data["catagory_length"] = 0
-        return JsonResponse(data)
-
-    def post(self, request, *a, **kw):
-        data = dict()
-        if get_post(request, "catagory_name"):
-            catas = Catagory.objects.all()
-            if not catas:
-                data["first"] = True
-            cata = Catagory.objects.get_or_create(
-                name=get_post(request, "catagory_name"),
-                user_id=request.user.id)
-            if cata:
-                data["success"] = True
+        catagory_id = get_post(request, "catagory_id")
+        if catagory_id:
+            data = self.filter_by_catagory(catagory_id)
         return JsonResponse(data)

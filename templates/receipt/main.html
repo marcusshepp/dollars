@@ -16,13 +16,7 @@
 
     </div>
 
-    <h4 id="purchases_header"><span>Purchases Made: All Time ({{purchased_length}})</span></h4>
-    <input type="button" name="name" value="Refresh" onclick="update_purchase_tbl()" class="purchase_filters">
-    <span>Filters:</span>
-    {% for catagory in set_catagories %}
-    <input type="button" name="name" value="{{ catagory.name }}" onclick="filter_purchase_tbl_by_catagory('{{ catagory.name }}')" class="purchase_filters">
-    {% endfor %}
-    <div id="purchased_items">
+    <div id="purchased_items_container">
+
     </div>
 {% endblock body %}
-
