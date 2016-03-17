@@ -7,7 +7,3 @@ else
     python manage.py load_data delete foo
     bash ~/projects/dollars/as/django/bootserver.sh
 fi
-
-if [[ $2 -eq "create" ]]; then
-    python manage.py load_data create 5
-fi

@@ -84,7 +84,7 @@ class Command(BaseCommand):
                         for objec in serializers.deserialize("xml", out):
                             objec.save()
         elif arg == "delete":
-            print "deleting:"
+            print "deleting..."
             [i.delete() for i in Purchase.objects.all()]
             [i.delete() for i in Catagory.objects.all()]
             [i.delete() for i in Item.objects.all()]

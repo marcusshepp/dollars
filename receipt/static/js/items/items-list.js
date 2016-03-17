@@ -2,14 +2,12 @@
  */
 function item_list_url(){
   return "/dollars/api/items/";
-} 
+}
 function item_man_url(){
   return "/dollars/api/items_edit/";
 }
+
 function init_item_list(){
-    get_items();
-}
-function get_items(){
    /*
    UPDATES DOM
    Ajax request to the items API.
@@ -18,9 +16,6 @@ function get_items(){
    $.ajax({
        type: "GET",
        url: item_list_url(),
-       data: {
-         'FOO': 'BAR',
-       },
        success: function(data){
          build_items(data.length,
                      data.names,
@@ -142,7 +137,7 @@ function edit_item(form, id){
         success: function(data){
             var name = $("#item_"+id+" div")[0].innerText;
             $("#header").html("<p style='color: green;'>Edit Item: " + name + "<span class='fa fa-check'></></p>");
-            get_items();
+            init_item_list();
             document.getElementsByClassName('item_form')[0].reset();
             build_edit_form(data.catagory_names, data.catagory_ids, data.catagory_length, "", "", "", "", "")
             var item_form_btns = "";
@@ -151,7 +146,7 @@ function edit_item(form, id){
             item_form_btns += '<input type="button" name="name" value="Add & Purchase" ';
             item_form_btns += 'class="" onclick="send_new_item(this.form, true)">';
             $(".edit_save_btn").replaceWith(item_form_btns);
-            get_items();
+            init_item_list();
         },
     });
 }
@@ -167,7 +162,7 @@ function del(id){
         success: function(){
             var name = $("#item_"+id).html();
             $("#header").html("<p>Deleted Item: " + name + "<span class=''></></p>");
-            get_items();
+            init_item_list();
         },
     });
 }

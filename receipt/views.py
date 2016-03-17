@@ -95,7 +95,8 @@ class MainView(View):
 class ItemEndPoint(View):
 
     def get(self, request, *a, **kw):
-        items = Item.objects.all()
+        items = Item.objects.filter(user=request.user)
+        print items
         data = dict()
         data["ids"] = [i.id for i in items]
         data["names"] = [i.name for i in items]
@@ -291,6 +292,7 @@ class PurchaseTableEndPoint(View):
     def get(self, request, *a, **kw):
         """ Accepts a purchase query and returns a json object """
         data = dict()
+        user = request.user
         if not request.user.is_anonymous():
             purchases = Purchase.objects.filter(user=request.user)
             if purchases:

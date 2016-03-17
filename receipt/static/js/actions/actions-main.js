@@ -78,5 +78,4 @@ function create_action(title, object_name, undo_handler){
           console.log("fail");
         },
     })
-    // get_items();
 }
