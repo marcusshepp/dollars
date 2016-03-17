@@ -46,9 +46,9 @@ function init_item_list(){
            item_markup += '<span class="times_purchased"># of purchases: ' + times_purchase + '</span>';
            item_markup += '</form>';
          }
-         $(".items").html(item_markup);
+         $(".items_list_container").html(item_markup);
      } else {
-         $(".items").html('<h4 class="no_items">You haven\'t created any Items yet.</h4>');
+         $(".items_list_container").html('<h4 class="no_items">You haven\'t created any Items yet.</h4>');
      }
 
  }

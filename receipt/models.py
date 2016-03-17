@@ -52,19 +52,19 @@ class Item(TiedToUser):
 
     class Meta:
         ordering = ["-date_created"]
-        unique_together = ("name", "company_came_from", "catagory")
+        unique_together = ("name", "where_from", "catagory")
 
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=15, unique=True, validators=[MinLengthValidator(4)])
-    company_came_from = models.CharField(max_length=10, null=True, blank=True)
+    where_from = models.CharField(max_length=10, null=True, blank=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)
     catagory = models.ForeignKey("Catagory")
 
     def __unicode__(self):
         string = u"{}".format(self.name)
-        if self.company_came_from:
-            string += u" from {}".format(self.company_came_from)
+        if self.where_from:
+            string += u" from {}".format(self.where_from)
         return string
 
     def date_display(self):
@@ -98,12 +98,12 @@ class Catagory(TiedToUser):
 
     def string(self):
         return unicode(self.__unicode__()).upper()
-    
+
     def has_a_purchase(self, user):
         for purchase in Purchase.objects.filter(user_id=user.id):
             if self.name == purchase.item_purchased.catagory.name:
                 return True
-        
+
 
 class Start(models.Model):
     """

@@ -108,7 +108,7 @@ def create_items(names, companies_came_from, prices, catagory_ids, num):
             break
         else:
             data["name"] = names[i]
-            data["company_came_from"] = companies_came_from[i]
+            data["where_from"] = companies_came_from[i]
             data["price"] = prices[i]
             catagory = Catagory.objects.get(id=catagory_ids[i])
             data["catagory"] = catagory

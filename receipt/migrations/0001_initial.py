@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('name', models.CharField(max_length=15, unique=True, validators=[django.core.validators.MinLengthValidator(4)])),
-                ('company_came_from', models.CharField(blank=True, max_length=10, null=True)),
+                ('where_from', models.CharField(blank=True, max_length=10, null=True)),
                 ('price', models.DecimalField(decimal_places=2, max_digits=19)),
                 ('number_of_times_purchased', models.IntegerField(blank=True, default=0)),
                 ('catagory', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='receipt.Catagory')),
@@ -91,6 +91,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='item',
-            unique_together=set([('name', 'company_came_from', 'catagory')]),
+            unique_together=set([('name', 'where_from', 'catagory')]),
         ),
     ]

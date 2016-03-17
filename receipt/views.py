@@ -99,7 +99,7 @@ class ItemEndPoint(View):
         data = dict()
         data["ids"] = [i.id for i in items]
         data["names"] = [i.name for i in items]
-        data["companies"] = [i.company_came_from for i in items]
+        data["companies"] = [i.where_from for i in items]
         data["prices"] = [i.price for i in items]
         data["length"] = items.count()
         data["times_purchased"] = [i.number_of_times_purchased for i in items]
@@ -143,10 +143,10 @@ class ItemManEndPoint(View):
                 data["item_id"] = item[0].id
                 data["item_name"] = item[0].name
                 data["item_price"] = item[0].price
-                data["company_name"] = item[0].company_came_from
+                data["company_name"] = item[0].where_from
                 data["item_catagory_id"] = item[0].catagory.id
                 data["item_catagory_name"] = item[0].catagory.name
-                data["company"] = item[0].company_came_from
+                data["company"] = item[0].where_from
                 catagories = Catagory.objects.all()
                 if catagories:
                     data["catagory_names"] = [
@@ -161,7 +161,7 @@ class ItemManEndPoint(View):
             if edit:
                 item.update(name=get_post(request, "name"))
                 item.update(
-                    company_came_from=get_post(request, "company_came_from"))
+                    where_from=get_post(request, "where_from"))
                 item.update(price=get_post(request, "price"))
                 item.update(catagory=Catagory.objects.get(
                     id=get_post(request, "catagory_id")))
@@ -299,10 +299,7 @@ class PurchaseTableEndPoint(View):
                 data["purchased_date_created"] = [i.date_display() for i in purchases]
                 data["amount_payed"] = [i.amount_payed for i in purchases]
                 data["purchased_length"] = purchases.count()
-                total = 0
-                for purchase in purchases:
-                    total += purchase.amount_payed
-                data["total"] = total
+                data["total"] = sum([purchase.amount_payed for purchase in purchases])
                 data["cata_names_set"] = list(set(cata_names(user, 0)))
                 data["cata_ids_set"] = list(set(cata_ids(user, 0)))
             else:
