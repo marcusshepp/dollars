@@ -39,3 +39,6 @@ gunicorn \
     --log-file=$LOGFILE
 
 # run from /opt/dollars
+
+
+if [[ -e $LOGFILE ]]; then

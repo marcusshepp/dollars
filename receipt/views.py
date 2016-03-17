@@ -301,7 +301,7 @@ class PurchaseTableEndPoint(View):
             data["purchased_length"] = 0
         return JsonResponse(data)
 
-    def filter_by_catagory(self, catagory_id):
+    def filter_by_catagory(self, catagory_id, user):
         data = dict()
         if catagory_id:
             items = Item.objects.filter(catagory__id=catagory_id)
@@ -320,8 +320,8 @@ class PurchaseTableEndPoint(View):
                     total += purchase.amount_payed
                 data["total"] = total
                 data["amount_payed"] = [i.amount_payed for i in purchases]
-                data["cata_names_set"] = list(set(cata_names(request.user)))
-                data["cata_ids_set"] = list(set(cata_ids(request.user)))
+                data["cata_names_set"] = list(set(cata_names(user)))
+                data["cata_ids_set"] = list(set(cata_ids(user)))
         return data
 
     def get(self, request, *a, **kw):
@@ -332,5 +332,5 @@ class PurchaseTableEndPoint(View):
         data = dict()
         catagory_id = get_post(request, "catagory_id")
         if catagory_id:
-            data = self.filter_by_catagory(catagory_id)
+            data = self.filter_by_catagory(catagory_id, request.user)
         return JsonResponse(data)
