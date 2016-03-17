@@ -46,7 +46,7 @@ function update_purchase_tbl(){
                                                 data.total,
                                                 data.cata_names_set,
                                                 data.cata_ids_set);
-            $("#purchased_items_container").html(purchased_items);
+            $(".purchased_items_container").html(purchased_items);
             if (data.total == 0){
                 $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
             } else {

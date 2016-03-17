@@ -8,8 +8,9 @@ function init_item_form(){
         type: "GET",
         url: "/dollars/api/catagories/",
         success: function(data){
-            if (parseInt(data.catagory_length) > 0){
-                build_item_form(data.catagory_length, data.catagory_names, data.catagory_ids);
+            console.log(data);
+            if (data.cata_names_set.length > 0){
+                build_item_form(data.cata_names_set, data.cata_ids_set);
             } else {
                 build_catagory_form(no_catagories=true);
             }
@@ -20,7 +21,7 @@ function init_item_form(){
     });
 }
 
-function build_item_form(cata_length, cata_names, cata_ids){
+function build_item_form(cata_names, cata_ids){
     var item_form = "";
     item_form += '<h4 id="item_form_header">Add New Item</h4>';
     item_form += '<form class="formmy item_form" action="" method="POST" enctype="multipart/form-data">';
@@ -32,7 +33,7 @@ function build_item_form(cata_length, cata_names, cata_ids){
     item_form += '<p><label for="catagory">Catagory: </label>';
     item_form += '<span class="add_catagory" onclick="build_catagory_form()">Add</span>';
     item_form += '<select name="catagory" class="catagory">';
-    for (var i = 0; i < cata_length; i++){
+    for (var i = 0; i < cata_names.length; i++){
         item_form += '<option name="catagory" value="'+cata_ids[i]+'">'+cata_names[i]+'</option>';
     }
     item_form += '</select></p>';
@@ -121,7 +122,7 @@ function validate_new_item(form, purchase){
   } else {
     create_new_item(name, company_came_from, price, catagory_id, purchase)
   }
-  
+
   document.getElementsByClassName('item_form')[0].reset();
 };
 
