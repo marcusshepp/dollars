@@ -4,18 +4,18 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import authenticate, login
 
 from .forms import (
-    RegisterationForm, 
+    RegisterationForm,
     LoginForm
 )
 
 
 class Login(View):
-    
+
     def get(self, request, *a, **kw):
         context = dict()
         context["form"] = LoginForm
         return render(request, "accounts/login.html", context)
-        
+
     def post(self, request, *a, **kw):
         form = LoginForm(request.POST)
         if form.is_valid:
@@ -30,18 +30,18 @@ class Login(View):
         form = LoginForm
         message = 'User not authenticated'
         return render(
-            request, 
-            'accounts/register.html', 
+            request,
+            'accounts/register.html',
             {"message": message, "form": form})
 
 
 class Registeration(View):
-    
+
     def get(self, request, *a, **kw):
         context = dict()
         context["form"] = RegisterationForm
         return render(request, "accounts/register.html", context)
-        
+
     def post(self, request, *a, **kw):
         form = RegisterationForm(request.POST)
         context = dict()
