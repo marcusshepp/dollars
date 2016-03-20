@@ -31,30 +31,37 @@ class Command(BaseCommand):
         arg = "".join([i for i in args])
         if arg == "create":
             print "Creating..."
-            lorem = "http://loripsum.net/api/10/short/headers"
-            request = requests.get(lorem)
-            text = request.text.split("\n")
-            paragraph_tags = [line for line in text if "<p>" in line]
-            if options.get("third_arg", None):
-                num = int(options["third_arg"])
-            else: num = 10
-            # create catagories
-            catagory_names = gen_names(paragraph_tags, num)
-            catagories = [Catagory.objects.get_or_create(name=name)[0] for name in catagory_names]
-            # create items
-            items = create_items(gen_names(paragraph_tags, num),
-                                 gen_names(paragraph_tags, num),
-                                 [random.randrange(0, 100) for x in range(num)],
-                                 [catagory.id for catagory in catagories],
-                                 num)
-            # create purchases
-            purchases = [
-                Purchase.objects.get_or_create(
-                    item_purchased=random.choice(items)[0],
-                    amount_payed=random.randrange(0, 100)) for _ in xrange(random.randrange(10, 25))]
-            print "{} Items have been created.".format(len(items))
-            print "{} Purchases have been created.".format(len(purchases))
-            print "{} Catagories have been created.".format(len(catagories))
+            third_arg = options.get("third_arg", None)
+            if third_arg:
+                if third_arg == "su":
+                    User.objects.get_or_create(
+                        username="qwe",
+                        password="qwe"
+                    )
+                else:
+                    lorem = "http://loripsum.net/api/10/short/headers"
+                    request = requests.get(lorem)
+                    text = request.text.split("\n")
+                    paragraph_tags = [line for line in text if "<p>" in line]
+                    num = int(options["third_arg"])
+                    # create catagories
+                    catagory_names = gen_names(paragraph_tags, num)
+                    catagories = [Catagory.objects.get_or_create(
+                        name=name)[0] for name in catagory_names]
+                    # create items
+                    items = create_items(gen_names(paragraph_tags, num),
+                                         gen_names(paragraph_tags, num),
+                                         [random.randrange(0, 100) for x in range(num)],
+                                         [catagory.id for catagory in catagories],
+                                         num)
+                    # create purchases
+                    purchases = [
+                        Purchase.objects.get_or_create(
+                            item_purchased=random.choice(items)[0],
+                            amount_payed=random.randrange(0, 100)) for _ in xrange(random.randrange(10, 25))]
+                    print "{} Items have been created.".format(len(items))
+                    print "{} Purchases have been created.".format(len(purchases))
+                    print "{} Catagories have been created.".format(len(catagories))
         elif arg == "export":
             print "Exporting..."
             """

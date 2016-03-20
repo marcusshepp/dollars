@@ -6,8 +6,7 @@ function init_purchases(){
     update_purchase_tbl();
 }
 
-
-function build_table(purchased_items_names, purchased_date_created, purchased_length, amount_payed, total, cata_names_set, cata_ids_set){
+function build_table(purchased_items_names,purchased_date_created,purchased_length,amount_payed,total,cata_names_set,cata_ids_set,page_number,total_pages,per_page){
     var purchased_items = "";
     purchased_items += '<h4 id="purchases_header"><span>Purchases Made: All Time ('+purchased_length+')</span></h4>';
     purchased_items += '<input type="button" name="name" value="Refresh" onclick="update_purchase_tbl()" class="purchase_filters">';
@@ -31,6 +30,18 @@ function build_table(purchased_items_names, purchased_date_created, purchased_le
       purchased_items += '</tr>';
     }
     purchased_items += '</table>';
+    purchased_items += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
+    purchased_items += '<input type="button" value="prev" onclick="previous_purchase_page()" />';
+    purchased_items += '<input type="button" value="next" onclick="next_purchase_page()" />';
+    purchased_items += '<select name="purchase_per_page" class="purchase_per_page">';
+    purchased_items += '<option name="purchases_per_page" value="5">default(5)</option>';
+    for (var i = 6; i <= 10; i++){
+        if (i == purchased_length){
+            purchased_items += '<option selected="selected" name="purchases_per_page" value="'+i+'">'+i+'</option>';
+        }
+        purchased_items += '<option name="purchases_per_page" value="'+i+'">'+i+'</option>';
+    }
+    purchased_items += '</select>';
     return purchased_items;
 }
 function update_purchase_tbl(){
@@ -45,7 +56,10 @@ function update_purchase_tbl(){
                                                   data.amount_payed,
                                                   data.total,
                                                   data.cata_names_set,
-                                                  data.cata_ids_set);
+                                                  data.cata_ids_set,
+                                                  data.page_number,
+                                                  data.total_pages,
+                                                  data.per_page);
               $(".purchased_items_container").html(purchased_items);
               if (data.total == 0){
                   $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
@@ -96,4 +110,22 @@ function filter_purchase_tbl_by_catagory(catagory_id){
             console.log("failure @ filter_purchase_tbl_by_catagory");
         },
     })
+}
+
+function previous_purchase_page(){
+    $.ajax({
+        type: "POST",
+        url: url_for_purchases(),
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "move": true,
+            "prev": true
+        },
+        success: function(){
+            console.log("success");
+        },
+        failure: function(){
+            console.log("failure");
+        },
+    });
 }

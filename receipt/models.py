@@ -126,3 +126,20 @@ class WhatPage(TiedToUser):
 
     def __unicode__(self):
         return u"{0}-{1} per page, page number {2}".format(self.obj, self.number_per_page, self.page_number)
+
+    def decrement_page_number(self):
+        page_number = self.page_number
+        if page_number <= 0:
+            return
+        else:
+            self.page_number = models.F("page_number") - 1
+            self.save()
+            if page_number - 1 == self.page_number:
+                return 1
+
+    def increase_page_number(self):
+        page_number = self.page_number
+        self.page_number = models.F("page_number") + 1
+        self.save()
+        if page_number + 1 == self.page_number:
+            return 1

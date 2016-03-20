@@ -53,8 +53,9 @@ def page_it(queryset, page_number, number_per_page):
             objecs = paginator.page(paginator.num_pages)
         else:
             objecs = paginator.page(1)
-        return objecs
-    else: return paginator.page(1)
+
+    else: objecs = paginator.page(1)
+    return objecs, paginator
 
 def cata_names(user, a):
     cata_names = list()
@@ -344,20 +345,26 @@ class PurchaseTableEndPoint(Common):
             purchase_page = WhatPage.objects.filter(obj="purchase",
                                                     user_id=user.id)
             if purchase_page:
-                purchase_page = purchase_page[0]
-                purchases = page_it(purchases_queryset,
-                                    purchase_page.page_number,
-                                    purchase_page.number_per_page)
+                purchase_page        = purchase_page[0]
+                page_number          = purchase_page.page_number
+                number_per_page      = purchase_page.number_per_page
+                purchases, paginator = page_it(  purchases_queryset,
+                                            page_number,
+                                            number_per_page)
+                total_pages          = paginator.num_pages
                 if purchases:
-                    data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
-                    data["purchased_date_created"] = [i.date_display() for i in purchases]
-                    data["amount_payed"] = [i.amount_payed for i in purchases]
-                    data["purchased_length"] = len(purchases)
-                    data["total"] = sum([purchase.amount_payed for purchase in purchases])
-                    data["cata_names_set"] = cata_names(user, 0)
-                    data["cata_ids_set"] = cata_ids(user, 0)
+                    data["purchased_items_names"]   = [i.item_purchased.__unicode__() for i in purchases]
+                    data["purchased_date_created"]  = [i.date_display() for i in purchases]
+                    data["amount_payed"]            = [i.amount_payed for i in purchases]
+                    data["purchased_length"]        = len(purchases)
+                    data["total"]                   = sum([purchase.amount_payed for purchase in purchases])
+                    data["cata_names_set"]          = cata_names(user, 0)
+                    data["cata_ids_set"]            = cata_ids(user, 0)
+                    data["page_number"]             = page_number
+                    data["total_pages"]             = total_pages
+                    data["per_page"]                = number_per_page
                 else:
-                    data["purchased_length"] = 0
+                    data["purchased_length"]        = 0
             else:
                 print "****NO PURCHASE PAGE****"
         return JsonResponse(data)
@@ -366,6 +373,23 @@ class PurchaseTableEndPoint(Common):
         data = dict()
         user = request.user
         catagory_id = get_post(request, "catagory_id")
+        move = get_post(request, "move")
+        prev = get_post(request, "prev")
+        next_ = get_post(request, "next")
+        if move:
+            purchases_queryset = Purchase.objects.filter(user=user)
+            purchase_page = WhatPage.objects.filter(obj="purchase",
+                                                    user_id=user.id)
+            if purchase_page:
+                purchase_page = purchase_page[0]
+                purchases, paginator =  page_it(purchases_queryset,
+                                                purchase_page.page_number,
+                                                purchase_page.number_per_page)
+                if prev:
+                    purchase_page.decrement_page_number()
+                elif next_:
+                    if purchases_page.page_number < paginator.num_pages:
+                        purchase_page.increase_page_number()
         if catagory_id:
             items = Item.objects.filter(
                 catagory__id=catagory_id,
