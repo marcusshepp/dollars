@@ -3,13 +3,39 @@ function url_for_purchases(){
 }
 
 function init_purchases(){
-    update_purchase_tbl();
+    $.ajax({
+        type: "GET",
+        url: url_for_purchases(),
+        success: function(data){
+            if (data.cata_names_set){
+              var purchased_items = build_table(  data.purchased_items_names,
+                                                  data.purchased_date_created,
+                                                  data.purchased_length,
+                                                  data.amount_payed,
+                                                  data.total,
+                                                  data.cata_names_set,
+                                                  data.cata_ids_set,
+                                                  data.page_number,
+                                                  data.total_pages,
+                                                  data.per_page);
+              $(".purchased_items_container").html(purchased_items);
+              if (data.total == 0){
+                  $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
+              } else {
+                  $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
+              }
+              $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
+            }
+        },
+        failure: function(){
+            console.log("fail @ init_purchases");
+        },
+    })
 }
-
 function build_table(purchased_items_names,purchased_date_created,purchased_length,amount_payed,total,cata_names_set,cata_ids_set,page_number,total_pages,per_page){
     var purchased_items = "";
     purchased_items += '<h4 id="purchases_header"><span>Purchases Made: All Time ('+purchased_length+')</span></h4>';
-    purchased_items += '<input type="button" name="name" value="Refresh" onclick="update_purchase_tbl()" class="purchase_filters">';
+    purchased_items += '<input type="button" name="name" value="Refresh" onclick="init_purchases()" class="purchase_filters">';
     purchased_items += '<span>Filters:</span>';
     for(var i = 0; i < cata_names_set.length; i++){
         purchased_items += '<input type="button" value="'+cata_names_set[i]+'" ';
@@ -45,36 +71,6 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
     purchased_items += '</select>';
     return purchased_items;
 }
-function update_purchase_tbl(){
-    $.ajax({
-        type: "GET",
-        url: url_for_purchases(),
-        success: function(data){
-            if (data.cata_names_set){
-              var purchased_items = build_table(  data.purchased_items_names,
-                                                  data.purchased_date_created,
-                                                  data.purchased_length,
-                                                  data.amount_payed,
-                                                  data.total,
-                                                  data.cata_names_set,
-                                                  data.cata_ids_set,
-                                                  data.page_number,
-                                                  data.total_pages,
-                                                  data.per_page);
-              $(".purchased_items_container").html(purchased_items);
-              if (data.total == 0){
-                  $("#total").html("<h3>$&emsp;" + data.total.toFixed(2) + "</h3>");
-              } else {
-                  $("#total").html("<h3>$&emsp;" + data.total + "</h3>");
-              }
-              $("#purchases_header").html("<h3>Purchases Made: All Time ("+data.purchased_length+")");
-            }
-        },
-        failure: function(){
-            console.log("fail @ update_purchase_tbl");
-        },
-    })
-}
 function filter_purchase_tbl_by_catagory(catagory_id){
     $.ajax({
         type: "POST",
@@ -85,7 +81,7 @@ function filter_purchase_tbl_by_catagory(catagory_id){
         },
         success: function(data){
             if (data.no_purchases_for_query){
-              var problem = '<input type="button" name="name" value="Reload Purchase Table" onclick="update_purchase_tbl()" class="purchase_filters">';
+              var problem = '<input type="button" name="name" value="Reload Purchase Table" onclick="init_purchases()" class="purchase_filters">';
               problem += '<p>No purchases match this query.</p>';
               $(".purchased_items_container").html(problem);
             } else {
@@ -124,7 +120,7 @@ function previous_purchase_page(){
         },
         success: function(){
             console.log("success");
-            update_purchase_tbl()
+            init_purchases()
         },
         failure: function(){
             console.log("failure");
@@ -143,7 +139,7 @@ function next_purchase_page(){
         },
         success: function(){
             console.log("success");
-            update_purchase_tbl()
+            init_purchases()
         },
         failure: function(){
             console.log("failure");
