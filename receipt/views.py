@@ -47,10 +47,10 @@ def increase_page_number_session_var(request, name):
 def page_it(queryset, page_number, number_per_page):
     paginator = Paginator(queryset, number_per_page)
     if page_number:
-        if type(page_number) == int:
-            objecs = paginator.page(page_number)
-        elif int(page_number) > paginator.num_pages:
+        if int(page_number) > paginator.num_pages:
             objecs = paginator.page(paginator.num_pages)
+        elif type(page_number) == int:
+            objecs = paginator.page(page_number)
         else:
             objecs = paginator.page(1)
 
@@ -376,40 +376,45 @@ class PurchaseTableEndPoint(Common):
         move = get_post(request, "move")
         prev = get_post(request, "prev")
         next_ = get_post(request, "next")
+        number_per_page = get_post(request, "number_per_page")
+        purchase_page = WhatPage.objects.filter(obj="purchase",
+                                                user_id=user.id)
+        purchases_queryset = Purchase.objects.filter(user=user)
+        if purchase_page:
+            purchase_page = purchase_page[0]
+            paginator = Paginator(purchases_queryset, purchase_page.number_per_page)
+        if number_per_page:
+            purchase_page.change_number_per_page(number_per_page)
         if move:
-            purchases_queryset = Purchase.objects.filter(user=user)
-            purchase_page = WhatPage.objects.filter(obj="purchase",
-                                                    user_id=user.id)
-            if purchase_page:
-                purchase_page = purchase_page[0]
-                purchases, paginator =  page_it(purchases_queryset,
-                                                purchase_page.page_number,
-                                                purchase_page.number_per_page)
-                if prev:
-                    purchase_page.decrement_page_number()
-                elif next_:
-                    if purchases_page.page_number < paginator.num_pages:
-                        purchase_page.increase_page_number()
+            if prev:
+                purchase_page.decrement_page_number()
+            elif next_:
+                if purchase_page.page_number < paginator.num_pages:
+                    purchase_page.increase_page_number()
+        paginator = Paginator(purchases_queryset, purchase_page.number_per_page)
         if catagory_id:
             items = Item.objects.filter(
                 catagory__id=catagory_id,
                 user=user,
                 )
-            purchases = list()
+        else:
+            items = Item.objects.filter(user=user)
+        purchases = list()
+        if items:
             for item in items:
                 purchases_q = Purchase.objects.filter(item_purchased__name=item.name)
                 if purchases_q:
                     for purchase in purchases_q:
                         purchases.append(purchase)
-            if purchases:
-                data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
-                data["purchased_date_created"] = [i.date_display() for i in purchases]
-                data["purchased_length"] = len(purchases)
-                data["total"] = 0
-                for purchase in purchases:
-                    data["total"] += purchase.amount_payed
-                data["amount_payed"] = [i.amount_payed for i in purchases]
-                data["cata_names_set"] = cata_names(user, 0)
-                data["cata_ids_set"] = cata_ids(user, 0)
-            else: data["no_purchases_for_query"] = True
+        if purchases:
+            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
+            data["purchased_date_created"] = [i.date_display() for i in purchases]
+            data["purchased_length"] = len(purchases)
+            data["total"] = 0
+            for purchase in purchases:
+                data["total"] += purchase.amount_payed
+            data["amount_payed"] = [i.amount_payed for i in purchases]
+            data["cata_names_set"] = cata_names(user, 0)
+            data["cata_ids_set"] = cata_ids(user, 0)
+        else: data["no_purchases_for_query"] = True
         return JsonResponse(data)

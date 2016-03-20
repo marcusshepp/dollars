@@ -33,7 +33,8 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
     purchased_items += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
     purchased_items += '<input type="button" value="prev" onclick="previous_purchase_page()" />';
     purchased_items += '<input type="button" value="next" onclick="next_purchase_page()" />';
-    purchased_items += '<select name="purchase_per_page" class="purchase_per_page">';
+    purchased_items += '<label for="purchase_per_page"> Number Per Page: </label>';
+    purchased_items += '<select onchange="change_number_per_page()" class="purchase_per_page" name="purchase_per_page" class="purchase_per_page">';
     purchased_items += '<option name="purchases_per_page" value="5">default(5)</option>';
     for (var i = 6; i <= 10; i++){
         if (i == purchased_length){
@@ -123,6 +124,44 @@ function previous_purchase_page(){
         },
         success: function(){
             console.log("success");
+            update_purchase_tbl()
+        },
+        failure: function(){
+            console.log("failure");
+        },
+    });
+}
+
+function next_purchase_page(){
+    $.ajax({
+        type: "POST",
+        url: url_for_purchases(),
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "move": true,
+            "next": true
+        },
+        success: function(){
+            console.log("success");
+            update_purchase_tbl()
+        },
+        failure: function(){
+            console.log("failure");
+        },
+    });
+}
+function change_number_per_page(){
+    console.log();
+    $.ajax({
+        type: "POST",
+        url: url_for_purchases(),
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "number_per_page": $(".purchase_per_page").val(),
+        },
+        success: function(){
+            console.log("success");
+            init_purchases();
         },
         failure: function(){
             console.log("failure");

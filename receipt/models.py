@@ -129,7 +129,7 @@ class WhatPage(TiedToUser):
 
     def decrement_page_number(self):
         page_number = self.page_number
-        if page_number <= 0:
+        if page_number == 1:
             return
         else:
             self.page_number = models.F("page_number") - 1
@@ -143,3 +143,8 @@ class WhatPage(TiedToUser):
         self.save()
         if page_number + 1 == self.page_number:
             return 1
+
+    def change_number_per_page(self, number_per_page):
+        if number_per_page >= 5:
+            self.number_per_page = number_per_page
+            self.save()
