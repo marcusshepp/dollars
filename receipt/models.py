@@ -116,7 +116,11 @@ class WhatPage(TiedToUser):
     """
     Where was the User looking last?
     """
-    obj = models.CharField(max_length=15)
+    MODEL_CHOICES = (
+        ("item", "item"),
+        ("purchase", "purchase"),
+    )
+    obj = models.CharField(max_length=15, choices=MODEL_CHOICES, unique=True)
     page_number = models.IntegerField()
     number_per_page = models.IntegerField()
 

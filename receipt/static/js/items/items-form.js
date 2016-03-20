@@ -12,7 +12,10 @@ function init_item_form(){
         type: "GET",
         url: catagory_url(),
         success: function(data){
-            if (data.cata_names_set.length > 0){
+            if (data.not_logged_in){
+                return 1
+            }
+            else if (data.cata_names_set.length > 0){
                 build_item_form(data.cata_names_set, data.cata_ids_set);
             } else {
                 build_catagory_form(no_catagories=true);

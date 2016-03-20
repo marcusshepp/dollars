@@ -5,6 +5,7 @@ from .models import (
     Action,
     Purchase,
     Catagory,
+    WhatPage,
     )
 
 
@@ -34,3 +35,10 @@ class CatagoryForm(forms.ModelForm):
     class Meta:
         model = Catagory
         fields = ["name", "user"]
+
+
+class WhatPageForm(forms.ModelForm):
+
+    class Meta:
+        model = WhatPage
+        fields = ["obj", "page_number", "number_per_page", "user"]
