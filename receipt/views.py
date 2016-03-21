@@ -469,7 +469,7 @@ class PurchaseTableEndPoint(Common):
                 data["purchased_date_created"]  = [i.date_display() for i in purchases]
                 data["amount_payed"]            = [i.amount_payed for i in purchases]
                 data["purchased_length"]        = purchases_queryset.count()
-                data["total"]                   = sum([purchase.amount_payed for purchase in purchases])
+                data["total"]                   = sum([purchase.amount_payed for purchase in purchases_queryset])
                 data["cata_names_set"]          = cata_names(user, 0, 1)
                 data["cata_ids_set"]            = cata_ids(user, 0, 1)
                 data["page_number"]             = page_number
@@ -514,7 +514,8 @@ class PurchaseTableEndPoint(Common):
         prev                = get_post(request, "prev")
         next_               = get_post(request, "next")
         number_per_page     = get_post(request, "number_per_page")
-        purchase_page       = WhatPage.objects.filter(obj="purchase", user_id=user.id)
+        purchase_page       = WhatPage.objects.get(obj="purchase", user_id=user.id)
+        paginator           = Paginator(Purchase.objects.filter(user_id=user.id), purchase_page.number_per_page)
         if number_per_page:
             purchase_page.change_number_per_page(number_per_page)
         if move:
