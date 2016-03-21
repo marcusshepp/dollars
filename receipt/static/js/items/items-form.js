@@ -48,9 +48,10 @@ function build_item_form(cata){
     item_form += '</select></p>';
     item_form += '<p><label for="price">Price: </label><input type="number" ';
     item_form += 'placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
+    item_form += '<div class="item_form_btns">';
     item_form += '<input type="button" value="Add" class="" onclick="validate_new_item(this.form, false)">';
     item_form += '<input type="button" name="name" value="Add & Purchase"';
-    item_form += ' class="" onclick="validate_new_item(this.form, true)">';
+    item_form += '</div>';
     item_form += '</form>';
     $(".item_form_container").html(item_form);
 }
