@@ -155,15 +155,18 @@ class MainView(Common):
         Add a new Item
         returns whether or not the item form successfully saved.
         """
-        context = dict()
-        request.POST = request.POST.copy()
-        if get_post(request, "catagory_id"):
-            request.POST["catagory"] = int(request.POST.pop("catagory_id")[0])
-        request.POST["user"] = request.user.id
-        form = ItemForm(request.POST)
+        context_data                         = dict()
+        item_form_data                  = dict()
+        item_form_data["catagory"]      = get_post(request, "catagory_id")
+        item_form_data["name"]          = get_post(request, "name")
+        item_form_data["where_from"]    = get_post(request, "where_from")
+        item_form_data["price"]         = get_post(request, "price")
+        item_form_data["user"]          = request.user.id
+        form                            = ItemForm(item_form_data)
+        print form
         if form.is_valid():
             form.save()
-            context["success"] = True
+            context_data["success"] = True
             if get_post(request, "purchase") == "true":
                 item = Item.objects.get(name=request.POST["name"])
                 item.increase_number_of_times_purchased()
@@ -172,10 +175,10 @@ class MainView(Common):
                 form = PurchaseForm(data)
                 if form.is_valid():
                     form.save()
-                context["purchased"] = True
+                context_data["purchased"] = True
         else:
-            context["invalid_form_data"] = True
-        return JsonResponse(context)
+            context_data["invalid_form_data"] = True
+        return JsonResponse(context_data)
 
 
 class ItemEndPoint(Common):
@@ -228,6 +231,7 @@ class ItemEndPoint(Common):
                     data["page_number"]             = page_number
                     data["total_pages"]             = total_pages
                     data["per_page"]                = number_per_page
+                    data["total_number_of_items"]   = Item.objects.filter(user_id=user.id).count()
                 else:
                     data["item_length"]        = 0
             else:
@@ -405,11 +409,16 @@ class CatagoryEndPoint(Common):
     Catagories that are associated with Items and Purchases.
     Works as an end point to recieve catagory information.
     """
+    def cata_name_id_tuple(self, user):
+        data = list()
+        for cata in Catagory.objects.filter(user_id=user.id):
+            data.append((cata.name, cata.id))
+        return data
+    
     def get(self, request, *a, **kw):
         data = dict()
         if not request.user.is_anonymous():
-            data["cata_names_set"] = cata_names(request.user, 0, 0)
-            data["cata_ids_set"] = cata_ids(request.user, 0, 0)
+            data["cata"] = self.cata_name_id_tuple(request.user)
         else:
             data["not_logged_in"] = True
         return JsonResponse(data)
@@ -459,7 +468,7 @@ class PurchaseTableEndPoint(Common):
                 data["purchased_items_names"]   = [i.item_purchased.__unicode__() for i in purchases]
                 data["purchased_date_created"]  = [i.date_display() for i in purchases]
                 data["amount_payed"]            = [i.amount_payed for i in purchases]
-                data["purchased_length"]        = len(purchases)
+                data["purchased_length"]        = purchases_queryset.count()
                 data["total"]                   = sum([purchase.amount_payed for purchase in purchases])
                 data["cata_names_set"]          = cata_names(user, 0, 1)
                 data["cata_ids_set"]            = cata_ids(user, 0, 1)

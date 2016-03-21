@@ -28,18 +28,19 @@ function init_item_list(){
                      data.total_pages,
                      data.per_page,
                      data.cata_names_set,
-                     data.cata_ids_set);
+                     data.cata_ids_set,
+                     data.total_number_of_items);
        },
        failure: function(){
          console.log("fail");
        },
    });
 }
- function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page, cata_names_set, cata_ids_set){
+ function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page, cata_names_set, cata_ids_set, total_number_of_items){
      if (items){
          var item_markup = "";
          item_markup += '<span>';
-         item_markup += '<h3>Items</h3>';
+         item_markup += '<h3>Items<span class="number_of_items"> ('+total_number_of_items+')</span></h3>';
          item_markup += '<input type="search" class="search_items_field"/>';
          item_markup += '<input type="button" class="search_items_btn" ';
          item_markup += 'onclick="search_items()" value="Filter" />';         

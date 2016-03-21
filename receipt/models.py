@@ -86,10 +86,10 @@ class Item(TiedToUser):
 class Catagory(TiedToUser):
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["-id"]
 
     date_created = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=25, validators=[MinLengthValidator(4)])
+    name = models.CharField(max_length=25, validators=[MinLengthValidator(4)], unique=True)
 
     def __unicode__(self):
         return u"{0}".format(self.name)

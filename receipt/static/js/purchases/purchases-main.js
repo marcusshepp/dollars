@@ -52,7 +52,7 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
     purchased_items += '<td>Date Purchased</td>';
     purchased_items += '<td>Amount Spent</td>';
     purchased_items += '</tr>';
-    for(var i = 0; i < purchased_length; i++){
+    for(var i = 0; i < purchased_items_names.length; i++){
       purchased_items += '<tr>';
       purchased_items += "<td>" + purchased_items_names[i] + "</td>"
       purchased_items += "<td>" + purchased_date_created[i] + "</td>"
