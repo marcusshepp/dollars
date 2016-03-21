@@ -471,43 +471,16 @@ class PurchaseTableEndPoint(Common):
         else:
             print "****NO PURCHASE PAGE****"
         return JsonResponse(data)
-
-    def post(self, request, *a, **kw):
-        data                = dict()
-        user                = request.user
-        catagory_id         = get_post(request, "catagory_id")
-        move                = get_post(request, "move")
-        prev                = get_post(request, "prev")
-        next_               = get_post(request, "next")
-        number_per_page     = get_post(request, "number_per_page")
-        purchase_page       = WhatPage.objects.filter(obj="purchase", user_id=user.id)
-        purchases_queryset  = Purchase.objects.filter(user=user)
-        if purchase_page:
-            purchase_page = purchase_page[0]
-            paginator = Paginator(purchases_queryset, purchase_page.number_per_page)
-        if number_per_page:
-            purchase_page.change_number_per_page(number_per_page)
-        if move:
-            if prev:
-                purchase_page.decrement_page_number()
-            elif next_:
-                if purchase_page.page_number < paginator.num_pages:
-                    purchase_page.increase_page_number()
-        paginator = Paginator(purchases_queryset, purchase_page.number_per_page)
-        if catagory_id:
-            items = Item.objects.filter(
-                catagory__id=catagory_id,
-                user=user,
-                )
-        else:
-            items = Item.objects.filter(user=user)
+        
+    def filter_purchases_by_catagory(self, user, catagory_id):
+        data = dict()
+        items = Item.objects.filter(catagory__id=catagory_id, user=user)
         purchases = list()
-        if items:
+        purchases_queryset = Purchase.objects.filter(user_id=user.id)
+        for purchase in purchases_queryset:
             for item in items:
-                purchases_q = Purchase.objects.filter(item_purchased__name=item.name)
-                if purchases_q:
-                    for purchase in purchases_q:
-                        purchases.append(purchase)
+                if item.id == purchase.item_purchased.id:
+                    purchases.append(purchase)
         if purchases:
             data["purchased_items_names"]  = [i.item_purchased.__unicode__() for i in purchases]
             data["purchased_date_created"] = [i.date_display() for i in purchases]
@@ -518,5 +491,29 @@ class PurchaseTableEndPoint(Common):
             data["amount_payed"]           = [i.amount_payed for i in purchases]
             data["cata_names_set"]         = cata_names(user, 0, 1)
             data["cata_ids_set"]           = cata_ids(user, 0, 1)
+            data["page_number"]            = 1
+            data["total_pages"]            = 1
+            data["per_page"]               = 5
         else: data["no_purchases_for_query"] = True
+        return data
+        
+    def post(self, request, *a, **kw):
+        data                = dict()
+        user                = request.user
+        catagory_id         = get_post(request, "catagory_id")
+        move                = get_post(request, "move")
+        prev                = get_post(request, "prev")
+        next_               = get_post(request, "next")
+        number_per_page     = get_post(request, "number_per_page")
+        purchase_page       = WhatPage.objects.filter(obj="purchase", user_id=user.id)
+        if number_per_page:
+            purchase_page.change_number_per_page(number_per_page)
+        if move:
+            if prev:
+                purchase_page.decrement_page_number()
+            elif next_:
+                if purchase_page.page_number < paginator.num_pages:
+                    purchase_page.increase_page_number()
+        if catagory_id:
+            data = self.filter_purchases_by_catagory(user, catagory_id)
         return JsonResponse(data)

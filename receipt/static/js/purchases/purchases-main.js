@@ -35,15 +35,16 @@ function init_purchases(){
 function build_table(purchased_items_names,purchased_date_created,purchased_length,amount_payed,total,cata_names_set,cata_ids_set,page_number,total_pages){
     var purchased_items = "";
     purchased_items += '<h4 id="purchases_header"><span>Purchases Made: All Time ('+purchased_length+')</span></h4>';
+    purchased_items += '<input type="search" class="search_purchases_field"/>';
+    purchased_items += '<input type="button" class="search_purchases_btn" ';
+    purchased_items += 'onclick="search_purchases()" value="Filter" />';
+    purchased_items += '<br />'
     for(var i = 0; i < cata_names_set.length; i++){
         purchased_items += '<input type="button" value="'+cata_names_set[i]+'" ';
         purchased_items += 'onclick="filter_purchase_tbl_by_catagory('+cata_ids_set[i]+')" class="purchase_filters">';
     }
     purchased_items += '<input type="button" class="see_more_catagories" ';
-    purchased_items += 'onclick="see_more_catagories()" value="See More Catagories"/>';
-    purchased_items += '<input type="search" class="search_purchases_field"/>';
-    purchased_items += '<input type="button" class="search_purchases_btn" ';
-    purchased_items += 'onclick="search_purchases()" value="Filter" />';
+    purchased_items += 'onclick="see_more_catagories()" value="More..."/>';
     purchased_items += '<div class="total">Total: '+ total +'</div>';
     purchased_items += '<table>';
     purchased_items += '<tr>';
@@ -94,7 +95,10 @@ function filter_purchase_tbl_by_catagory(catagory_id){
                                                   data.amount_payed,
                                                   data.total,
                                                   data.cata_names_set,
-                                                  data.cata_ids_set);
+                                                  data.cata_ids_set,
+                                                  data.page_number,
+                                                  data.total_pages,
+                                                  data.per_page);
               $(".purchased_items_container").html(purchased_items);
               if (data.total == 0){
                   $("#total").html("<span>$&emsp;" + data.total.toFixed(2) + "</span>");

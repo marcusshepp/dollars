@@ -38,7 +38,13 @@ function init_item_list(){
  function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page, cata_names_set, cata_ids_set){
      if (items){
          var item_markup = "";
+         item_markup += '<span>';
          item_markup += '<h3>Items</h3>';
+         item_markup += '<input type="search" class="search_items_field"/>';
+         item_markup += '<input type="button" class="search_items_btn" ';
+         item_markup += 'onclick="search_items()" value="Filter" />';         
+         item_markup += '</span>';
+         item_markup += '<br />';
          for (var i = 0; i < cata_names_set.length; i++){
            var cata_name = cata_names_set[i];
            var cata_id = cata_ids_set[i];
@@ -46,17 +52,14 @@ function init_item_list(){
            item_markup += ' onclick="filter_items_by_catagory('+cata_id+')"/>'
          }
          item_markup += '<input type="button" class="see_more_catagories" ';
-         item_markup += 'onclick="see_more_item_catagories()" value="See More Catagories"/>';
-         item_markup += '<input type="search" class="search_items_field"/>';
-         item_markup += '<input type="button" class="search_items_btn" ';
-         item_markup += 'onclick="search_items()" value="Filter" />';
+         item_markup += 'onclick="see_more_item_catagories()" value="More..."/>';
          for (var i = 0; i < names.length; i++){
            var name = names[i];
            var where_from = where_froms[i];
            var price = prices[i];
            var times_purchase = times_purchased[i];
            var id = ids[i];
-           item_markup += '<br />'
+           item_markup += '<br />';
            item_markup += "<div id='item_container_" + id + "'>";
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
            item_markup += '<div class="" onclick="show_item_info('+id+')">' + name + '</div>';
@@ -325,8 +328,8 @@ function show_item_info(id){
         data.name,
         data.id,
         data.where_from,
-        data.cata_name,
-        data.cata_id,
+        data.catagory_name,
+        data.catagory_id,
         data.price,
         data.times_purchased
       );
