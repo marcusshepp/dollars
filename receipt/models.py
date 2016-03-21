@@ -63,9 +63,7 @@ class Item(TiedToUser):
 
     def __unicode__(self):
         string = u"{}".format(self.name)
-        if self.where_from:
-            string += u" from {}".format(self.where_from)
-        return string
+        return string.upper()
 
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")

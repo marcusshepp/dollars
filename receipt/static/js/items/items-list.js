@@ -26,17 +26,30 @@ function init_item_list(){
                      data.ids,
                      data.page_number,
                      data.total_pages,
-                     data.per_page);
+                     data.per_page,
+                     data.cata_names_set,
+                     data.cata_ids_set);
        },
        failure: function(){
          console.log("fail");
        },
    });
 }
- function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page){
+ function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page, cata_names_set, cata_ids_set){
      if (items){
          var item_markup = "";
          item_markup += '<h3>Items</h3>';
+         for (var i = 0; i < cata_names_set.length; i++){
+           var cata_name = cata_names_set[i];
+           var cata_id = cata_ids_set[i];
+           item_markup += '<input type="button" value="'+cata_name+'"';
+           item_markup += ' onclick="filter_items_by_catagory('+cata_id+')"/>'
+         }
+         item_markup += '<input type="button" class="see_more_catagories" ';
+         item_markup += 'onclick="see_more_item_catagories()" value="See More Catagories"/>';
+         item_markup += '<input type="search" class="search_items_field"/>';
+         item_markup += '<input type="button" class="search_items_btn" ';
+         item_markup += 'onclick="search_items()" value="Filter" />';
          for (var i = 0; i < names.length; i++){
            var name = names[i];
            var where_from = where_froms[i];
@@ -45,14 +58,14 @@ function init_item_list(){
            var id = ids[i];
            item_markup += "<p>";
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
-           item_markup += '<div class="" >' + name + ' from ' + where_from + '</div>';
-           item_markup += '<div class="options" onclick="show_options(this, '+id+')">...</div>';
+           item_markup += '<div class="" >' + name + '</div>';
            item_markup += '<span class="purchase_btn" onclick="purchase_item('+id+')">Purchase</span>';
            item_markup += '<label class="purchase_number" name="purchase_number"> # </label>';
            item_markup += '<input type="number" step="1" name="item_per_page" value="1" /><br />';
            item_markup += '<span class="times_purchased">$ '+price+'</span>';
            item_markup += '<span class="times_purchased"> # of purchases: ' + times_purchase + '</span>';
            item_markup += '</form>';
+           item_markup += '<div class="options" onclick="show_options(this, '+id+')">Options</div>';
            item_markup += "</p>";
            }
            item_markup += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
@@ -68,8 +81,7 @@ function init_item_list(){
                } else {item_markup += '<option name="item_per_page" value="'+i+'">'+i+'</option>';}
            }
            item_markup += '</select>';
-           console.log(item_markup);
-         $(".items_list_container").html(item_markup);
+           $(".items_list_container").html(item_markup);
      } else {
          $(".items_list_container").html('<h4 class="no_items">You haven\'t created any Items yet.</h4>');
      }
@@ -91,7 +103,7 @@ function hide_options(th, id){
     var a_options = "<span>&#8594;</span>";
     var options_div = $(th);
     var par = options_div.parent().filter(".options");
-    par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class=''>...</div></div>")
+    par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class=''>Options</div></div>")
 }
 function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id, name, company, catagory, price){
     var form_str = "";
@@ -282,8 +294,6 @@ function next_item_page(){
     });
 }
 function change_item_number_per_page(){
-  console.log("change_number_per_page()");
-  console.log( $(".item_per_page").val());
     $.ajax({
         type: "POST",
         url: item_list_url(),

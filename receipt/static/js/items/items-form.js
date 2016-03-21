@@ -39,8 +39,10 @@ function build_item_form(cata_names, cata_ids){
     item_form += '<p><label for="catagory">Catagory: </label>';
     item_form += '<span class="add_catagory" onclick="build_catagory_form(no_catagories=false)">Add</span>';
     item_form += '<select name="catagory" class="catagory">';
-    for (var i = 0; i < cata_names.length; i++){
-        item_form += '<option name="catagory" value="'+cata_ids[i]+'">'+cata_names[i]+'</option>';
+    for (var i = cata_names.length - 1; i >= 0; i--){
+        var cata_name = cata_names[i];
+        var cata_id = cata_ids[i];
+        item_form += '<option name="catagory" value="'+cata_id+'">'+cata_name+'</option>';
     }
     item_form += '</select></p>';
     item_form += '<p><label for="price">Price: </label><input type="number" ';
@@ -120,6 +122,7 @@ function validate_new_item(form, purchase){
   /*
   Ajax POST to items API. View then creates a new item object.
   */
+  
   var form_data = $(form).serializeArray();
   var name = form_data[0].value;
   var company_came_from = form_data[1].value;

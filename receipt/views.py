@@ -27,24 +27,21 @@ from .models import (
 DEFAULT_PER_PAGE = 5
 
 def get_post(request, name):
+    """
+    Quickly and safely check for a key in POST.
+    """
     return request.POST.get(name, None)
 
 def get_get(request, name):
+    """
+    Quickly and safely check for a key in GET.
+    """
     return request.GET.get(name, None)
 
-def get_session(request, name):
-    return request.session.get(name, None)
-
-def get_page_number(queryset, number_per_page, per_determined_page_number):
-    paginator = Paginator(queryset, number_per_page)
-    return paginator.page(per_determined_page_number)
-
-def increase_page_number_session_var(request, name):
-    value = get_session(request, name)
-    if value:
-        request.session[name] += 1
-
 def page_it(queryset, page_number, number_per_page):
+    """
+    returns the query for the given page. 
+    """
     paginator = Paginator(queryset, number_per_page)
     if page_number:
         if int(page_number) > paginator.num_pages:
@@ -53,11 +50,14 @@ def page_it(queryset, page_number, number_per_page):
             objecs = paginator.page(page_number)
         else:
             objecs = paginator.page(1)
-
     else: objecs = paginator.page(1)
     return objecs, paginator
 
 def cata_names(user, a):
+    """
+    A setted list of catagory names for the given user.
+    Can return all catagory names if `a` is set to True.
+    """
     cata_names = list()
     all_catagories = Catagory.objects.filter(user_id=user.id).order_by("-id")
     for catagory in all_catagories:
@@ -69,9 +69,15 @@ def cata_names(user, a):
     return list(set(cata_names))
 
 def cata_ids(user, a):
+    """
+    A setted list of catagory ids for the given user.
+    Can return all catagory ids if `a` is set to True.
+    """
     cata_ids = list()
-    for catagory in Catagory.objects.filter(user_id=user.id):
+    all_catagories = Catagory.objects.filter(user_id=user.id).order_by("-id")
+    for catagory in all_catagories:
         if a:
+            # if all catagories
             cata_ids.append(catagory.id)
         else:
             if catagory.has_a_purchase(user):
@@ -80,14 +86,19 @@ def cata_ids(user, a):
 
 
 class Common(View):
-
+    """
+    Giving all the views a check to see if the User is logged
+    in before executing dispatch.
+    """
     @method_decorator(login_required)
     def dispatch(self, request, *a, **kw):
         return super(Common, self).dispatch(request, *a, **kw)
 
 
 class MainView(Common):
-
+    """
+    The only view that doesn't return JSON on its get method.
+    """
     template_name = "receipt/main.html"
 
     def dispatch(self, request, *a, **kw):
@@ -105,11 +116,11 @@ class MainView(Common):
             print "*****START*****"
             Start.objects.create(is_start_of_app=False)
             init_page_data = dict()
-            init_page_data["obj"] = "item"
-            init_page_data["page_number"] = 1
-            init_page_data["number_per_page"] = DEFAULT_PER_PAGE
-            init_page_data["user"] = user.id
-            item_form = WhatPageForm(init_page_data)
+            init_page_data["obj"]               = "item"
+            init_page_data["page_number"]       = 1
+            init_page_data["number_per_page"]   = DEFAULT_PER_PAGE
+            init_page_data["user"]              = user.id
+            item_form                           = WhatPageForm(init_page_data)
             if item_form.is_valid():
                 item_form.save()
             item_page = WhatPage.objects.get(obj="item", user_id=user.id)
@@ -123,6 +134,9 @@ class MainView(Common):
         return self.get(request, *a, **kw)
 
     def get(self, request, *a, **kw):
+        """
+        Just load the page.
+        """
         return render(request, self.template_name)
 
     def post(self, request, *a, **kw):
@@ -154,7 +168,12 @@ class MainView(Common):
 
 
 class ItemEndPoint(Common):
-
+    """
+    Performs operations on Item model.
+    Does `purchase` on post.
+    Also handles Pagination for both load ie GET
+    and for next, prev, number per page ie POST.
+    """
     def get(self, request, *a, **kw):
         data = dict()
         user = request.user
@@ -171,7 +190,7 @@ class ItemEndPoint(Common):
                 items, paginator     = page_it(items_queryset, page_number, number_per_page)
                 total_pages          = paginator.num_pages
                 if items:
-                    data["names"]                   = [ item.name for item in items ]
+                    data["names"]                   = [ item.__unicode__() for item in items ]
                     data["where_from"]              = [ item.where_from for item in items ]
                     data["prices"]                  = [ item.price for item in items ]
                     data["times_purchased"]         = [ item.number_of_times_purchased for item in items ]
@@ -184,7 +203,7 @@ class ItemEndPoint(Common):
                 else:
                     data["item_length"]        = 0
             else:
-                print "****NO PURCHASE PAGE****"
+                print "****NO ITEM PAGE****"
         return JsonResponse(data)
     
     def purchased_item(self, request):
@@ -200,6 +219,9 @@ class ItemEndPoint(Common):
         purchased_item.save()
         
     def post(self, request, *a, **kw):
+        """
+        Next, Prev, Number Per Page
+        """
         data                = dict()
         user                = request.user
         move                = get_post(request, "move")
@@ -215,7 +237,6 @@ class ItemEndPoint(Common):
                 item_page = item_page[0]
                 paginator = Paginator(items_queryset, item_page.number_per_page)
                 if number_per_page:
-                    print 'NUMBER PER PAGE: ', number_per_page
                     item_page.change_number_per_page(number_per_page)
                 if move:
                     if prev:
@@ -227,24 +248,19 @@ class ItemEndPoint(Common):
             if item_page:
                 item_page = item_page[0]
                 items, paginator = page_it(Item.objects.filter(user=user), item_page.page_number, item_page.number_per_page)
-                data["ids"] = [i.id for i in items]
-                data["names"] = [i.name for i in items]
-                data["companies"] = [i.where_from for i in items]
-                data["prices"] = [i.price for i in items]
-                data["length"] = len(items)
+                data["ids"]             = [i.id for i in items]
+                data["names"]           = [i.name for i in items]
+                data["companies"]       = [i.where_from for i in items]
+                data["prices"]          = [i.price for i in items]
+                data["length"]          = len(items)
                 data["times_purchased"] = [i.number_of_times_purchased for i in items]
-                data["purchased"] = True
-                data["per_page"] = item_page.number_per_page
+                data["purchased"]       = True
+                data["per_page"]        = item_page.number_per_page
         return JsonResponse(data)
 
 
 class ItemManEndPoint(Common):
     """ Manipulates `Items`. ie DELETE + EDIT """
-
-    def get(self, request, *a, **kw):
-        data = dict()
-        return JsonResponse(data)
-
     def edit(id):
         data = dict()
         item = Item.objects.get(id=id)
@@ -256,19 +272,17 @@ class ItemManEndPoint(Common):
         if idd:
             item = Item.objects.filter(id=int(idd))
             if item:
-                data["item_id"] = item[0].id
-                data["item_name"] = item[0].name
-                data["item_price"] = item[0].price
-                data["company_name"] = item[0].where_from
-                data["item_catagory_id"] = item[0].catagory.id
-                data["item_catagory_name"] = item[0].catagory.name
-                data["company"] = item[0].where_from
-                catagories = Catagory.objects.all()
+                data["item_id"]             = item[0].id
+                data["item_name"]           = item[0].name
+                data["item_price"]          = item[0].price
+                data["company_name"]        = item[0].where_from
+                data["item_catagory_id"]    = item[0].catagory.id
+                data["item_catagory_name"]  = item[0].catagory.name
+                data["company"]             = item[0].where_from
+                catagories                  = Catagory.objects.all()
                 if catagories:
-                    data["catagory_names"] = [
-                        catagory.name for catagory in catagories]
-                    data["catagory_ids"] = [
-                        catagory.id for catagory in catagories]
+                    data["catagory_names"]  = [ catagory.name for catagory in catagories ]
+                    data["catagory_ids"]    = [ catagory.id for catagory in catagories ]
                     data["catagory_length"] = catagories.count()
             delete_item = get_post(request, "delete_item")
             if delete_item:
@@ -287,7 +301,10 @@ class ItemManEndPoint(Common):
 
 
 class ActionEndPoint(Common):
-
+    """
+    Works as an Action End Point returning data for the Users
+    last actions. Can also perform "Undo's" if nessessary via POST.
+    """
     def delete_latest_and_return_name(self, objct):
         """
         Queries the latest object, deletes it and returns it's name.
@@ -313,9 +330,9 @@ class ActionEndPoint(Common):
         action_data = dict()
         actions = Action.objects.all()
         if actions:
-            latest_action = actions.order_by("-id")[0]
-            action_data["latest_action_object_name"] = latest_action.object_name
-            action_data["latest_action_title"] = latest_action.title
+            latest_action                             = actions.order_by("-id")[0]
+            action_data["latest_action_object_name"]  = latest_action.object_name
+            action_data["latest_action_title"]        = latest_action.title
             action_data["latest_action_undo_handler"] = latest_action.undo_handler
         else:
             action_data["no_actions"] = True
@@ -355,7 +372,10 @@ class ActionEndPoint(Common):
 
 
 class CatagoryEndPoint(Common):
-
+    """
+    Catagories that are associated with Items and Purchases.
+    Works as an end point to recieve catagory information.
+    """
     def get(self, request, *a, **kw):
         data = dict()
         if not request.user.is_anonymous():
@@ -386,7 +406,11 @@ class CatagoryEndPoint(Common):
 
 
 class PurchaseTableEndPoint(Common):
-
+    """
+    Performs operations on Purchase model.
+    Handles Pagination for both load ie GET
+    and for next, prev, number per page ie POST.
+    """
     def get(self, request, *a, **kw):
         """ Accepts a purchase query and returns a json object """
         data = dict()
@@ -456,14 +480,14 @@ class PurchaseTableEndPoint(Common):
                     for purchase in purchases_q:
                         purchases.append(purchase)
         if purchases:
-            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
+            data["purchased_items_names"]  = [i.item_purchased.__unicode__() for i in purchases]
             data["purchased_date_created"] = [i.date_display() for i in purchases]
-            data["purchased_length"] = len(purchases)
+            data["purchased_length"]       = len(purchases)
             data["total"] = 0
             for purchase in purchases:
                 data["total"] += purchase.amount_payed
-            data["amount_payed"] = [i.amount_payed for i in purchases]
-            data["cata_names_set"] = cata_names(user, 0)
-            data["cata_ids_set"] = cata_ids(user, 0)
+            data["amount_payed"]           = [i.amount_payed for i in purchases]
+            data["cata_names_set"]         = cata_names(user, 0)
+            data["cata_ids_set"]           = cata_ids(user, 0)
         else: data["no_purchases_for_query"] = True
         return JsonResponse(data)

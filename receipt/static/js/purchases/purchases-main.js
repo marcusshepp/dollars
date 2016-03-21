@@ -69,8 +69,7 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
     for (var i = 6; i <= 10; i++){
         if (i == purchased_length){
             purchased_items += '<option selected="selected" name="purchases_per_page" value="'+i+'">'+i+'</option>';
-        }
-        purchased_items += '<option name="purchases_per_page" value="'+i+'">'+i+'</option>';
+        } else {purchased_items += '<option name="purchases_per_page" value="'+i+'">'+i+'</option>';}
     }
     purchased_items += '</select>';
     return purchased_items;
@@ -124,7 +123,7 @@ function previous_purchase_page(){
         },
         success: function(){
             console.log("success");
-            init_purchases()
+            init_purchases();
         },
         failure: function(){
             console.log("failure");
