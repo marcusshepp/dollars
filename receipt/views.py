@@ -185,48 +185,45 @@ class ItemEndPoint(Common):
                     data["item_length"]        = 0
             else:
                 print "****NO PURCHASE PAGE****"
-        print data.items()
         return JsonResponse(data)
-
+    
+    def purchased_item(self, request):
+        item = Item.objects.get(id=request.POST["id"])
+        item.increase_number_of_times_purchased()
+        purchdata = dict()
+        purchdata["item_purchased"] = item
+        purchdata["user"] = request.user
+        if request.POST.get("amount_payed", None):
+            purchdata["amount_payed"] = request.POST.get("amount_payed")
+        else: purchdata["amount_payed"] = item.price
+        purchased_item = Purchase(**purchdata)
+        purchased_item.save()
+        
     def post(self, request, *a, **kw):
-        data = dict()
-        user = request.user
+        data                = dict()
+        user                = request.user
+        move                = get_post(request, "move")
+        prev                = get_post(request, "prev")
+        next_               = get_post(request, "next")
+        number_per_page     = get_post(request, "number_per_page")
+        item_page           = WhatPage.objects.filter(obj="item", user_id=user.id)
+        items_queryset      = Item.objects.filter(user=user)
         if get_post(request, "id"):
-            item = Item.objects.get(id=request.POST["id"])
-            item.increase_number_of_times_purchased()
-            purchdata = dict()
-            purchdata["item_purchased"] = item
-            purchdata["user"] = request.user
-            if request.POST.get("amount_payed", None):
-                purchdata["amount_payed"] = request.POST.get("amount_payed")
-            else: purchdata["amount_payed"] = item.price
-            purchased_item = Purchase(**purchdata)
-            purchased_item.save()
+            self.purchased_item(request)
         else:
-            move = get_post(request, "move")
-            prev = get_post(request, "prev")
-            next_ = get_post(request, "next")
-            number_per_page = get_post(request, "number_per_page")
-            item_page = WhatPage.objects.filter(obj="item",
-                                                    user_id=user.id)
-            purchases_queryset = Purchase.objects.filter(user=user)
             if item_page:
                 item_page = item_page[0]
-                paginator = Paginator(purchases_queryset, item_page.number_per_page)
+                paginator = Paginator(items_queryset, item_page.number_per_page)
                 if number_per_page:
-                    print "CHANGE PAGE NUMBER"
+                    print 'NUMBER PER PAGE: ', number_per_page
                     item_page.change_number_per_page(number_per_page)
-                    print "item_page.number_per_page: ", dir(item_page.number_per_page)
                 if move:
                     if prev:
                         item_page.decrement_page_number()
-                        print "prev: ", item_page.page_number
                     elif next_:
                         if item_page.page_number < paginator.num_pages:
                             item_page.increase_page_number()
-                            print "next: ", item_page.page_number
-            item_page = WhatPage.objects.filter(obj="item",
-                                                user_id=user.id)
+            item_page = WhatPage.objects.filter(obj="item", user_id=user.id)
             if item_page:
                 item_page = item_page[0]
                 items, paginator = page_it(Item.objects.filter(user=user), item_page.page_number, item_page.number_per_page)
@@ -430,8 +427,7 @@ class PurchaseTableEndPoint(Common):
         prev                = get_post(request, "prev")
         next_               = get_post(request, "next")
         number_per_page     = get_post(request, "number_per_page")
-        purchase_page       = WhatPage.objects.filter(obj="purchase",
-                                                    user_id=user.id)
+        purchase_page       = WhatPage.objects.filter(obj="purchase", user_id=user.id)
         purchases_queryset  = Purchase.objects.filter(user=user)
         if purchase_page:
             purchase_page = purchase_page[0]

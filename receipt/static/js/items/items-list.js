@@ -17,7 +17,7 @@ function init_item_list(){
        type: "GET",
        url: item_list_url(),
        success: function(data){
-         console.log(data);
+        //  console.log(data);
          build_items(data.items,
                      data.names,
                      data.where_from,
@@ -36,7 +36,6 @@ function init_item_list(){
  function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page){
      if (items){
          var item_markup = "";
-         console.log(names.length);
          item_markup += '<h3>Items</h3>';
          for (var i = 0; i < names.length; i++){
            var name = names[i];
@@ -44,6 +43,7 @@ function init_item_list(){
            var price = prices[i];
            var times_purchase = times_purchased[i];
            var id = ids[i];
+           item_markup += "<p>";
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
            item_markup += '<div class="" >' + name + ' from ' + where_from + '</div>';
            item_markup += '<div class="options" onclick="show_options(this, '+id+')">...</div>';
@@ -53,22 +53,22 @@ function init_item_list(){
            item_markup += '<span class="times_purchased">$ '+price+'</span>';
            item_markup += '<span class="times_purchased"> # of purchases: ' + times_purchase + '</span>';
            item_markup += '</form>';
+           item_markup += "</p>";
            }
            item_markup += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
            item_markup += '<input type="button" value="prev" onclick="previous_item_page()" />';
            item_markup += '<input type="button" value="next" onclick="next_item_page()" />';
            item_markup += '<label for="item_per_page"> Number Per Page: </label>';
-           item_markup += '<select onchange="change_number_per_page()" ';
+           item_markup += '<select onchange="change_item_number_per_page()" ';
            item_markup += 'class="item_per_page" name="item_per_page">';
            item_markup += '<option name="item_per_page" value="5">default(5)</option>';
            for (var i = 6; i <= 10; i++){
                if (i == per_page){
                    item_markup += '<option selected="selected" name="item_per_page" value="'+i+'">'+i+'</option>';
-               }
-               item_markup += '<option name="item_per_page" value="'+i+'">'+i+'</option>';
+               } else {item_markup += '<option name="item_per_page" value="'+i+'">'+i+'</option>';}
            }
            item_markup += '</select>';
-         console.log(item_markup);
+           console.log(item_markup);
          $(".items_list_container").html(item_markup);
      } else {
          $(".items_list_container").html('<h4 class="no_items">You haven\'t created any Items yet.</h4>');
@@ -255,7 +255,7 @@ function previous_item_page(){
         },
         success: function(){
             console.log("success");
-            init_item_list()
+            init_item_list();
         },
         failure: function(){
             console.log("failure");
@@ -281,8 +281,9 @@ function next_item_page(){
         },
     });
 }
-function change_number_per_page(){
-    console.log($(".item_per_page").val());
+function change_item_number_per_page(){
+  console.log("change_number_per_page()");
+  console.log( $(".item_per_page").val());
     $.ajax({
         type: "POST",
         url: item_list_url(),
