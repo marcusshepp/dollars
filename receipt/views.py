@@ -156,27 +156,36 @@ class MainView(Common):
 class ItemEndPoint(Common):
 
     def get(self, request, *a, **kw):
-        items = Item.objects.filter(user=request.user)
         data = dict()
-        item_page = WhatPage.objects.get(user=request.user, obj="item")
-        if item_page:
-            print "ITME PAGE"
-            paginator = Paginator(items, item_page.number_per_page)
-            if item_page.page_number > paginator.num_pages:
-                item_page.page_number = 1
-                item_page.save()
-            items, paginator = page_it(items, item_page.page_number, item_page.number_per_page)
-            print items, paginator
-            if items:
-                data["ids"] = [i.id for i in items]
-                data["names"] = [i.name for i in items]
-                data["where_from"] = [i.where_from for i in items]
-                data["prices"] = [i.price for i in items]
-                data["length"] = paginator.count
-                data["times_purchased"] = [i.number_of_times_purchased for i in items]
-                data["page_number"] = item_page.page_number
-                data["total_pages"] = paginator.num_pages
-                print paginator.num_pages
+        user = request.user
+        items_queryset = Item.objects.filter(user=user)
+        if not items_queryset:
+            data["items"] = False
+        else:
+            data["items"] = True
+            item_page = WhatPage.objects.filter(obj="item", user_id=user.id)
+            if item_page:
+                item_page            = item_page[0]
+                page_number          = item_page.page_number
+                number_per_page      = item_page.number_per_page
+                items, paginator     = page_it(items_queryset, page_number, number_per_page)
+                total_pages          = paginator.num_pages
+                if items:
+                    data["names"]                   = [ item.name for item in items ]
+                    data["where_from"]              = [ item.where_from for item in items ]
+                    data["prices"]                  = [ item.price for item in items ]
+                    data["times_purchased"]         = [ item.number_of_times_purchased for item in items ]
+                    data["ids"]                     = [ item.id for item in items ]
+                    data["cata_names_set"]          = cata_names(user, 0)
+                    data["cata_ids_set"]            = cata_ids(user, 0)
+                    data["page_number"]             = page_number
+                    data["total_pages"]             = total_pages
+                    data["per_page"]                = number_per_page
+                else:
+                    data["item_length"]        = 0
+            else:
+                print "****NO PURCHASE PAGE****"
+        print data.items()
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
@@ -385,46 +394,45 @@ class PurchaseTableEndPoint(Common):
         """ Accepts a purchase query and returns a json object """
         data = dict()
         user = request.user
-        if not user.is_anonymous():
-            purchases_queryset = Purchase.objects.filter(user=user)
-            purchase_page = WhatPage.objects.filter(obj="purchase",
-                                                    user_id=user.id)
-            if purchase_page:
-                purchase_page        = purchase_page[0]
-                page_number          = purchase_page.page_number
-                number_per_page      = purchase_page.number_per_page
-                purchases, paginator = page_it(  purchases_queryset,
+        purchases_queryset = Purchase.objects.filter(user=user)
+        purchase_page = WhatPage.objects.filter(obj="purchase",
+                                                user_id=user.id)
+        if purchase_page:
+            purchase_page        = purchase_page[0]
+            page_number          = purchase_page.page_number
+            number_per_page      = purchase_page.number_per_page
+            purchases, paginator = page_it( purchases_queryset,
                                             page_number,
                                             number_per_page)
-                total_pages          = paginator.num_pages
-                if purchases:
-                    data["purchased_items_names"]   = [i.item_purchased.__unicode__() for i in purchases]
-                    data["purchased_date_created"]  = [i.date_display() for i in purchases]
-                    data["amount_payed"]            = [i.amount_payed for i in purchases]
-                    data["purchased_length"]        = len(purchases)
-                    data["total"]                   = sum([purchase.amount_payed for purchase in purchases])
-                    data["cata_names_set"]          = cata_names(user, 0)
-                    data["cata_ids_set"]            = cata_ids(user, 0)
-                    data["page_number"]             = page_number
-                    data["total_pages"]             = total_pages
-                    data["per_page"]                = number_per_page
-                else:
-                    data["purchased_length"]        = 0
+            total_pages          = paginator.num_pages
+            if purchases:
+                data["purchased_items_names"]   = [i.item_purchased.__unicode__() for i in purchases]
+                data["purchased_date_created"]  = [i.date_display() for i in purchases]
+                data["amount_payed"]            = [i.amount_payed for i in purchases]
+                data["purchased_length"]        = len(purchases)
+                data["total"]                   = sum([purchase.amount_payed for purchase in purchases])
+                data["cata_names_set"]          = cata_names(user, 0)
+                data["cata_ids_set"]            = cata_ids(user, 0)
+                data["page_number"]             = page_number
+                data["total_pages"]             = total_pages
+                data["per_page"]                = number_per_page
             else:
-                print "****NO PURCHASE PAGE****"
+                data["purchased_length"]        = 0
+        else:
+            print "****NO PURCHASE PAGE****"
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
-        data = dict()
-        user = request.user
-        catagory_id = get_post(request, "catagory_id")
-        move = get_post(request, "move")
-        prev = get_post(request, "prev")
-        next_ = get_post(request, "next")
-        number_per_page = get_post(request, "number_per_page")
-        purchase_page = WhatPage.objects.filter(obj="purchase",
-                                                user_id=user.id)
-        purchases_queryset = Purchase.objects.filter(user=user)
+        data                = dict()
+        user                = request.user
+        catagory_id         = get_post(request, "catagory_id")
+        move                = get_post(request, "move")
+        prev                = get_post(request, "prev")
+        next_               = get_post(request, "next")
+        number_per_page     = get_post(request, "number_per_page")
+        purchase_page       = WhatPage.objects.filter(obj="purchase",
+                                                    user_id=user.id)
+        purchases_queryset  = Purchase.objects.filter(user=user)
         if purchase_page:
             purchase_page = purchase_page[0]
             paginator = Paginator(purchases_queryset, purchase_page.number_per_page)

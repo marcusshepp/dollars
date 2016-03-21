@@ -17,8 +17,8 @@ function init_item_list(){
        type: "GET",
        url: item_list_url(),
        success: function(data){
-           console.log(data);
-         build_items(data.length,
+         console.log(data);
+         build_items(data.items,
                      data.names,
                      data.where_from,
                      data.prices,
@@ -33,24 +33,27 @@ function init_item_list(){
        },
    });
 }
- function build_items(length, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page){
-     if (length > 0){
+ function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page){
+     if (items){
          var item_markup = "";
+         console.log(names.length);
+         item_markup += '<h3>Items</h3>';
          for (var i = 0; i < names.length; i++){
            var name = names[i];
            var where_from = where_froms[i];
            var price = prices[i];
            var times_purchase = times_purchased[i];
            var id = ids[i];
-           item_markup += '<h3>Items</h3>';
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
            item_markup += '<div class="" >' + name + ' from ' + where_from + '</div>';
            item_markup += '<div class="options" onclick="show_options(this, '+id+')">...</div>';
-           item_markup += '<div class="purchase_btn" onclick="purchase_item('+id+')">Purchase</div>';
-           item_markup += '<select class="purchase_number">$ '+price+'</span>'
-           item_markup += '<span class="times_purchased">$ '+price+'</span>'
-           item_markup += '<span class="times_purchased"># of purchases: ' + times_purchase + '</span>';
+           item_markup += '<span class="purchase_btn" onclick="purchase_item('+id+')">Purchase</span>';
+           item_markup += '<label class="purchase_number" name="purchase_number"> # </label>';
+           item_markup += '<input type="number" step="1" name="item_per_page" value="1" /><br />';
+           item_markup += '<span class="times_purchased">$ '+price+'</span>';
+           item_markup += '<span class="times_purchased"> # of purchases: ' + times_purchase + '</span>';
            item_markup += '</form>';
+           }
            item_markup += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
            item_markup += '<input type="button" value="prev" onclick="previous_item_page()" />';
            item_markup += '<input type="button" value="next" onclick="next_item_page()" />';
@@ -65,7 +68,7 @@ function init_item_list(){
                item_markup += '<option name="item_per_page" value="'+i+'">'+i+'</option>';
            }
            item_markup += '</select>';
-         }
+         console.log(item_markup);
          $(".items_list_container").html(item_markup);
      } else {
          $(".items_list_container").html('<h4 class="no_items">You haven\'t created any Items yet.</h4>');
