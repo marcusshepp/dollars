@@ -53,35 +53,46 @@ def page_it(queryset, page_number, number_per_page):
     else: objecs = paginator.page(1)
     return objecs, paginator
 
-def cata_names(user, a):
-    """
-    A setted list of catagory names for the given user.
-    Can return all catagory names if `a` is set to True.
-    """
-    cata_names = list()
-    all_catagories = Catagory.objects.filter(user_id=user.id).order_by("-id")
-    for catagory in all_catagories:
-        if a:
-            cata_names.append(catagory.name)
-        else:
-            if catagory.has_a_purchase(user):
-                cata_names.append(catagory.name)
-    return list(set(cata_names))
-
-def cata_ids(user, a):
+def cata_names(user, item, purchased):
     """
     A setted list of catagory ids for the given user.
-    Can return all catagory ids if `a` is set to True.
+    If purchased is true only returns catagories that
+    have purchased Items.
+    If Items is True only returns catagories with an Item.
+    Else returns all catagories.
+    """
+    cata_names = list()
+    all_catagories = Catagory.objects.filter(user_id=user.id)
+    for catagory in all_catagories:
+        if item:
+            if catagory.has_an_item(user):
+                cata_names.append(catagory.name)
+        elif purchased:
+            if catagory.has_a_purchase(user):
+                cata_names.append(catagory.name)
+        else:
+            cata_names.append(catagory.name)
+    return list(set(cata_names))
+
+def cata_ids(user, item, purchased):
+    """
+    A setted list of catagory ids for the given user.
+    If purchased is true only returns catagories that
+    have purchased Items.
+    If Items is True only returns catagories with an Item.
+    Else returns all catagories.
     """
     cata_ids = list()
-    all_catagories = Catagory.objects.filter(user_id=user.id).order_by("-id")
+    all_catagories = Catagory.objects.filter(user_id=user.id)
     for catagory in all_catagories:
-        if a:
-            # if all catagories
-            cata_ids.append(catagory.id)
-        else:
+        if item:
+            if catagory.has_an_item(user):
+                cata_ids.append(catagory.id)
+        elif purchased:
             if catagory.has_a_purchase(user):
                 cata_ids.append(catagory.id)
+        else:
+            cata_ids.append(catagory.id)
     return list(set(cata_ids))
 
 
@@ -174,15 +185,32 @@ class ItemEndPoint(Common):
     Also handles Pagination for both load ie GET
     and for next, prev, number per page ie POST.
     """
+    def info_for_one_item(self, request):
+        data                        = dict()
+        item                        = Item.objects.get(id=get_get(request, "id"))
+        if item:
+            data["name"]            = item.name
+            data["id"]              = item.id
+            data["where_from"]      = item.where_from
+            data["catagory_name"]   = item.catagory.name
+            data["catagory_id"]     = item.catagory.id
+            data["price"]           = item.price
+            data["times_purchased"] = item.number_of_times_purchased
+        return JsonResponse(data)
+        
+        
     def get(self, request, *a, **kw):
-        data = dict()
-        user = request.user
-        items_queryset = Item.objects.filter(user=user)
+        data                = dict()
+        user                = request.user
+        items_queryset      = Item.objects.filter(user=user)
+        info_for_one_item   = get_get(request, "one_item")
         if not items_queryset:
             data["items"] = False
+        elif info_for_one_item:
+            return self.info_for_one_item(request)
         else:
-            data["items"] = True
-            item_page = WhatPage.objects.filter(obj="item", user_id=user.id)
+            data["items"]            = True
+            item_page                = WhatPage.objects.filter(obj="item", user_id=user.id)
             if item_page:
                 item_page            = item_page[0]
                 page_number          = item_page.page_number
@@ -195,8 +223,8 @@ class ItemEndPoint(Common):
                     data["prices"]                  = [ item.price for item in items ]
                     data["times_purchased"]         = [ item.number_of_times_purchased for item in items ]
                     data["ids"]                     = [ item.id for item in items ]
-                    data["cata_names_set"]          = cata_names(user, 0)
-                    data["cata_ids_set"]            = cata_ids(user, 0)
+                    data["cata_names_set"]          = cata_names(user, True, False)
+                    data["cata_ids_set"]            = cata_ids(user, True, False)
                     data["page_number"]             = page_number
                     data["total_pages"]             = total_pages
                     data["per_page"]                = number_per_page
@@ -207,13 +235,14 @@ class ItemEndPoint(Common):
         return JsonResponse(data)
     
     def purchased_item(self, request):
-        item = Item.objects.get(id=request.POST["id"])
+        item = Item.objects.get(id=get_post(request, "id"))
         item.increase_number_of_times_purchased()
         purchdata = dict()
         purchdata["item_purchased"] = item
         purchdata["user"] = request.user
-        if request.POST.get("amount_payed", None):
-            purchdata["amount_payed"] = request.POST.get("amount_payed")
+        amount_payed = get_post(request, "amount_payed")
+        if amount_payed:
+            purchdata["amount_payed"] = amount_payed
         else: purchdata["amount_payed"] = item.price
         purchased_item = Purchase(**purchdata)
         purchased_item.save()
@@ -379,8 +408,8 @@ class CatagoryEndPoint(Common):
     def get(self, request, *a, **kw):
         data = dict()
         if not request.user.is_anonymous():
-            data["cata_names_set"] = cata_names(request.user, True)
-            data["cata_ids_set"] = cata_ids(request.user, True)
+            data["cata_names_set"] = cata_names(request.user, 0, 0)
+            data["cata_ids_set"] = cata_ids(request.user, 0, 0)
         else:
             data["not_logged_in"] = True
         return JsonResponse(data)
@@ -432,8 +461,8 @@ class PurchaseTableEndPoint(Common):
                 data["amount_payed"]            = [i.amount_payed for i in purchases]
                 data["purchased_length"]        = len(purchases)
                 data["total"]                   = sum([purchase.amount_payed for purchase in purchases])
-                data["cata_names_set"]          = cata_names(user, 0)
-                data["cata_ids_set"]            = cata_ids(user, 0)
+                data["cata_names_set"]          = cata_names(user, 0, 1)
+                data["cata_ids_set"]            = cata_ids(user, 0, 1)
                 data["page_number"]             = page_number
                 data["total_pages"]             = total_pages
                 data["per_page"]                = number_per_page
@@ -487,7 +516,7 @@ class PurchaseTableEndPoint(Common):
             for purchase in purchases:
                 data["total"] += purchase.amount_payed
             data["amount_payed"]           = [i.amount_payed for i in purchases]
-            data["cata_names_set"]         = cata_names(user, 0)
-            data["cata_ids_set"]           = cata_ids(user, 0)
+            data["cata_names_set"]         = cata_names(user, 0, 1)
+            data["cata_ids_set"]           = cata_ids(user, 0, 1)
         else: data["no_purchases_for_query"] = True
         return JsonResponse(data)

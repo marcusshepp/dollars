@@ -101,6 +101,11 @@ class Catagory(TiedToUser):
         for purchase in Purchase.objects.filter(user_id=user.id):
             if self.name == purchase.item_purchased.catagory.name:
                 return True
+    
+    def has_an_item(self, user):
+        for item in Item.objects.filter(user_id=user.id):
+            if self.name == item.catagory.name:
+                return True
 
 
 class Start(models.Model):

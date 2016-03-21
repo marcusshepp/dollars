@@ -56,9 +56,10 @@ function init_item_list(){
            var price = prices[i];
            var times_purchase = times_purchased[i];
            var id = ids[i];
-           item_markup += "<p>";
+           item_markup += '<br />'
+           item_markup += "<div id='item_container_" + id + "'>";
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
-           item_markup += '<div class="" >' + name + '</div>';
+           item_markup += '<div class="" onclick="show_item_info('+id+')">' + name + '</div>';
            item_markup += '<span class="purchase_btn" onclick="purchase_item('+id+')">Purchase</span>';
            item_markup += '<label class="purchase_number" name="purchase_number"> # </label>';
            item_markup += '<input type="number" step="1" name="item_per_page" value="1" /><br />';
@@ -66,7 +67,7 @@ function init_item_list(){
            item_markup += '<span class="times_purchased"> # of purchases: ' + times_purchase + '</span>';
            item_markup += '</form>';
            item_markup += '<div class="options" onclick="show_options(this, '+id+')">Options</div>';
-           item_markup += "</p>";
+           item_markup += "</div>";
            }
            item_markup += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
            item_markup += '<input type="button" value="prev" onclick="previous_item_page()" />';
@@ -205,7 +206,7 @@ function purchase_w_new_price(th, id){
     var markup = "<input ";
     markup += "type='number' ";
     markup += "name='price' ";
-    markup += "step='0.01' />";
+    markup += "step='0.01' class='purch_w_new_price'/>";
     markup += "<input type='text' style='display: none;' />"
     markup += "<input type='button' ";
     markup += "onclick='post_purchase_w_new_price(this, "+id+")' "
@@ -214,7 +215,7 @@ function purchase_w_new_price(th, id){
     $(th).parent().html(markup);
 }
 function post_purchase_w_new_price(th, id){
-    var new_price = $("#item_"+id).find(":input")[0].value;
+    var new_price = $(".purch_w_new_price").val();
     $.ajax({
         url: "/dollars/api/items/",
         type: "POST",
@@ -309,4 +310,55 @@ function change_item_number_per_page(){
             console.log("failure");
         },
     });
+}
+
+function show_item_info(id){
+  $.ajax({
+    type: 'GET',
+    url: item_list_url(),
+    data: {
+      "id": id,
+      "one_item": true,
+    },
+    success: function(data){
+      build_item_info(
+        data.name,
+        data.id,
+        data.where_from,
+        data.cata_name,
+        data.cata_id,
+        data.price,
+        data.times_purchased
+      );
+    }
+  });
+}
+
+function build_item_info(name, id, where_from, cata_name, cata_id, price, number_of_times_purchased){
+  item_info_markup = "";
+  item_info_markup += "<span onclick='hide_item_info("+id+", ";
+  item_info_markup += '"' + name + '", ';
+  item_info_markup += price + ", ";
+  item_info_markup += number_of_times_purchased;
+  item_info_markup += ")'>Back</span>";
+  item_info_markup += "<ul>";
+  item_info_markup += "<li>Name: "+name+"</li>";
+  item_info_markup += "<li>Where From: "+where_from+"</li>";
+  item_info_markup += "<li>Catagory: "+cata_name+"</li>";
+  item_info_markup += "<li>Price: "+price+"</li>";
+  item_info_markup += "</ul>";
+  $("#item_container_"+id).html(item_info_markup);
+}
+
+function hide_item_info(id, name, price, times_purchased){
+  item_markup = "";
+  item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
+  item_markup += '<div class="" onclick="show_item_info('+id+')">' + name.toUpperCase() + '</div>';
+  item_markup += '<span class="purchase_btn" onclick="purchase_item('+id+')">Purchase</span>';
+  item_markup += '<label class="purchase_number" name="purchase_number"> # </label>';
+  item_markup += '<input type="number" step="1" name="item_per_page" value="1" /><br />';
+  item_markup += '<span class="times_purchased">$ '+price+'</span>';
+  item_markup += '<span class="times_purchased"> # of purchases: ' + times_purchased + '</span>';
+  item_markup += '</form>';
+  $("#item_container_"+id).html(item_markup);
 }
