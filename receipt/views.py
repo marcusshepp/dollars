@@ -120,10 +120,6 @@ class MainView(Common):
                 purchase_form.save()
             purchase_page = WhatPage.objects.get(obj="purchase", user_id=user.id)
             assert(purchase_page.obj == "purchase"), "no purchase page"
-            request.session["purchases_page_number"] = 0
-            request.session["items_page_number"] = 0
-            request.session["purchases_number_per_page"] = 0
-            request.session["items_number_per_page"] = 0
         return self.get(request, *a, **kw)
 
     def get(self, request, *a, **kw):
@@ -162,28 +158,77 @@ class ItemEndPoint(Common):
     def get(self, request, *a, **kw):
         items = Item.objects.filter(user=request.user)
         data = dict()
-        data["ids"] = [i.id for i in items]
-        data["names"] = [i.name for i in items]
-        data["companies"] = [i.where_from for i in items]
-        data["prices"] = [i.price for i in items]
-        data["length"] = items.count()
-        data["times_purchased"] = [i.number_of_times_purchased for i in items]
+        item_page = WhatPage.objects.get(user=request.user, obj="item")
+        if item_page:
+            print "ITME PAGE"
+            paginator = Paginator(items, item_page.number_per_page)
+            if item_page.page_number > paginator.num_pages:
+                item_page.page_number = 1
+                item_page.save()
+            items, paginator = page_it(items, item_page.page_number, item_page.number_per_page)
+            print items, paginator
+            if items:
+                data["ids"] = [i.id for i in items]
+                data["names"] = [i.name for i in items]
+                data["where_from"] = [i.where_from for i in items]
+                data["prices"] = [i.price for i in items]
+                data["length"] = paginator.count
+                data["times_purchased"] = [i.number_of_times_purchased for i in items]
+                data["page_number"] = item_page.page_number
+                data["total_pages"] = paginator.num_pages
+                print paginator.num_pages
         return JsonResponse(data)
 
     def post(self, request, *a, **kw):
-        item = Item.objects.get(id=request.POST["id"])
-        item.increase_number_of_times_purchased()
-        purchase_data = dict()
-        purchase_data["item_purchased"] = item
-        purchase_data["user"] = request.user
-        if request.POST.get("amount_payed", None):
-            purchase_data["amount_payed"] = request.POST.get("amount_payed")
-        else: purchase_data["amount_payed"] = item.price
-        purchased_item = Purchase(**purchase_data)
-        purchased_item.save()
         data = dict()
-        data["item_name"] = item.name
-        data["purchased"] = True
+        user = request.user
+        if get_post(request, "id"):
+            item = Item.objects.get(id=request.POST["id"])
+            item.increase_number_of_times_purchased()
+            purchdata = dict()
+            purchdata["item_purchased"] = item
+            purchdata["user"] = request.user
+            if request.POST.get("amount_payed", None):
+                purchdata["amount_payed"] = request.POST.get("amount_payed")
+            else: purchdata["amount_payed"] = item.price
+            purchased_item = Purchase(**purchdata)
+            purchased_item.save()
+        else:
+            move = get_post(request, "move")
+            prev = get_post(request, "prev")
+            next_ = get_post(request, "next")
+            number_per_page = get_post(request, "number_per_page")
+            item_page = WhatPage.objects.filter(obj="item",
+                                                    user_id=user.id)
+            purchases_queryset = Purchase.objects.filter(user=user)
+            if item_page:
+                item_page = item_page[0]
+                paginator = Paginator(purchases_queryset, item_page.number_per_page)
+                if number_per_page:
+                    print "CHANGE PAGE NUMBER"
+                    item_page.change_number_per_page(number_per_page)
+                    print "item_page.number_per_page: ", dir(item_page.number_per_page)
+                if move:
+                    if prev:
+                        item_page.decrement_page_number()
+                        print "prev: ", item_page.page_number
+                    elif next_:
+                        if item_page.page_number < paginator.num_pages:
+                            item_page.increase_page_number()
+                            print "next: ", item_page.page_number
+            item_page = WhatPage.objects.filter(obj="item",
+                                                user_id=user.id)
+            if item_page:
+                item_page = item_page[0]
+                items, paginator = page_it(Item.objects.filter(user=user), item_page.page_number, item_page.number_per_page)
+                data["ids"] = [i.id for i in items]
+                data["names"] = [i.name for i in items]
+                data["companies"] = [i.where_from for i in items]
+                data["prices"] = [i.price for i in items]
+                data["length"] = len(items)
+                data["times_purchased"] = [i.number_of_times_purchased for i in items]
+                data["purchased"] = True
+                data["per_page"] = item_page.number_per_page
         return JsonResponse(data)
 
 

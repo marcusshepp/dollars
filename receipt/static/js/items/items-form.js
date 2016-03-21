@@ -29,13 +29,13 @@ function init_item_form(){
 
 function build_item_form(cata_names, cata_ids){
     var item_form = "";
-    item_form += '<h4 id="item_form_header">Add New Item</h4>';
+    item_form += '<h3 id="item_form_header">Add New Item</h3>';
     item_form += '<form class="formmy item_form" action="" method="POST" enctype="multipart/form-data">';
     item_form += '<p><label for="name">Name: </label><input type="text" ';
     item_form += 'placeholder="Name of Item" name="name" max_length="250"/ class=""></p>';
     item_form += '<p><label for="company_came_from">Company: </label>';
     item_form += '<input type="text" placeholder="Where does this come from?" ';
-    item_form += 'name="company_came_from" max_length="50" class=""></p>';
+    item_form += 'name="where_from" max_length="50" class=""></p>';
     item_form += '<p><label for="catagory">Catagory: </label>';
     item_form += '<span class="add_catagory" onclick="build_catagory_form(no_catagories=false)">Add</span>';
     item_form += '<select name="catagory" class="catagory">';
@@ -140,7 +140,7 @@ function create_new_item(name, company_came_from, price, catagory_id, purchase){
     data: {
       "csrfmiddlewaretoken": csrf_func(),
       "name": name,
-      "company_came_from": company_came_from,
+      "where_from": company_came_from,
       "price": price,
       "catagory_id": catagory_id,
       "purchase": purchase,

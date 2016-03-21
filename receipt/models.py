@@ -81,7 +81,7 @@ class Item(TiedToUser):
         num_of_times_purchased_before = self.number_of_times_purchased
         self.number_of_times_purchased = models.F("number_of_times_purchased") - 1
         self.save()
-        if num_of_times_purchased_before + 1 == self.number_of_times_purchased:
+        if num_of_times_purchased_before - 1 == self.number_of_times_purchased:
             return 1
 
 
@@ -125,21 +125,21 @@ class WhatPage(TiedToUser):
     number_per_page = models.IntegerField()
 
     def __unicode__(self):
-        return u"{0}-{1} per page, page number {2}".format(self.obj, self.number_per_page, self.page_number)
+        return u"obj: {0}\nPer page: {1}\nPage number: {2}".format(self.obj, self.number_per_page, self.page_number)
 
     def decrement_page_number(self):
         page_number = self.page_number
         if page_number == 1:
             return
         else:
-            self.page_number = models.F("page_number") - 1
+            self.page_number = page_number - 1
             self.save()
             if page_number - 1 == self.page_number:
                 return 1
 
     def increase_page_number(self):
         page_number = self.page_number
-        self.page_number = models.F("page_number") + 1
+        self.page_number = page_number + 1
         self.save()
         if page_number + 1 == self.page_number:
             return 1

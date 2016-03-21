@@ -32,15 +32,18 @@ function init_purchases(){
         },
     })
 }
-function build_table(purchased_items_names,purchased_date_created,purchased_length,amount_payed,total,cata_names_set,cata_ids_set,page_number,total_pages,per_page){
+function build_table(purchased_items_names,purchased_date_created,purchased_length,amount_payed,total,cata_names_set,cata_ids_set,page_number,total_pages){
     var purchased_items = "";
     purchased_items += '<h4 id="purchases_header"><span>Purchases Made: All Time ('+purchased_length+')</span></h4>';
-    purchased_items += '<input type="button" name="name" value="Refresh" onclick="init_purchases()" class="purchase_filters">';
-    purchased_items += '<span>Filters:</span>';
     for(var i = 0; i < cata_names_set.length; i++){
         purchased_items += '<input type="button" value="'+cata_names_set[i]+'" ';
         purchased_items += 'onclick="filter_purchase_tbl_by_catagory('+cata_ids_set[i]+')" class="purchase_filters">';
     }
+    purchased_items += '<input type="button" class="see_more_catagories" ';
+    purchased_items += 'onclick="see_more_catagories()" value="See More Catagories"/>';
+    purchased_items += '<input type="search" class="search_purchases_field"/>';
+    purchased_items += '<input type="button" class="search_purchases_btn" ';
+    purchased_items += 'onclick="search_purchases()" value="Filter" />';
     purchased_items += '<div class="total">Total: '+ total +'</div>';
     purchased_items += '<table>';
     purchased_items += '<tr>';
@@ -60,7 +63,8 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
     purchased_items += '<input type="button" value="prev" onclick="previous_purchase_page()" />';
     purchased_items += '<input type="button" value="next" onclick="next_purchase_page()" />';
     purchased_items += '<label for="purchase_per_page"> Number Per Page: </label>';
-    purchased_items += '<select onchange="change_number_per_page()" class="purchase_per_page" name="purchase_per_page" class="purchase_per_page">';
+    purchased_items += '<select onchange="change_number_per_page()" ';
+    purchased_items += 'class="purchase_per_page" name="purchase_per_page">';
     purchased_items += '<option name="purchases_per_page" value="5">default(5)</option>';
     for (var i = 6; i <= 10; i++){
         if (i == purchased_length){
@@ -139,7 +143,7 @@ function next_purchase_page(){
         },
         success: function(){
             console.log("success");
-            init_purchases()
+            init_purchases();
         },
         failure: function(){
             console.log("failure");

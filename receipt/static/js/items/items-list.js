@@ -17,34 +17,54 @@ function init_item_list(){
        type: "GET",
        url: item_list_url(),
        success: function(data){
+           console.log(data);
          build_items(data.length,
                      data.names,
-                     data.companies,
+                     data.where_from,
                      data.prices,
                      data.times_purchased,
-                     data.ids);
+                     data.ids,
+                     data.page_number,
+                     data.total_pages,
+                     data.per_page);
        },
        failure: function(){
          console.log("fail");
        },
    });
 }
- function build_items(length, names, companies, prices, times_purchased, ids){
+ function build_items(length, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page){
      if (length > 0){
          var item_markup = "";
-         for (var i = 0; i < length; i++){
+         for (var i = 0; i < names.length; i++){
            var name = names[i];
-           var company = companies[i];
+           var where_from = where_froms[i];
            var price = prices[i];
            var times_purchase = times_purchased[i];
            var id = ids[i];
+           item_markup += '<h3>Items</h3>';
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
-           item_markup += '<div class="" >' + name + '</div>';
+           item_markup += '<div class="" >' + name + ' from ' + where_from + '</div>';
            item_markup += '<div class="options" onclick="show_options(this, '+id+')">...</div>';
            item_markup += '<div class="purchase_btn" onclick="purchase_item('+id+')">Purchase</div>';
+           item_markup += '<select class="purchase_number">$ '+price+'</span>'
            item_markup += '<span class="times_purchased">$ '+price+'</span>'
            item_markup += '<span class="times_purchased"># of purchases: ' + times_purchase + '</span>';
            item_markup += '</form>';
+           item_markup += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
+           item_markup += '<input type="button" value="prev" onclick="previous_item_page()" />';
+           item_markup += '<input type="button" value="next" onclick="next_item_page()" />';
+           item_markup += '<label for="item_per_page"> Number Per Page: </label>';
+           item_markup += '<select onchange="change_number_per_page()" ';
+           item_markup += 'class="item_per_page" name="item_per_page">';
+           item_markup += '<option name="item_per_page" value="5">default(5)</option>';
+           for (var i = 6; i <= 10; i++){
+               if (i == per_page){
+                   item_markup += '<option selected="selected" name="item_per_page" value="'+i+'">'+i+'</option>';
+               }
+               item_markup += '<option name="item_per_page" value="'+i+'">'+i+'</option>';
+           }
+           item_markup += '</select>';
          }
          $(".items_list_container").html(item_markup);
      } else {
@@ -79,15 +99,15 @@ function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id,
     form_str += '<p><label for="company_came_from">Company: </label><input value="'+company+'" ';
     form_str += 'type="text" name="company_came_from" max_length="50" placeholder="Where does this come from?" class="pull-right"></p>';
     form_str += '<p><label for="catagory">Catagory: </label>';
-    form_str += '<select name="catagory" class="pull-right catagory">';
+    form_str += '<select name="catagory" class="catagory">';
     for (var i = 0; i < catagory_length; i++){
         form_str += '<option name="catagory" value="'+catagory_ids[i]+'">'+catagory_names[i]+'</option>';
     }
     form_str += '</select>';
     form_str += '</p>';
     form_str += '<p><label for="price">Price: </label><input ';
-    form_str += 'type="number" value="'+price+'" placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
-    form_str += '<input type="button" value="Save" class="edit_save_btn btn btn-default" onclick="edit_item(this.form, '+item_id+')">';
+    form_str += 'type="number" value="'+price+'" placeholder="Price of Item" name="price" step="0.01" class=""></p>';
+    form_str += '<input type="button" value="Save" class="edit_save_btn" onclick="edit_item(this.form, '+item_id+')">';
     form_str += '</form>';
     $(".item_form_container").html(form_str);
 }
@@ -214,10 +234,65 @@ function purchase_item(id){
           var name = data.item_name;
           $("#header").html("<p>Purchase Made: " + name + " <span class=''></></p>");
           create_action("Purchase", "Make purchase: "+name, "undo purchase");
-          update_purchase_tbl();
+          init_purchases();
       },
       error: function(){
           console.log("failure");
       },
   });
 };
+function previous_item_page(){
+    $.ajax({
+        type: "POST",
+        url: item_list_url(),
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "move": true,
+            "prev": true
+        },
+        success: function(){
+            console.log("success");
+            init_item_list()
+        },
+        failure: function(){
+            console.log("failure");
+        },
+    });
+}
+
+function next_item_page(){
+    $.ajax({
+        type: "POST",
+        url: item_list_url(),
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "move": true,
+            "next": true
+        },
+        success: function(){
+            console.log("success");
+            init_item_list()
+        },
+        failure: function(){
+            console.log("failure");
+        },
+    });
+}
+function change_number_per_page(){
+    console.log($(".item_per_page").val());
+    $.ajax({
+        type: "POST",
+        url: item_list_url(),
+        data: {
+            "csrfmiddlewaretoken": csrf_func(),
+            "number_per_page": $(".item_per_page").val(),
+        },
+        success: function(){
+            console.log("success");
+            init_item_list();
+        },
+        failure: function(){
+            console.log("failure");
+        },
+    });
+}
