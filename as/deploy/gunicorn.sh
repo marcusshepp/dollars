@@ -42,3 +42,5 @@ gunicorn \
 
 
 if [[ -e $LOGFILE ]]; then
+  cat $LOGFILE;
+fi
