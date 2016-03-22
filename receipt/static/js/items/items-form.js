@@ -34,7 +34,7 @@ function build_item_form(cata){
     item_form += '<form class="formmy item_form" action="" method="POST" enctype="multipart/form-data">';
     item_form += '<p><label for="name">Name: </label><input type="text" ';
     item_form += 'placeholder="Name of Item" name="name" max_length="250"/ class=""></p>';
-    item_form += '<p><label for="company_came_from">Company: </label>';
+    item_form += '<p><label for="where_from">Company: </label>';
     item_form += '<input type="text" placeholder="Where does this come from?" ';
     item_form += 'name="where_from" max_length="50" class=""></p>';
     item_form += '<p><label for="catagory">Catagory: </label>';

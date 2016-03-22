@@ -117,8 +117,10 @@ function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id,
     form_str += '<p><label for="name">Name: </label><input type="text" name="name" placeholder="Name of Item" ';
     form_str += 'max_length="250" class="pull-right" value="'+name+'" /></p>';
     form_str += '<p><label for="company_came_from">Company: </label><input value="'+company+'" ';
-    form_str += 'type="text" name="company_came_from" max_length="50" placeholder="Where does this come from?" class="pull-right"></p>';
+    form_str += 'type="text" name="company_came_from" max_length="50"';
+    form_str += ' placeholder="Where does this come from?" class="pull-right"></p>';
     form_str += '<p><label for="catagory">Catagory: </label>';
+    form_str += '<span class="add_catagory" onclick="build_catagory_form(no_catagories=false)">Add</span>';
     form_str += '<select name="catagory" class="catagory">';
     for (var i = 0; i < catagory_length; i++){
         form_str += '<option name="catagory" value="'+catagory_ids[i]+'">'+catagory_names[i]+'</option>';
@@ -374,7 +376,7 @@ function clear_item_form(){
      $(".item_form")[0][0].value = '';
      $(".item_form")[0][1].value = '';
      $(".item_form")[0][3].value = '';
-     var item_form_btns = '';
+     var item_form_btns = ''; //kkthisdoesnt work
      item_form_btns += '<input type="button" value="Add" class="" onclick="validate_new_item(this.form, false)">';
      item_form_btns += '<input type="button" name="name" value="Add & Purchase"';
      item_form_btns += ' class="" onclick="validate_new_item(this.form, true)">';
