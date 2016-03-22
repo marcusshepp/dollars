@@ -52,20 +52,18 @@ class Item(TiedToUser):
 
     class Meta:
         ordering = ["-date_created"]
-        unique_together = ("name", "company_came_from", "catagory")
+        unique_together = ("name", "where_from", "catagory")
 
     date_created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=15, unique=True, validators=[MinLengthValidator(4)])
-    company_came_from = models.CharField(max_length=10, null=True, blank=True)
+    where_from = models.CharField(max_length=10, null=True, blank=True)
     price = models.DecimalField(max_digits=19, decimal_places=2)
     number_of_times_purchased = models.IntegerField(null=False, blank=True, default=0)
     catagory = models.ForeignKey("Catagory")
 
     def __unicode__(self):
         string = u"{}".format(self.name)
-        if self.company_came_from:
-            string += u" from {}".format(self.company_came_from)
-        return string
+        return string.upper()
 
     def date_display(self):
         return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
@@ -81,23 +79,33 @@ class Item(TiedToUser):
         num_of_times_purchased_before = self.number_of_times_purchased
         self.number_of_times_purchased = models.F("number_of_times_purchased") - 1
         self.save()
-        if num_of_times_purchased_before + 1 == self.number_of_times_purchased:
+        if num_of_times_purchased_before - 1 == self.number_of_times_purchased:
             return 1
 
 
 class Catagory(TiedToUser):
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["-id"]
 
     date_created = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=25, validators=[MinLengthValidator(4)])
+    name = models.CharField(max_length=25, validators=[MinLengthValidator(4)], unique=True)
 
     def __unicode__(self):
         return u"{0}".format(self.name)
 
     def string(self):
         return unicode(self.__unicode__()).upper()
+
+    def has_a_purchase(self, user):
+        for purchase in Purchase.objects.filter(user_id=user.id):
+            if self.name == purchase.item_purchased.catagory.name:
+                return True
+    
+    def has_an_item(self, user):
+        for item in Item.objects.filter(user_id=user.id):
+            if self.name == item.catagory.name:
+                return True
 
 
 class Start(models.Model):
@@ -111,9 +119,35 @@ class WhatPage(TiedToUser):
     """
     Where was the User looking last?
     """
-    obj = models.CharField(max_length=15)
+    MODEL_CHOICES = (
+        ("item", "item"),
+        ("purchase", "purchase"),
+    )
+    obj = models.CharField(max_length=15, choices=MODEL_CHOICES, unique=True)
     page_number = models.IntegerField()
     number_per_page = models.IntegerField()
 
     def __unicode__(self):
-        return u"{0}-{1} per page, page number {2}".format(self.obj, self.number_per_page, self.page_number)
+        return u"obj: {0}\nPer page: {1}\nPage number: {2}".format(self.obj, self.number_per_page, self.page_number)
+
+    def decrement_page_number(self):
+        page_number = self.page_number
+        if page_number == 1:
+            return
+        else:
+            self.page_number = page_number - 1
+            self.save()
+            if page_number - 1 == self.page_number:
+                return 1
+
+    def increase_page_number(self):
+        page_number = self.page_number
+        self.page_number = page_number + 1
+        self.save()
+        if page_number + 1 == self.page_number:
+            return 1
+
+    def change_number_per_page(self, number_per_page):
+        if number_per_page >= 5:
+            self.number_per_page = number_per_page
+            self.save()

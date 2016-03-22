@@ -1,112 +1,172 @@
 from django.http import JsonResponse
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView, View
+from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import (
     ItemForm,
     ActionForm,
-    PurchaseForm)
+    PurchaseForm,
+    CatagoryForm,
+    WhatPageForm,
+)
 from .models import (
     Item,
     Purchase,
     Action,
     Start,
-    Catagory)
+    Catagory,
+    WhatPage,
+)
 
+
+DEFAULT_PER_PAGE = 5
 
 def get_post(request, name):
+    """
+    Quickly and safely check for a key in POST.
+    """
     return request.POST.get(name, None)
-def get_session(request, name):
-    return request.session.get(name, None)
-def page_it(request, namespace, queryset, number_per_page, per_determined_page_number=None):
+
+def get_get(request, name):
+    """
+    Quickly and safely check for a key in GET.
+    """
+    return request.GET.get(name, None)
+
+def page_it(queryset, page_number, number_per_page):
+    """
+    returns the query for the given page. 
+    """
     paginator = Paginator(queryset, number_per_page)
-    page = request.GET.get(namespace+"_page", None)
-    if page:
-        try:
-            objecs = paginator.page(page)
-        except PageNotAnInteger:
-            objecs = paginator.page(1)
-        except EmptyPage:
+    if page_number:
+        if int(page_number) > paginator.num_pages:
             objecs = paginator.page(paginator.num_pages)
-        return objecs
-    else: return paginator.page(1)
-def get_page_number(queryset, number_per_page, per_determined_page_number):
-    paginator = Paginator(queryset, number_per_page)
-    return paginator.page(per_determined_page_number)
-def increase_page_number_session_var(request, name):
-    value = get_session(request, name)
-    if value:
-        request.session[name] += 1
+        elif type(page_number) == int:
+            objecs = paginator.page(page_number)
+        else:
+            objecs = paginator.page(1)
+    else: objecs = paginator.page(1)
+    return objecs, paginator
+
+def cata_names(user, item, purchased):
+    """
+    A setted list of catagory ids for the given user.
+    If purchased is true only returns catagories that
+    have purchased Items.
+    If Items is True only returns catagories with an Item.
+    Else returns all catagories.
+    """
+    cata_names = list()
+    all_catagories = Catagory.objects.filter(user_id=user.id)
+    for catagory in all_catagories:
+        if item:
+            if catagory.has_an_item(user):
+                cata_names.append(catagory.name)
+        elif purchased:
+            if catagory.has_a_purchase(user):
+                cata_names.append(catagory.name)
+        else:
+            cata_names.append(catagory.name)
+    return list(set(cata_names))
+
+def cata_ids(user, item, purchased):
+    """
+    A setted list of catagory ids for the given user.
+    If purchased is true only returns catagories that
+    have purchased Items.
+    If Items is True only returns catagories with an Item.
+    Else returns all catagories.
+    """
+    cata_ids = list()
+    all_catagories = Catagory.objects.filter(user_id=user.id)
+    for catagory in all_catagories:
+        if item:
+            if catagory.has_an_item(user):
+                cata_ids.append(catagory.id)
+        elif purchased:
+            if catagory.has_a_purchase(user):
+                cata_ids.append(catagory.id)
+        else:
+            cata_ids.append(catagory.id)
+    return list(set(cata_ids))
 
 
-class MainView(TemplateView):
-
-    template_name = "receipt/main.html"
-    
+class Common(View):
+    """
+    Giving all the views a check to see if the User is logged
+    in before executing dispatch.
+    """
     @method_decorator(login_required)
     def dispatch(self, request, *a, **kw):
+        return super(Common, self).dispatch(request, *a, **kw)
+
+
+class MainView(Common):
+    """
+    The only view that doesn't return JSON on its get method.
+    """
+    template_name = "receipt/main.html"
+
+    def dispatch(self, request, *a, **kw):
+        super(MainView, self).dispatch(request, *a, **kw)
         start = Start.objects.all()
+        user = request.user
+        if request.user.is_anonymous():
+            return redirect(reverse_lazy("login"))
         if not start:
             """
             *** INIT ***
             This is where the first get request ever comes in.
             Because this will only execute once the app has started.
             """
+            print "*****START*****"
             Start.objects.create(is_start_of_app=False)
-            request.session["purchases_page_number"] = 0
-            request.session["items_page_number"] = 0
-            request.session["purchases_number_per_page"] = 0
-            request.session["items_number_per_page"] = 0
-        return super(MainView, self).dispatch(request, *a, **kw)
+            init_page_data = dict()
+            init_page_data["obj"]               = "item"
+            init_page_data["page_number"]       = 1
+            init_page_data["number_per_page"]   = DEFAULT_PER_PAGE
+            init_page_data["user"]              = user.id
+            item_form                           = WhatPageForm(init_page_data)
+            if item_form.is_valid():
+                item_form.save()
+            item_page = WhatPage.objects.get(obj="item", user_id=user.id)
+            assert(item_page.obj == "item"), "no item page"
+            init_page_data["obj"] = "purchase"
+            purchase_form = WhatPageForm(init_page_data)
+            if purchase_form.is_valid():
+                purchase_form.save()
+            purchase_page = WhatPage.objects.get(obj="purchase", user_id=user.id)
+            assert(purchase_page.obj == "purchase"), "no purchase page"
+        return self.get(request, *a, **kw)
 
     def get(self, request, *a, **kw):
-        """ Renders the page w `total`, `# of purch`, `catagories` """
-        context = dict()
-        context["form"] = ItemForm
-        items = Item.objects.all()
-        if items:
-            context["items"] = page_it(request, "items", items, 5)
-        purchases = Purchase.objects.all()
-        if purchases:
-            context["purchased_items"] = page_it(request, "purchased_items", purchases, 5)
-            total = 0
-            for i in purchases:
-                total += i.amount_payed
-            context["total"] = total
-            context["purchased_length"] = purchases.count()
-        catagories = Catagory.objects.all()
-        if catagories:
-            context["all_catagories"] = catagories
-            catagory_names = list()
-            for purchase in purchases:
-                catagory_names.append(purchase.item_purchased.catagory.name)
-            catagory_names = set(catagory_names)
-            catagory_context = list()
-            for catagory_name in catagory_names:
-                catagory = Catagory.objects.get(name=catagory_name)
-                catagory_context.append(catagory)
-            context["set_catagories"] = catagory_context
-        return render(request, self.template_name, context)
+        """
+        Just load the page.
+        """
+        return render(request, self.template_name)
 
     def post(self, request, *a, **kw):
         """
         Add a new Item
         returns whether or not the item form successfully saved.
         """
-        context = dict()
-        request.POST = request.POST.copy()
-        if get_post(request, "catagory_id"):
-            request.POST["catagory"] = int(request.POST.pop("catagory_id")[0])
-        request.POST["user"] = request.user.id
-        form = ItemForm(request.POST)
+        context_data                         = dict()
+        item_form_data                  = dict()
+        item_form_data["catagory"]      = get_post(request, "catagory_id")
+        item_form_data["name"]          = get_post(request, "name")
+        item_form_data["where_from"]    = get_post(request, "where_from")
+        item_form_data["price"]         = get_post(request, "price")
+        item_form_data["user"]          = request.user.id
+        form                            = ItemForm(item_form_data)
+        print form
         if form.is_valid():
             form.save()
-            context["success"] = True
+            context_data["success"] = True
             if get_post(request, "purchase") == "true":
                 item = Item.objects.get(name=request.POST["name"])
                 item.increase_number_of_times_purchased()
@@ -115,49 +175,125 @@ class MainView(TemplateView):
                 form = PurchaseForm(data)
                 if form.is_valid():
                     form.save()
-                context["purchased"] = True
+                context_data["purchased"] = True
         else:
-            context["invalid_form_data"] = True
-        return JsonResponse(context)
+            context_data["invalid_form_data"] = True
+        return JsonResponse(context_data)
 
 
-class ItemEndPoint(View):
-
-    def get(self, request, *a, **kw):
-        items = Item.objects.all()
-        data = dict()
-        data["ids"] = [i.id for i in items]
-        data["names"] = [i.name for i in items]
-        data["companies"] = [i.company_came_from for i in items]
-        data["prices"] = [i.price for i in items]
-        data["length"] = items.count()
-        data["times_purchased"] = [i.number_of_times_purchased for i in items]
+class ItemEndPoint(Common):
+    """
+    Performs operations on Item model.
+    Does `purchase` on post.
+    Also handles Pagination for both load ie GET
+    and for next, prev, number per page ie POST.
+    """
+    def info_for_one_item(self, request):
+        data                        = dict()
+        item                        = Item.objects.get(id=get_get(request, "id"))
+        if item:
+            data["name"]            = item.name
+            data["id"]              = item.id
+            data["where_from"]      = item.where_from
+            data["catagory_name"]   = item.catagory.name
+            data["catagory_id"]     = item.catagory.id
+            data["price"]           = item.price
+            data["times_purchased"] = item.number_of_times_purchased
         return JsonResponse(data)
-
-    def post(self, request, *a, **kw):
-        item = Item.objects.get(id=request.POST["id"])
+        
+        
+    def get(self, request, *a, **kw):
+        data                = dict()
+        user                = request.user
+        items_queryset      = Item.objects.filter(user=user)
+        info_for_one_item   = get_get(request, "one_item")
+        if not items_queryset:
+            data["items"] = False
+        elif info_for_one_item:
+            return self.info_for_one_item(request)
+        else:
+            data["items"]            = True
+            item_page                = WhatPage.objects.filter(obj="item", user_id=user.id)
+            if item_page:
+                item_page            = item_page[0]
+                page_number          = item_page.page_number
+                number_per_page      = item_page.number_per_page
+                items, paginator     = page_it(items_queryset, page_number, number_per_page)
+                total_pages          = paginator.num_pages
+                if items:
+                    data["names"]                   = [ item.__unicode__() for item in items ]
+                    data["where_from"]              = [ item.where_from for item in items ]
+                    data["prices"]                  = [ item.price for item in items ]
+                    data["times_purchased"]         = [ item.number_of_times_purchased for item in items ]
+                    data["ids"]                     = [ item.id for item in items ]
+                    data["cata_names_set"]          = cata_names(user, True, False)
+                    data["cata_ids_set"]            = cata_ids(user, True, False)
+                    data["page_number"]             = page_number
+                    data["total_pages"]             = total_pages
+                    data["per_page"]                = number_per_page
+                    data["total_number_of_items"]   = Item.objects.filter(user_id=user.id).count()
+                else:
+                    data["item_length"]        = 0
+            else:
+                print "****NO ITEM PAGE****"
+        return JsonResponse(data)
+    
+    def purchased_item(self, request):
+        item = Item.objects.get(id=get_post(request, "id"))
         item.increase_number_of_times_purchased()
-        purchase_data = dict()
-        purchase_data["item_purchased"] = item
-        purchase_data["user"] = request.user
-        if request.POST.get("amount_payed", None):
-            purchase_data["amount_payed"] = request.POST.get("amount_payed")
-        else: purchase_data["amount_payed"] = item.price
-        purchased_item = Purchase(**purchase_data)
+        purchdata = dict()
+        purchdata["item_purchased"] = item
+        purchdata["user"] = request.user
+        amount_payed = get_post(request, "amount_payed")
+        if amount_payed:
+            purchdata["amount_payed"] = amount_payed
+        else: purchdata["amount_payed"] = item.price
+        purchased_item = Purchase(**purchdata)
         purchased_item.save()
-        data = dict()
-        data["item_name"] = item.name
-        data["purchased"] = True
+        
+    def post(self, request, *a, **kw):
+        """
+        Next, Prev, Number Per Page
+        """
+        data                = dict()
+        user                = request.user
+        move                = get_post(request, "move")
+        prev                = get_post(request, "prev")
+        next_               = get_post(request, "next")
+        number_per_page     = get_post(request, "number_per_page")
+        item_page           = WhatPage.objects.filter(obj="item", user_id=user.id)
+        items_queryset      = Item.objects.filter(user=user)
+        if get_post(request, "id"):
+            self.purchased_item(request)
+        else:
+            if item_page:
+                item_page = item_page[0]
+                paginator = Paginator(items_queryset, item_page.number_per_page)
+                if number_per_page:
+                    item_page.change_number_per_page(number_per_page)
+                if move:
+                    if prev:
+                        item_page.decrement_page_number()
+                    elif next_:
+                        if item_page.page_number < paginator.num_pages:
+                            item_page.increase_page_number()
+            item_page = WhatPage.objects.filter(obj="item", user_id=user.id)
+            if item_page:
+                item_page = item_page[0]
+                items, paginator = page_it(Item.objects.filter(user=user), item_page.page_number, item_page.number_per_page)
+                data["ids"]             = [i.id for i in items]
+                data["names"]           = [i.name for i in items]
+                data["companies"]       = [i.where_from for i in items]
+                data["prices"]          = [i.price for i in items]
+                data["length"]          = len(items)
+                data["times_purchased"] = [i.number_of_times_purchased for i in items]
+                data["purchased"]       = True
+                data["per_page"]        = item_page.number_per_page
         return JsonResponse(data)
 
 
-class ItemManEndPoint(View):
+class ItemManEndPoint(Common):
     """ Manipulates `Items`. ie DELETE + EDIT """
-
-    def get(self, request, *a, **kw):
-        data = dict()
-        return JsonResponse(data)
-
     def edit(id):
         data = dict()
         item = Item.objects.get(id=id)
@@ -169,19 +305,17 @@ class ItemManEndPoint(View):
         if idd:
             item = Item.objects.filter(id=int(idd))
             if item:
-                data["item_id"] = item[0].id
-                data["item_name"] = item[0].name
-                data["item_price"] = item[0].price
-                data["company_name"] = item[0].company_came_from
-                data["item_catagory_id"] = item[0].catagory.id
-                data["item_catagory_name"] = item[0].catagory.name
-                data["company"] = item[0].company_came_from
-                catagories = Catagory.objects.all()
+                data["item_id"]             = item[0].id
+                data["item_name"]           = item[0].name
+                data["item_price"]          = item[0].price
+                data["company_name"]        = item[0].where_from
+                data["item_catagory_id"]    = item[0].catagory.id
+                data["item_catagory_name"]  = item[0].catagory.name
+                data["company"]             = item[0].where_from
+                catagories                  = Catagory.objects.all()
                 if catagories:
-                    data["catagory_names"] = [
-                        catagory.name for catagory in catagories]
-                    data["catagory_ids"] = [
-                        catagory.id for catagory in catagories]
+                    data["catagory_names"]  = [ catagory.name for catagory in catagories ]
+                    data["catagory_ids"]    = [ catagory.id for catagory in catagories ]
                     data["catagory_length"] = catagories.count()
             delete_item = get_post(request, "delete_item")
             if delete_item:
@@ -190,7 +324,7 @@ class ItemManEndPoint(View):
             if edit:
                 item.update(name=get_post(request, "name"))
                 item.update(
-                    company_came_from=get_post(request, "company_came_from"))
+                    where_from=get_post(request, "where_from"))
                 item.update(price=get_post(request, "price"))
                 item.update(catagory=Catagory.objects.get(
                     id=get_post(request, "catagory_id")))
@@ -199,8 +333,11 @@ class ItemManEndPoint(View):
         return JsonResponse(data)
 
 
-class ActionEndPoint(View):
-
+class ActionEndPoint(Common):
+    """
+    Works as an Action End Point returning data for the Users
+    last actions. Can also perform "Undo's" if nessessary via POST.
+    """
     def delete_latest_and_return_name(self, objct):
         """
         Queries the latest object, deletes it and returns it's name.
@@ -226,9 +363,9 @@ class ActionEndPoint(View):
         action_data = dict()
         actions = Action.objects.all()
         if actions:
-            latest_action = actions.order_by("-id")[0]
-            action_data["latest_action_object_name"] = latest_action.object_name
-            action_data["latest_action_title"] = latest_action.title
+            latest_action                             = actions.order_by("-id")[0]
+            action_data["latest_action_object_name"]  = latest_action.object_name
+            action_data["latest_action_title"]        = latest_action.title
             action_data["latest_action_undo_handler"] = latest_action.undo_handler
         else:
             action_data["no_actions"] = True
@@ -267,80 +404,126 @@ class ActionEndPoint(View):
         return JsonResponse(data)
 
 
-class PurchaseTableEndPoint(View):
+class CatagoryEndPoint(Common):
+    """
+    Catagories that are associated with Items and Purchases.
+    Works as an end point to recieve catagory information.
+    """
+    def cata_name_id_tuple(self, user):
+        data = list()
+        for cata in Catagory.objects.filter(user_id=user.id):
+            data.append((cata.name, cata.id))
+        return data
+    
+    def get(self, request, *a, **kw):
+        data = dict()
+        if not request.user.is_anonymous():
+            data["cata"] = self.cata_name_id_tuple(request.user)
+        else:
+            data["not_logged_in"] = True
+        return JsonResponse(data)
 
-    def purchase_json_resp(self, purchases=None):
+    def post(self, request, *a, **kw):
+        data = dict()
+        user = request.user
+        catas = Catagory.objects.filter(user_id=user.id)
+        cata_name = get_post(request, "catagory_name")
+        if cata_name:
+            if not catas:
+                data["first"] = 1
+            cata_data = dict()
+            cata_data["name"] = cata_name
+            cata_data["user"] = user.id
+            cata = CatagoryForm(cata_data)
+            if cata.is_valid():
+                cata.save()
+                data["success"] = 1
+            else:
+                data["failure"] = 1
+        return JsonResponse(data)
+
+
+class PurchaseTableEndPoint(Common):
+    """
+    Performs operations on Purchase model.
+    Handles Pagination for both load ie GET
+    and for next, prev, number per page ie POST.
+    """
+    def get(self, request, *a, **kw):
         """ Accepts a purchase query and returns a json object """
         data = dict()
-        if purchases:
-            data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
-            data["purchased_date_created"] = [i.date_display() for i in purchases]
-            data["amount_payed"] = [i.amount_payed for i in purchases]
-            data["purchased_length"] = purchases.count()
-            total = 0
-            for purchase in purchases:
-                total += purchase.amount_payed
-            data["total"] = total
-        else:
-            data["purchased_length"] = 0
-        return JsonResponse(data)
-
-    def filter_by_catagory(self, catagory_name):
-        data = dict()
-        if catagory_name:
-            items = Item.objects.filter(catagory__name=catagory_name)
-            purchases = list()
-            for item in items:
-                purchases_q = Purchase.objects.filter(item_purchased__name=item.name)
-                if purchases_q:
-                    for purchase in purchases_q:
-                        purchases.append(purchase)
+        user = request.user
+        purchases_queryset = Purchase.objects.filter(user=user)
+        purchase_page = WhatPage.objects.filter(obj="purchase",
+                                                user_id=user.id)
+        if purchase_page:
+            purchase_page        = purchase_page[0]
+            page_number          = purchase_page.page_number
+            number_per_page      = purchase_page.number_per_page
+            purchases, paginator = page_it( purchases_queryset,
+                                            page_number,
+                                            number_per_page)
+            total_pages          = paginator.num_pages
             if purchases:
-                data["purchased_items_names"] = [i.item_purchased.__unicode__() for i in purchases]
-                data["purchased_date_created"] = [i.date_display() for i in purchases]
-                data["purchased_length"] = len(purchases)
-                total = 0
-                for purchase in purchases:
-                    total += purchase.amount_payed
-                data["total"] = total
-                data["amount_payed"] = [i.amount_payed for i in purchases]
-        return JsonResponse(data)
-
-    def get(self, request, *a, **kw):
-        purchases = Purchase.objects.all()
-        return self.purchase_json_resp(purchases)
-
-    def post(self, request, *a, **kw):
-        data = dict()
-        catagory_name = get_post(request, "catagory_name")
-        if catagory_name:
-            return self.filter_by_catagory(catagory_name)
-        return JsonResponse(data)
-
-
-class CatagoryEndPoint(View):
-
-    def get(self, request, *a, **kw):
-        data = dict()
-        catagories = Catagory.objects.all()
-        if catagories:
-            catagories = catagories.filter(user_id=request.user.id)
-            data["catagory_length"] = catagories.count()
-            data["catagory_names"] = [catagory.string() for catagory in catagories]
-            data["catagory_ids"] = [catagory.id for catagory in catagories]
+                data["purchased_items_names"]   = [i.item_purchased.__unicode__() for i in purchases]
+                data["purchased_date_created"]  = [i.date_display() for i in purchases]
+                data["amount_payed"]            = [i.amount_payed for i in purchases]
+                data["purchased_length"]        = purchases_queryset.count()
+                data["total"]                   = sum([purchase.amount_payed for purchase in purchases_queryset])
+                data["cata_names_set"]          = cata_names(user, 0, 1)
+                data["cata_ids_set"]            = cata_ids(user, 0, 1)
+                data["page_number"]             = page_number
+                data["total_pages"]             = total_pages
+                data["per_page"]                = number_per_page
+            else:
+                data["purchased_length"]        = 0
         else:
-            data["catagory_length"] = 0
+            print "****NO PURCHASE PAGE****"
         return JsonResponse(data)
-
-    def post(self, request, *a, **kw):
+        
+    def filter_purchases_by_catagory(self, user, catagory_id):
         data = dict()
-        if get_post(request, "catagory_name"):
-            catas = Catagory.objects.all()
-            if not catas:
-                data["first"] = True
-            cata = Catagory.objects.get_or_create(
-                name=get_post(request, "catagory_name"),
-                user_id=request.user.id)
-            if cata:
-                data["success"] = True
+        items = Item.objects.filter(catagory__id=catagory_id, user=user)
+        purchases = list()
+        purchases_queryset = Purchase.objects.filter(user_id=user.id)
+        for purchase in purchases_queryset:
+            for item in items:
+                if item.id == purchase.item_purchased.id:
+                    purchases.append(purchase)
+        if purchases:
+            data["purchased_items_names"]  = [i.item_purchased.__unicode__() for i in purchases]
+            data["purchased_date_created"] = [i.date_display() for i in purchases]
+            data["purchased_length"]       = len(purchases)
+            data["total"] = 0
+            for purchase in purchases:
+                data["total"] += purchase.amount_payed
+            data["amount_payed"]           = [i.amount_payed for i in purchases]
+            data["cata_names_set"]         = cata_names(user, 0, 1)
+            data["cata_ids_set"]           = cata_ids(user, 0, 1)
+            data["page_number"]            = 1
+            data["total_pages"]            = 1
+            data["per_page"]               = 5
+        else: data["no_purchases_for_query"] = True
+        return data
+        
+    def post(self, request, *a, **kw):
+        data                = dict()
+        user                = request.user
+        catagory_id         = get_post(request, "catagory_id")
+        move                = get_post(request, "move")
+        prev                = get_post(request, "prev")
+        next_               = get_post(request, "next")
+        number_per_page     = get_post(request, "number_per_page")
+        purchase_page       = WhatPage.objects.get(obj="purchase", user_id=user.id)
+        paginator           = Paginator(Purchase.objects.filter(user_id=user.id), purchase_page.number_per_page)
+        if number_per_page:
+            purchase_page.change_number_per_page(number_per_page)
+        if move:
+            if prev:
+                purchase_page.decrement_page_number()
+            elif next_:
+                if purchase_page.page_number < paginator.num_pages:
+                    purchase_page.increase_page_number()
+        if catagory_id:
+            data = self.filter_purchases_by_catagory(user, catagory_id)
         return JsonResponse(data)

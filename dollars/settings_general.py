@@ -122,5 +122,5 @@ MEDIA_URL = '/media/'
 
 
 # accounts
-LOGIN_URL = reverse_lazy("login")
-LOGIN_REDIRECT_URL = reverse_lazy("register")
+LOGIN_URL = "/dollars/login/"
+LOGIN_REDIRECT_URL = "/dollars/login/"
