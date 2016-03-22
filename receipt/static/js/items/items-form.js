@@ -12,7 +12,6 @@ function init_item_form(){
         type: "GET",
         url: catagory_url(),
         success: function(data){
-          console.log(data);
             if (data.not_logged_in){
                 return 1
             }

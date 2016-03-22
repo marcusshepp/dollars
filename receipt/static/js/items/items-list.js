@@ -224,7 +224,7 @@ function purchase_w_new_price(th, id){
 function post_purchase_w_new_price(th, id){
     var new_price = $(".purch_w_new_price").val();
     $.ajax({
-        url: "/dollars/api/items/",
+        url: item_list_url(),
         type: "POST",
         data: {
             "csrfmiddlewaretoken": csrf_func(),
@@ -246,12 +246,16 @@ function purchase_item(id){
   */
   var form = $("#item_"+id)[0];
   var item_id = form.id.substr(5);
+  var more_than_one_purchase = false;
+  var number_of_purchases = $("#item_"+id).find("input").val();
+  console.log(number_of_purchases);
   $.ajax({
       type: 'POST',
       url: item_list_url(),
       data: {
           "csrfmiddlewaretoken": csrf_func(),
           "id": item_id,
+          "number_of_purchases": number_of_purchases,
       },
       success: function(data){
           var name = data.item_name;

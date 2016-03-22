@@ -40,7 +40,7 @@ def get_get(request, name):
 
 def page_it(queryset, page_number, number_per_page):
     """
-    returns the query for the given page. 
+    returns the query for the given page.
     """
     paginator = Paginator(queryset, number_per_page)
     if page_number:
@@ -200,8 +200,8 @@ class ItemEndPoint(Common):
             data["price"]           = item.price
             data["times_purchased"] = item.number_of_times_purchased
         return JsonResponse(data)
-        
-        
+
+
     def get(self, request, *a, **kw):
         data                = dict()
         user                = request.user
@@ -237,20 +237,34 @@ class ItemEndPoint(Common):
             else:
                 print "****NO ITEM PAGE****"
         return JsonResponse(data)
-    
+
     def purchased_item(self, request):
+        number_of_purchases = get_post(request, "number_of_purchases")
         item = Item.objects.get(id=get_post(request, "id"))
-        item.increase_number_of_times_purchased()
-        purchdata = dict()
-        purchdata["item_purchased"] = item
-        purchdata["user"] = request.user
-        amount_payed = get_post(request, "amount_payed")
-        if amount_payed:
-            purchdata["amount_payed"] = amount_payed
-        else: purchdata["amount_payed"] = item.price
-        purchased_item = Purchase(**purchdata)
-        purchased_item.save()
-        
+        if number_of_purchases > 1:
+            for _ in xrange(int(number_of_purchases)):
+                item.increase_number_of_times_purchased()
+                purchdata = dict()
+                purchdata["item_purchased"] = item
+                purchdata["user"] = request.user
+                amount_payed = get_post(request, "amount_payed")
+                if amount_payed:
+                    purchdata["amount_payed"] = amount_payed
+                else: purchdata["amount_payed"] = item.price
+                purchased_item = Purchase(**purchdata)
+                purchased_item.save()
+        else:
+            item.increase_number_of_times_purchased()
+            purchdata = dict()
+            purchdata["item_purchased"] = item
+            purchdata["user"] = request.user
+            amount_payed = get_post(request, "amount_payed")
+            if amount_payed:
+                purchdata["amount_payed"] = amount_payed
+            else: purchdata["amount_payed"] = item.price
+            purchased_item = Purchase(**purchdata)
+            purchased_item.save()
+
     def post(self, request, *a, **kw):
         """
         Next, Prev, Number Per Page
@@ -414,7 +428,7 @@ class CatagoryEndPoint(Common):
         for cata in Catagory.objects.filter(user_id=user.id):
             data.append((cata.name, cata.id))
         return data
-    
+
     def get(self, request, *a, **kw):
         data = dict()
         if not request.user.is_anonymous():
@@ -480,7 +494,7 @@ class PurchaseTableEndPoint(Common):
         else:
             print "****NO PURCHASE PAGE****"
         return JsonResponse(data)
-        
+
     def filter_purchases_by_catagory(self, user, catagory_id):
         data = dict()
         items = Item.objects.filter(catagory__id=catagory_id, user=user)
@@ -505,7 +519,7 @@ class PurchaseTableEndPoint(Common):
             data["per_page"]               = 5
         else: data["no_purchases_for_query"] = True
         return data
-        
+
     def post(self, request, *a, **kw):
         data                = dict()
         user                = request.user
