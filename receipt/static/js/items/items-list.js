@@ -98,7 +98,7 @@ function show_options(th, id){
     options += '<div onclick="hide_options(this, '+id+')" class="">...</div>';
     options += '<div onclick="edit('+id+')">Edit</div>';
     options += '<div onclick="del('+id+')">Delete</div>';
-    options += '<div onclick="purchase_w_new_price(this, '+id+')">Purchase w New Price</div>';
+    options += '<div onclick="build_purchase_w_new_price(this, '+id+')">Purchase w New Price</div>';
     options += '</div>';
     var options_div = $(th);
     options_div.replaceWith(options);
@@ -209,7 +209,7 @@ function del(id){
         },
     });
 }
-function purchase_w_new_price(th, id){
+function build_purchase_w_new_price(th, id){
     var markup = "<input ";
     markup += "type='number' ";
     markup += "name='price' ";
