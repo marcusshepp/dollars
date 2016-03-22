@@ -36,24 +36,14 @@ function init_item_list(){
        },
    });
 }
- function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page, cata_names_set, cata_ids_set, total_number_of_items){
+
+function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page, cata_names_set, cata_ids_set, total_number_of_items){
      if (items){
          var item_markup = "";
          item_markup += '<span>';
          item_markup += '<h3>Items<span class="number_of_items"> ('+total_number_of_items+')</span></h3>';
-         item_markup += '<input type="search" class="search_items_field"/>';
          item_markup += '<input type="button" class="search_items_btn" ';
-         item_markup += 'onclick="search_items()" value="Filter" />';
-         item_markup += '</span>';
-         item_markup += '<br />';
-         for (var i = 0; i < cata_names_set.length; i++){
-           var cata_name = cata_names_set[i];
-           var cata_id = cata_ids_set[i];
-           item_markup += '<input type="button" value="'+cata_name+'"';
-           item_markup += ' onclick="filter_items_by_catagory('+cata_id+')"/>'
-         }
-         item_markup += '<input type="button" class="see_more_catagories" ';
-         item_markup += 'onclick="see_more_item_catagories()" value="More..."/>';
+         item_markup += 'onclick="get_filter_items()" value="Filter" />';
          for (var i = 0; i < names.length; i++){
            var name = names[i];
            var where_from = where_froms[i];
@@ -248,7 +238,6 @@ function purchase_item(id){
   var item_id = form.id.substr(5);
   var more_than_one_purchase = false;
   var number_of_purchases = $("#item_"+id).find("input").val();
-  console.log(number_of_purchases);
   $.ajax({
       type: 'POST',
       url: item_list_url(),

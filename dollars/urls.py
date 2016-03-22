@@ -12,6 +12,7 @@ from receipt.views import (
     ActionEndPoint,
     PurchaseTableEndPoint,
     CatagoryEndPoint,
+    FilterItemsEndpoint,
     )
 from accounts.views import (
     Registeration,
@@ -31,4 +32,5 @@ urlpatterns = [
     url(r'^dollars/api/actions/$', ActionEndPoint.as_view(), name="api_actions"),
     url(r'^dollars/api/purchases/$', PurchaseTableEndPoint.as_view(), name="api_purchases"),
     url(r'^dollars/api/catagories/$', CatagoryEndPoint.as_view(), name="api_catagories"),
+    url(r'^dollars/api/filter/items$', FilterItemsEndpoint.as_view(), name="foobarpop"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

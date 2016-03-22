@@ -95,6 +95,32 @@ def cata_ids(user, item, purchased):
             cata_ids.append(catagory.id)
     return list(set(cata_ids))
 
+def cata_name_id_tuple(user):
+    data = list()
+    for cata in Catagory.objects.filter(user_id=user.id):
+        data.append((cata.name, cata.id))
+    return data
+
+def items_all_query(user):
+    """
+    Get all data from Item by User query paginated by [:5]
+    """
+    data = dict()
+    items_query = Item.objects.filter(user=user)
+    items, paginator = page_it(items_query, 1, 5)
+    data["ids"]         = [i.id for i in items]
+    data["names"]       = [i.name for i in items]
+    data["where_from"]   = [i.where_from for i in items]
+    data["prices"]      = [i.price for i in items]
+    data["total_number_of_items"] = items_query.count()
+    data["times_purchased"] = [
+        i.number_of_times_purchased for i in items]
+    data["page_number"] = 1
+    data["total_pages"] = paginator.num_pages
+    data["per_page"]    = 5
+    data["catas"]       = cata_name_id_tuple(user)
+    return data
+
 
 class Common(View):
     """
@@ -127,11 +153,11 @@ class MainView(Common):
             print "*****START*****"
             Start.objects.create(is_start_of_app=False)
             init_page_data = dict()
-            init_page_data["obj"]               = "item"
-            init_page_data["page_number"]       = 1
-            init_page_data["number_per_page"]   = DEFAULT_PER_PAGE
-            init_page_data["user"]              = user.id
-            item_form                           = WhatPageForm(init_page_data)
+            init_page_data["obj"]             = "item"
+            init_page_data["page_number"]     = 1
+            init_page_data["number_per_page"] = DEFAULT_PER_PAGE
+            init_page_data["user"]            = user.id
+            item_form                         = WhatPageForm(init_page_data)
             if item_form.is_valid():
                 item_form.save()
             item_page = WhatPage.objects.get(obj="item", user_id=user.id)
@@ -155,14 +181,14 @@ class MainView(Common):
         Add a new Item
         returns whether or not the item form successfully saved.
         """
-        context_data                         = dict()
-        item_form_data                  = dict()
-        item_form_data["catagory"]      = get_post(request, "catagory_id")
-        item_form_data["name"]          = get_post(request, "name")
-        item_form_data["where_from"]    = get_post(request, "where_from")
-        item_form_data["price"]         = get_post(request, "price")
-        item_form_data["user"]          = request.user.id
-        form                            = ItemForm(item_form_data)
+        context_data                 = dict()
+        item_form_data               = dict()
+        item_form_data["catagory"]   = get_post(request, "catagory_id")
+        item_form_data["name"]       = get_post(request, "name")
+        item_form_data["where_from"] = get_post(request, "where_from")
+        item_form_data["price"]      = get_post(request, "price")
+        item_form_data["user"]       = request.user.id
+        form                         = ItemForm(item_form_data)
         print form
         if form.is_valid():
             form.save()
@@ -423,16 +449,11 @@ class CatagoryEndPoint(Common):
     Catagories that are associated with Items and Purchases.
     Works as an end point to recieve catagory information.
     """
-    def cata_name_id_tuple(self, user):
-        data = list()
-        for cata in Catagory.objects.filter(user_id=user.id):
-            data.append((cata.name, cata.id))
-        return data
 
     def get(self, request, *a, **kw):
         data = dict()
         if not request.user.is_anonymous():
-            data["cata"] = self.cata_name_id_tuple(request.user)
+            data["cata"] = cata_name_id_tuple(request.user)
         else:
             data["not_logged_in"] = True
         return JsonResponse(data)
@@ -521,6 +542,9 @@ class PurchaseTableEndPoint(Common):
         return data
 
     def post(self, request, *a, **kw):
+        """
+        Controls the pagination for the Purchases Table.
+        """
         data                = dict()
         user                = request.user
         catagory_id         = get_post(request, "catagory_id")
@@ -529,7 +553,8 @@ class PurchaseTableEndPoint(Common):
         next_               = get_post(request, "next")
         number_per_page     = get_post(request, "number_per_page")
         purchase_page       = WhatPage.objects.get(obj="purchase", user_id=user.id)
-        paginator           = Paginator(Purchase.objects.filter(user_id=user.id), purchase_page.number_per_page)
+        paginator           = Paginator(Purchase.objects.filter(
+            user_id=user.id), purchase_page.number_per_page)
         if number_per_page:
             purchase_page.change_number_per_page(number_per_page)
         if move:
@@ -540,4 +565,11 @@ class PurchaseTableEndPoint(Common):
                     purchase_page.increase_page_number()
         if catagory_id:
             data = self.filter_purchases_by_catagory(user, catagory_id)
+        return JsonResponse(data)
+
+
+class FilterItemsEndpoint(Common):
+    def get(self, request, *a, **kw):
+        # data = dict()
+        data = items_all_query(request.user)
         return JsonResponse(data)
