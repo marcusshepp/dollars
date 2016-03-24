@@ -96,10 +96,8 @@ def cata_ids(user, item, purchased):
     return list(set(cata_ids))
 
 def cata_name_id_tuple(user):
-    data = list()
-    for cata in Catagory.objects.filter(user_id=user.id):
-        data.append((cata.name, cata.id))
-    return data
+    query = Catagory.objects.filter(user_id=user.id)
+    return [(c.name, c.id) for c in query]
 
 def items_all_query(user):
     """
