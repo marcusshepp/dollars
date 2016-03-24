@@ -29,8 +29,9 @@ function build_filter_items(names, where_froms  , prices, times_purchased, ids, 
     item_markup += '<span>';
     item_markup += '<h3>Items<span class="number_of_items"> ('+total_number_of_items+')</span></h3>';
     item_markup += '<input type="button" class="search_items_btn" ';
-    item_markup += 'onclick="init_item_list()" value="Filter" />';
+    item_markup += 'onclick="init_item_list()" value="Back" />';
     item_markup += '<input type="search" class="search_items_field"/>';
+    item_markup += '<input type="button" onclick="search_item_list_by_chars()" class="search_items_btn" value="Search"/>';
     item_markup += '</span>';
     item_markup += '<br />';
     for (var i = 0; i < catas.length; i++){
@@ -64,4 +65,19 @@ function build_filter_items(names, where_froms  , prices, times_purchased, ids, 
     item_markup += '<input type="button" class="see_more_catagories" ';
     item_markup += 'onclick="see_more_item_catagories()" value="More..."/>';
     $(".items_list_container").html(item_markup);
+}
+function search_item_list_by_chars(){
+  $.ajax({
+    type: "POST",
+    url: filter_items_list_url(),
+    data: {
+      "csrfmiddlewaretoken": csrf_func(),
+      "query": $(".search_items_field").val(),
+    },
+    success: function(data){
+      console.log("success");
+      console.log(data);
+    },
+    failure: function(){console.log("FAILURE @ search_item_list_by_char()");},
+  });
 }
