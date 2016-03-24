@@ -12,7 +12,6 @@ function init_item_form(){
         type: "GET",
         url: catagory_url(),
         success: function(data){
-          console.log(data);
             if (data.not_logged_in){
                 return 1
             }
@@ -34,7 +33,7 @@ function build_item_form(cata){
     item_form += '<form class="formmy item_form" action="" method="POST" enctype="multipart/form-data">';
     item_form += '<p><label for="name">Name: </label><input type="text" ';
     item_form += 'placeholder="Name of Item" name="name" max_length="250"/ class=""></p>';
-    item_form += '<p><label for="company_came_from">Company: </label>';
+    item_form += '<p><label for="where_from">Company: </label>';
     item_form += '<input type="text" placeholder="Where does this come from?" ';
     item_form += 'name="where_from" max_length="50" class=""></p>';
     item_form += '<p><label for="catagory">Catagory: </label>';
@@ -48,9 +47,10 @@ function build_item_form(cata){
     item_form += '</select></p>';
     item_form += '<p><label for="price">Price: </label><input type="number" ';
     item_form += 'placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
+    item_form += '<div class="item_form_btns">';
     item_form += '<input type="button" value="Add" class="" onclick="validate_new_item(this.form, false)">';
     item_form += '<input type="button" name="name" value="Add & Purchase"';
-    item_form += ' class="" onclick="validate_new_item(this.form, true)">';
+    item_form += '</div>';
     item_form += '</form>';
     $(".item_form_container").html(item_form);
 }
