@@ -121,6 +121,10 @@ def items_all_query(user):
     data["catas"]       = cata_name_id_tuple(user)
     return data
 
+def filter_all_items_by_chars(user):
+    items = list()
+    pass
+
 
 class Common(View):
     """
@@ -572,4 +576,7 @@ class FilterItemsEndpoint(Common):
     def get(self, request, *a, **kw):
         # data = dict()
         data = items_all_query(request.user)
+        return JsonResponse(data)
+    def post(self, request, *a, **kw):
+        data = dict()
         return JsonResponse(data)
