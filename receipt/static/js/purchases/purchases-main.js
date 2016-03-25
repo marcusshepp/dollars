@@ -34,12 +34,8 @@ function init_purchases(){
 }
 function build_table(purchased_items_names,purchased_date_created,purchased_length,amount_payed,total,cata_names_set,cata_ids_set,page_number,total_pages){
     var purchased_items = "";
-    purchased_items += '<h4 id="purchases_header"><span>Purchases Made: All Time ('+purchased_length+')</span></h4>';
-    purchased_items += '<input type="button" class="search_items_btn" ';
-    purchased_items += 'onclick="get_filter_purchases()" value="Filter" />';
-    purchased_items += '<div class="total">Total: '+ total +'</div>';
-    purchased_items += '<table>';
-    purchased_items += '<tr>';
+    purchased_items += '<table class=purchase_table_inner_container>';
+    purchased_items += '<tr class="border_bottom">';
     purchased_items += '<td>Item Purchased</td>';
     purchased_items += '<td>Date Purchased</td>';
     purchased_items += '<td>Amount Spent</td>';

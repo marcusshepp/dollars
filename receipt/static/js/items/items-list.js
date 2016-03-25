@@ -45,22 +45,33 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
            var price = prices[i];
            var times_purchase = times_purchased[i];
            var id = ids[i];
-           item_markup += '<br />';
-           item_markup += "<div id='item_container_" + id + "'>";
+           item_markup += "<div id='item_container_" + id + "' class='item_individual_container'>";
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
-           item_markup += '<div class="" onclick="show_item_info('+id+')">' + name + '</div>';
-           item_markup += '<span class="purchase_btn" onclick="purchase_item('+id+')">Purchase</span>';
-           item_markup += '<label class="purchase_number" name="purchase_number"> # </label>';
-           item_markup += '<input type="number" step="1" name="item_per_page" value="1" /><br />';
-           item_markup += '<span class="times_purchased">$ '+price+'</span>';
-           item_markup += '<span class="times_purchased"> # of purchases: ' + times_purchase + '</span>';
+           item_markup += '<div class="item_info" onclick="show_item_info('+id+')">';
+           item_markup += '<div>' + name + '</div>';
+           item_markup += '<div class="times_purchased">Price: $ '+price+'</div>';
+           item_markup += '<div class="times_purchased"> Times Purchased: ' + times_purchase + '</div>';
+           item_markup += '</div>';
+           item_markup += '<div class="item_options_container">'
+           item_markup += '<div class="purchase_container">'
+           item_markup += '<input class="btn purchase_btn" onclick="purchase_item('+id+')" type="button" value="Purchase"/>';
+           item_markup += '<label class="purchase_number_label" name="purchase_number"> # </label>';
+           item_markup += '<input class="purchase_number_input" type="number" step="1" name="item_per_page" value="1" />';
+           item_markup += '</div>'
+           item_markup += '<div class="btn options_btn" onclick="show_options(this, '+id+')">Options</div>';
+           item_markup += "</div>";
            item_markup += '</form>';
-           item_markup += '<div class="options" onclick="show_options(this, '+id+')">Options</div>';
            item_markup += "</div>";
            }
-           item_markup += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
-           item_markup += '<input type="button" value="prev" onclick="previous_item_page()" />';
-           item_markup += '<input type="button" value="next" onclick="next_item_page()" />';
+           item_markup += '<div class="pagination_container">';
+           item_markup += '<div class="pagination_firstblock_container">';
+           item_markup += '<div class="blank_of_blank">'+page_number+' of '+total_pages+' pages</div>';
+           item_markup += '<div class="prev_next_container">';
+           item_markup += '<input class="btn pagination_btn" type="button" value="Prev" onclick="previous_item_page()" />';
+           item_markup += '<input class="btn pagination_btn" type="button" value="Next" onclick="next_item_page()" />';
+           item_markup += '</div>';
+           item_markup += '</div>';
+           item_markup += '<div class="number_per_page_container">';
            item_markup += '<label for="item_per_page"> Number Per Page: </label>';
            item_markup += '<select onchange="change_item_number_per_page()" ';
            item_markup += 'class="item_per_page" name="item_per_page">';
@@ -71,6 +82,8 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
                } else {item_markup += '<option name="item_per_page" value="'+i+'">'+i+'</option>';}
            }
            item_markup += '</select>';
+           item_markup += '</div>';
+           item_markup += '</div>';
            $(".items_list_container").html(item_markup);
      } else {
          $(".items_list_container").html('<h4 class="no_items">You haven\'t created any Items yet.</h4>');
