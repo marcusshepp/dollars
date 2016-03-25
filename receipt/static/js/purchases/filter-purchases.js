@@ -50,19 +50,25 @@ function build_filter_purchases(data, do_filter){
     }
     purchased_items += '</div>';
     purchased_items += '</table>';
-    purchased_items += '<span class="page_info">'+data.page_number+' of '+data.total_pages+' pages</span>';
-    purchased_items += '<input type="button" value="prev" onclick="previous_purchase_page()" />';
-    purchased_items += '<input type="button" value="next" onclick="next_purchase_page()" />';
-    purchased_items += '<label for="purchase_per_page"> Number Per Page: </label>';
-    purchased_items += '<select onchange="change_number_per_page()" ';
-    purchased_items += 'class="purchase_per_page" name="purchase_per_page">';
-    purchased_items += '<option name="purchases_per_page" value="5">default(5)</option>';
-    for (var i = 6; i <= 10; i++){
-        if (i == data.purchased_length){
-            purchased_items += '<option selected="selected" name="purchases_per_page" value="'+i+'">'+i+'</option>';
-        } else {purchased_items += '<option name="purchases_per_page" value="'+i+'">'+i+'</option>';}
+    if (data.total_pages){
+      purchased_items += '<span class="page_info">'+data.page_number+' of '+data.total_pages+' pages</span>';
+      purchased_items += '<input type="button" value="prev" onclick="previous_purchase_page()" />';
+      purchased_items += '<input type="button" value="next" onclick="next_purchase_page()" />';
+      purchased_items += '<label for="purchase_per_page"> Number Per Page: </label>';
+      purchased_items += '<select onchange="change_number_per_page()" ';
+      purchased_items += 'class="purchase_per_page" name="purchase_per_page">';
+      purchased_items += '<option name="purchases_per_page" value="5">default(5)</option>';
+      for (var i = 6; i <= 10; i++){
+          if (i == data.purchased_length){
+              purchased_items += '<option selected="selected" name="purchases_per_page" value="'+i+'">'+i+'</option>';
+          } else {purchased_items += '<option name="purchases_per_page" value="'+i+'">'+i+'</option>';}
+      }
+      purchased_items += '</select>';
+    } else if(data.no_pagination){
+      purchased_items += '<div>Showing Results For: ';
+      purchased_items += data.search_query
+      purchased_items += '</div>';
     }
-    purchased_items += '</select>';
     $(".purchased_items_container").html(purchased_items);
 }
 

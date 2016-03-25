@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models.query import QuerySet
 
 from .forms import (
     ItemForm,
@@ -108,8 +109,7 @@ def item_query_to_dict(query, user, page=False):
         data["total_pages"] = paginator.num_pages
         data["per_page"]    = 5
     else:
-        data["page_number"] = 1
-        data["per_page"]    = "all"
+        data["no_pagination"] = True
         items               = query
     data["page_number"]     = 1
     data["ids"]             = [i.id for i in items]
@@ -139,23 +139,48 @@ def filter_all_items_by_chars(user, chars):
 def purchase_query_to_dict(query, user, page=False):
     data = dict()
     if page:
-        purchases, paginator    = page_it(query, 1, 5)
+        purchases, paginator = page_it(query, 1, 5)
         data["total_pages"] = paginator.num_pages
-        data["per_page"]    = 5
+        data["per_page"] = 5
     else:
-        data["page_number"] = 1
-        data["per_page"]    = "all"
-        purchases           = query
-    data["page_number"]     = 1
-    data["ids"]             = [purchase.id for purchase in purchases]
+        data["no_pagination"] = True
+        purchases = query
+    data["page_number"] = 1
+    data["ids"] = [purchase.id for purchase in purchases]
     data["purchased_items_names"] = [purchase.item_purchased.name for purchase in purchases]
     data["purchased_date_created"] = [purchase.item_purchased.date_created for purchase in purchases]
     data["amount_payed"] = [purchase.amount_payed for purchase in purchases]
-    data["purchased_length"] = len(purchases)
+    data["purchased_length"] = len(list(purchases))
     data["catas"] = cata_name_id_tuple(user)
     data["total"] = sum([i.amount_payed for i in purchases])
     return data
 
+def purchase_query_to_dict_from_multiple_queries(user, purchases):
+    """
+    Returns data for purchases that match a certain query. 
+    Should be called when purchases might require more
+    than one call to `objects.filter`.
+    No pagination capabilities.
+    """
+    data = dict()
+    if type(purchases) is list and not type(purchases) is QuerySet:
+        purchased_item_names = list()
+        purchased_dates = list()
+        amount_payed = list()
+        for filtered_query in purchases:
+            if filtered_query.count() > 1:
+                for purchase in filtered_query:
+                    purchased_item_names.append(purchase.item_purchased.name)
+                    purchased_dates.append(purchase.date_display())
+                    amount_payed.append(purchase.amount_payed)
+        data["purchased_items_names"] = purchased_item_names
+        data["purchased_date_created"] = purchased_dates
+        data["amount_payed"] = amount_payed
+        data["catas"] = cata_name_id_tuple(user)
+        data["total"] = sum(amount_payed)
+        data["no_pagination"] = True
+        return data
+    
 def purchases_all_query(user, page=False):
     data = dict()
     purchases_query = Purchase.objects.filter(user=user)
@@ -169,12 +194,14 @@ def filter_all_purchases_by_chars(user, chars):
     if items.count() > 1:
         for item in items:
             # all purchases with this item as foreignkey
-            purchase = Purchase.objects.filter(user_id=user.id, item_purchased_id=item.id)
-            queries.append(purchase)
+            purchases = Purchase.objects.filter(user_id=user.id, item_purchased_id=item.id)
+            if purchases:
+                queries.append(purchases)
+        chained_query = list(chain(queries))
+        return purchase_query_to_dict_from_multiple_queries(user, chained_query)
     else:
         queries = Purchase.objects.filter(user_id=user.id, item_purchased_id=items[0].id)
-    chained_query = list(chain(queries))
-    return purchase_query_to_dict(chained_query, user, page=False)
+        return purchase_query_to_dict(queries, user, page=False)
 
 
 class Common(View):
@@ -630,7 +657,10 @@ class FilterItemsEndpoint(Common):
         return JsonResponse(data)
     def post(self, request, *a, **kw):
         data = dict()
-        data = filter_all_items_by_chars(request.user, get_post(request, "query"))
+        query = get_post(request, "query")
+        if query:
+            data = filter_all_items_by_chars(request.user, query)
+            data["search_query"] = query
         return JsonResponse(data)
 
 
@@ -641,5 +671,9 @@ class FilterPurchasesEndpoint(Common):
         return JsonResponse(data)
     def post(self, request, *a, **kw):
         data = dict()
-        data = filter_all_purchases_by_chars(request.user, get_post(request, "query"))
+        query = get_post(request, "query")
+        print query
+        if query:
+            data = filter_all_purchases_by_chars(request.user, query)
+            data["search_query"] = query
         return JsonResponse(data)

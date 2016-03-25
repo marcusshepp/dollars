@@ -9,9 +9,7 @@ function item_man_url(){
 
 function init_item_list(){
    /*
-   UPDATES DOM
-   Ajax request to the items API.
-   Populates the page with available items & purchases & total.
+   Refreshes Item List
    */
    $.ajax({
        type: "GET",
