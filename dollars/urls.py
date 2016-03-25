@@ -13,7 +13,8 @@ from receipt.views import (
     PurchaseTableEndPoint,
     CatagoryEndPoint,
     FilterItemsEndpoint,
-    )
+    FilterPurchasesEndpoint,
+)
 from accounts.views import (
     Registeration,
     Login,
@@ -33,4 +34,5 @@ urlpatterns = [
     url(r'^dollars/api/purchases/$', PurchaseTableEndPoint.as_view(), name="api_purchases"),
     url(r'^dollars/api/catagories/$', CatagoryEndPoint.as_view(), name="api_catagories"),
     url(r'^dollars/api/filter/items$', FilterItemsEndpoint.as_view(), name="foobarpop"),
+    url(r'^dollars/api/filter/purchases$', FilterPurchasesEndpoint.as_view(), name="foobarpopup"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

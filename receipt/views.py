@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -99,29 +101,80 @@ def cata_name_id_tuple(user):
     query = Catagory.objects.filter(user_id=user.id)
     return [(c.name, c.id) for c in query]
 
-def items_all_query(user):
+def item_query_to_dict(query, user, page=False):
+    data = dict()
+    if page:
+        items, paginator    = page_it(query, 1, 5)
+        data["total_pages"] = paginator.num_pages
+        data["per_page"]    = 5
+    else:
+        data["page_number"] = 1
+        data["per_page"]    = "all"
+        items               = query
+    data["page_number"]     = 1
+    data["ids"]             = [i.id for i in items]
+    data["names"]           = [i.name for i in items]
+    data["where_from"]      = [i.where_from for i in items]
+    data["prices"]          = [i.price for i in items]
+    data["total_number_of_items"] = len(items)
+    data["times_purchased"] = [
+        i.number_of_times_purchased for i in items]
+    data["catas"]           = cata_name_id_tuple(user)
+    return data
+
+def items_all_query(user, page=False):
     """
     Get all data from Item by User query paginated by [:5]
     """
     data = dict()
     items_query = Item.objects.filter(user=user)
-    items, paginator = page_it(items_query, 1, 5)
-    data["ids"]         = [i.id for i in items]
-    data["names"]       = [i.name for i in items]
-    data["where_from"]   = [i.where_from for i in items]
-    data["prices"]      = [i.price for i in items]
-    data["total_number_of_items"] = items_query.count()
-    data["times_purchased"] = [
-        i.number_of_times_purchased for i in items]
-    data["page_number"] = 1
-    data["total_pages"] = paginator.num_pages
-    data["per_page"]    = 5
-    data["catas"]       = cata_name_id_tuple(user)
+    data = item_query_to_dict(items_query, user, page=page)
     return data
 
-def filter_all_items_by_chars(user):
+def filter_all_items_by_chars(user, chars):
     items = list()
-    pass
+    query = Item.objects.filter(user_id=user.id, name__icontains=chars)
+    return item_query_to_dict(query, user, page=False)
+
+def purchase_query_to_dict(query, user, page=False):
+    data = dict()
+    if page:
+        purchases, paginator    = page_it(query, 1, 5)
+        data["total_pages"] = paginator.num_pages
+        data["per_page"]    = 5
+    else:
+        data["page_number"] = 1
+        data["per_page"]    = "all"
+        purchases           = query
+    data["page_number"]     = 1
+    data["ids"]             = [purchase.id for purchase in purchases]
+    data["purchased_items_names"] = [purchase.item_purchased.name for purchase in purchases]
+    data["purchased_date_created"] = [purchase.item_purchased.date_created for purchase in purchases]
+    data["amount_payed"] = [purchase.amount_payed for purchase in purchases]
+    data["purchased_length"] = len(purchases)
+    data["catas"] = cata_name_id_tuple(user)
+    data["total"] = sum([i.amount_payed for i in purchases])
+    return data
+
+def purchases_all_query(user, page=False):
+    data = dict()
+    purchases_query = Purchase.objects.filter(user=user)
+    data = purchase_query_to_dict(purchases_query, user, page=page)
+    return data
+
+def filter_all_purchases_by_chars(user, chars):
+    queries = list()
+    # all items for chars
+    items = Item.objects.filter(user_id=user.id, name__icontains=chars)
+    if items.count() > 1:
+        for item in items:
+            # all purchases with this item as foreignkey
+            purchase = Purchase.objects.filter(user_id=user.id, item_purchased_id=item.id)
+            queries.append(purchase)
+    else:
+        queries = Purchase.objects.filter(user_id=user.id, item_purchased_id=items[0].id)
+    chained_query = list(chain(queries))
+    return purchase_query_to_dict(chained_query, user, page=False)
 
 
 class Common(View):
@@ -573,8 +626,20 @@ class PurchaseTableEndPoint(Common):
 class FilterItemsEndpoint(Common):
     def get(self, request, *a, **kw):
         # data = dict()
-        data = items_all_query(request.user)
+        data = items_all_query(request.user, page=True)
         return JsonResponse(data)
     def post(self, request, *a, **kw):
         data = dict()
+        data = filter_all_items_by_chars(request.user, get_post(request, "query"))
+        return JsonResponse(data)
+
+
+class FilterPurchasesEndpoint(Common):
+    def get(self, request, *a, **kw):
+        # data = dict()
+        data = purchases_all_query(request.user, page=True)
+        return JsonResponse(data)
+    def post(self, request, *a, **kw):
+        data = dict()
+        data = filter_all_purchases_by_chars(request.user, get_post(request, "query"))
         return JsonResponse(data)

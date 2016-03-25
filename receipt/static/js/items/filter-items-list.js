@@ -40,6 +40,7 @@ function build_filter_items(names, where_froms  , prices, times_purchased, ids, 
       item_markup += '<input type="button" value="'+cata_name+'"';
       item_markup += ' onclick="filter_items_by_catagory('+cata_id+')"/>'
     }
+    item_markup += '<div class="items_all_container">';
     for (var i = 0; i < names.length; i++){
       var name = names[i];
       var where_from = where_froms[i];
@@ -59,6 +60,7 @@ function build_filter_items(names, where_froms  , prices, times_purchased, ids, 
       item_markup += '<div class="options" onclick="show_options(this, '+id+')">Options</div>';
       item_markup += "</div>";
       }
+      item_markup += '</div>';
       item_markup += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
       item_markup += '<input type="button" value="prev" onclick="previous_item_page()" />';
       item_markup += '<input type="button" value="next" onclick="next_item_page()" />';
@@ -76,8 +78,33 @@ function search_item_list_by_chars(){
     },
     success: function(data){
       console.log("success");
-      console.log(data);
+    //   console.log(data);
+      filter_by_char(data);
     },
     failure: function(){console.log("FAILURE @ search_item_list_by_char()");},
   });
+}
+function filter_by_char(data){
+    console.log(data);
+    items = "";
+    for (var i = 0; i < data.names.length; i++){
+      var name = data.names[i];
+      var where_from = data.where_from[i];
+      var price = data.prices[i];
+      var times_purchase = data.times_purchased[i];
+      var id = data.ids[i];
+      items += '<br />';
+      items += "<div id='item_container_" + id + "'>";
+      items += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
+      items += '<div class="" onclick="show_item_info('+id+')">' + name + '</div>';
+      items += '<span class="purchase_btn" onclick="purchase_item('+id+')">Purchase</span>';
+      items += '<label class="purchase_number" name="purchase_number"> # </label>';
+      items += '<input type="number" step="1" name="item_per_page" value="1" /><br />';
+      items += '<span class="times_purchased">$ '+price+'</span>';
+      items += '<span class="times_purchased"> # of purchases: ' + times_purchase + '</span>';
+      items += '</form>';
+      items += '<div class="options" onclick="show_options(this, '+id+')">Options</div>';
+      items += "</div>";
+      }
+    $(".items_all_container").html(items);
 }
