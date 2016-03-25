@@ -4,7 +4,78 @@ and block
 */
 *{
 }
-
+/******
+COMMON
+*******/
+.header_container{
+  background-color: #79BD8F;
+  border-radius: 5px 5px 5px 5px;
+  text-align: left;
+  padding-top: 5px;
+  padding-left: 25px;
+  padding-bottom: 10px;
+  font-size: 150%;
+}
+.header_text{
+  
+}
+.header_btn{
+  background-color: #BEEB9F;
+  float: right;
+  padding-right: 15px;
+  padding-left: 15px;
+  cursor: pointer;
+  border-radius: 5px 5px 5px 5px;
+  margin: 1px 5px 5px 5px;
+  box-shadow: 1px 1px 1px #FF6138;
+  font-size: 70%;
+}
+/******
+ITEM FORM 
+*******/
+.item_form_container{
+  background-color: #00A388;
+  padding: 20px 20px 20px 20px;
+  border-radius: 10px 10px 10px 10px;
+}
+.item_form{
+  /*padding: 15px 0px 15px 15px;*/
+  display: table-row;
+}
+.item_form_label{
+  /*display: table-cell;
+  text-align: right;*/
+  display: inline-block; 
+  width: 20px; 
+  text-align: left;
+  margin-right: 50px;
+}
+.item_form_input{
+  display: table-cell;
+  width: 200px;
+  height: auto;
+  margin-left: 20px;
+  box-shadow: 2px 2px 2px #FF6138;
+}
+.add_catagory{
+  margin-left: 105px;
+}
+.item_form_catagory{
+  margin-left: 10px;
+}
+.item_form_btn{
+  /*background-color: blue;*/
+  /*margin-left: 100px;*/
+  margin-bottom: 5px;
+  width: 150px;
+  height: 40px;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 100%;
+}
+/******
+ITEM LIST
+*******/
 @media only screen
 and (max-width : 790px) {
 

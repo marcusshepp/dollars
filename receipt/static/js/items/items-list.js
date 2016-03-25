@@ -38,10 +38,7 @@ function init_item_list(){
 function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page, cata_names_set, cata_ids_set, total_number_of_items){
      if (items){
          var item_markup = "";
-         item_markup += '<span>';
-         item_markup += '<h3>Items<span class="number_of_items"> ('+total_number_of_items+')</span></h3>';
-         item_markup += '<input type="button" class="search_items_btn" ';
-         item_markup += 'onclick="get_filter_items()" value="Filter" />';
+         item_markup += '';
          for (var i = 0; i < names.length; i++){
            var name = names[i];
            var where_from = where_froms[i];
@@ -96,7 +93,7 @@ function hide_options(th, id){
     var a_options = "<span>&#8594;</span>";
     var options_div = $(th);
     var par = options_div.parent().filter(".options");
-    par.replaceWith("<div class='options pull-right' onclick='show_options(this, "+id+")'><div class=''>Options</div></div>")
+    par.replaceWith("<div class='options' onclick='show_options(this, "+id+")'><div class=''>Options</div></div>")
 }
 function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id, name, company, catagory, price){
     var form_str = "";

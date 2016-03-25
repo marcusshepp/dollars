@@ -7,17 +7,24 @@
     <h4 id="latest_action" class="undo" onclick="undo(none, none)">
         Loading Last Action...
     </h4>
-
+    
+    <div class="header_container">
+      <span id="item_form_header" class="header_text">Add New Item</span>
+      <input type="button" class="header_btn" value="Hide">
+    </div>
     <div class="item_form_container">
 
     </div>
 
+    <div class="header_container">
+      <span class="header_text">Items</span>
+      <input type="button" class="header_btn" value="Hide">
+      <input type="button" class="header_btn" onclick="get_filter_items()" value="Filter" />
+    </div>
     <div class="items_list_container">
-
     </div>
 
     <div class="purchased_items_container">
-
     </div>
     
     <div class="footer">
