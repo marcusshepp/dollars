@@ -12,7 +12,6 @@ function init_item_form(){
         type: "GET",
         url: catagory_url(),
         success: function(data){
-          console.log(data);
             if (data.not_logged_in){
                 return 1
             }
@@ -30,27 +29,26 @@ function init_item_form(){
 
 function build_item_form(cata){
     var item_form = "";
-    item_form += '<h3 id="item_form_header">Add New Item</h3>';
     item_form += '<form class="formmy item_form" action="" method="POST" enctype="multipart/form-data">';
-    item_form += '<p><label for="name">Name: </label><input type="text" ';
-    item_form += 'placeholder="Name of Item" name="name" max_length="250"/ class=""></p>';
-    item_form += '<p><label for="where_from">Company: </label>';
+    item_form += '<p><label for="name" class="item_form_label">Name: </label><input type="text" ';
+    item_form += 'placeholder="Name of Item" max_length="250" class="item_form_input item_form_input_name" /></p>';
+    item_form += '<p><label for="where_from" class="item_form_label">Company: </label>';
     item_form += '<input type="text" placeholder="Where does this come from?" ';
-    item_form += 'name="where_from" max_length="50" class=""></p>';
-    item_form += '<p><label for="catagory">Catagory: </label>';
-    item_form += '<span class="add_catagory" onclick="build_catagory_form(no_catagories=false)">Add</span>';
-    item_form += '<select name="catagory" class="catagory">';
+    item_form += 'name="where_from" max_length="50" class="item_form_input" /></p>';
+    item_form += '<p><label for="catagory" class="item_form_label">Catagory: </label>';
+    item_form += '<input type="button" value="Add" class="add_catagory" onclick="build_catagory_form(no_catagories=false)">';
+    item_form += '<select name="catagory" class="item_form_catagory">';
     for (var i = 0; i < cata.length; i++){
         var cata_name = cata[i][0];
         var cata_id = cata[i][1];
         item_form += '<option name="catagory" value="'+cata_id+'">'+cata_name+'</option>';
     }
     item_form += '</select></p>';
-    item_form += '<p><label for="price">Price: </label><input type="number" ';
-    item_form += 'placeholder="Price of Item" name="price" step="0.01" class="pull-right"></p>';
+    item_form += '<p><label for="price" class="item_form_label">Price: </label><input type="number" ';
+    item_form += 'placeholder="Price of Item" name="price" step="0.01" class="item_form_input"></p>';
     item_form += '<div class="item_form_btns">';
-    item_form += '<input type="button" value="Add" class="" onclick="validate_new_item(this.form, false)">';
-    item_form += '<input type="button" name="name" value="Add & Purchase"';
+    item_form += '<input type="button" value="Add" class="item_form_btn" onclick="validate_new_item(this.form, false)">';
+    item_form += '<input type="button" value="Add & Purchase" class="item_form_btn" onclick="validate_new_item(this.form, true)">';
     item_form += '</div>';
     item_form += '</form>';
     $(".item_form_container").html(item_form);

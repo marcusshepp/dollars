@@ -1,223 +1,206 @@
+/*
+inline block 
+and block
+*/
 *{
 }
-.item {
-  background-color: #B5EDFF;
-  /*text-align: center;*/
-  padding: 5px 5px 5px 5px;
-  border-radius: 2px 2px 2px 2px;
-  margin: 0px 0px 15px 0px;
-  border: .3px solid black;
+/******
+COMMON
+*******/
+/*table, tr, td, th {margin:0;border:0;padding:0;spacing:0;}*/
+.container{
+  background-color: #00A388;
+  padding: 20px 20px 20px 20px;
+  margin-bottom: 15px; 
+  border-radius: 10px 10px 10px 10px;
 }
-.badge {
-  margin-left: 15px !important;
+.header_container{
+  background-color: #79BD8F;
+  border-radius: 5px 5px 5px 5px;
+  text-align: left;
+  padding-top: 5px;
+  padding-left: 25px;
+  padding-bottom: 10px;
+  font-size: 150%;
 }
-.formmy {
-  background-color: #B5EDFF;
-  border-radius: 2px 2px 125px 2px;
-  padding: 15px 25px 20px 15px;
+.header_text{
+  background-color: #BDFFD2;
+  padding: 0px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+.btn{
+  cursor: pointer;
+  border-radius: 5px 5px 5px 5px;
+  box-shadow: 1px 1px 1px #FF6138;
+  font-size: 70%;
+}
+.header_btn{
+  background-color: #BEEB9F;
+  float: right;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin: 4px 10px 5px 5px;
+}
+/******
+ITEM FORM 
+*******/
+.item_form_container{
 
 }
-.item_form p label input {
-  margin-left: 40px !important;
+.item_form{
+  /*padding: 15px 0px 15px 15px;*/
+  display: table-row;
 }
-form p *{
-    width: 49%;
-    height: auto;
-    /*margin: 0px 0px 0px 0px;*/
+.item_form_label{
+  /*display: table-cell;
+  text-align: right;*/
+  display: inline-block; 
+  width: 20px; 
+  text-align: left;
+  margin-right: 50px;
 }
-#header{
-  opacity: .9;
-}
-#purchased_items{
-    border-radius: 10px 10px 10px 10px;
-    background-color: #CFCFCF;
-}
-.purchases{
-  padding-left: 15px;
-  padding-top: 15px;
-  background-color: white;
-  color: black;
-  /*padding: 5px 5px 5px 5px;*/
+.item_form_input{
+  display: table-cell;
+  width: 200px;
   height: auto;
-  width: 80%;
-}
-.purchase_border{
-  border-bottom: .2px solid black;
-  width: 35%;
-  margin-left: 25px;
-  /*margin-right: auto;*/
-}
-.purchases div{
-  border-radius: 2px 2px 2px 2px;
-  /*margin: 0px 0px 15px 0px;*/
-}
-.purchase_btn{
-  background-color: #99FFAC;
-  border-radius: 2px 2px 2px 2px;
-  margin: 0px 5px 5px 5px;
-  cursor: pointer;
-  box-shadow: 2px 2px 2px #888888;
-  padding: 5px 0px 5px 15px;
-  text-align: center;
-  height: auto;
-  width: 120px;
-}
-.purchase_btn:hover{
-  background-color: #C7FFD1;
-  border-radius: 2px 2px 2px 2px;
-  /*margin: 0px 5px 5px 5px;*/
-  cursor: pointer;
-  box-shadow: 2px 2px 2px #888888;
-  /*padding: 5px 0px 5px .5px;*/
-  text-align: center;
-}
-#latest_action{
-    margin-top: 35px;
-}
-.undo{
-  color: black;
-  background-color: #F2F2F2;
-  padding: 15px 0px 15px 0px;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  top: -30px !important;
-  border: .1px solid black;
-  text-align: center;
-  box-shadow: 2px 2px 2px #888888;
-  border-radius: 6px 6px 6px 6px;
-  height: 70px;
-  width: auto
-}
-.undo:hover{
-  color: black;
-  background-color: #F2F2F2;
-  padding: 15px 0px 15px 0px;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  top: -30px !important;
-  opacity: 0.4;
-  border: .5px solid black;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 6px 6px 6px 6px;
-}
-.times_purchased{
-  padding: 5px 0px 5px 20px;
-  text-align: center;
-}
-.options{
-  margin-left: 2px;
-  padding: 5px 5px 5px 5px;
-  background-color: white;
-  border-radius: 4px 4px 4px 4px;
-  box-shadow: 2px 2px 2px #888888;
-  font-size: 80%;
-}
-.options:hover{
-  margin-left: 2px;
-  padding: 5px 5px 5px 5px;
-  background-color: grey;
-  border-radius: 4px 4px 4px 4px;
-  box-shadow: 2px 2px 2px #888888;
-  cursor: pointer;
-}
-.options div{
-  padding: 5px 5px 5px 5px;
-  border-radius: 8px 8px 8px 8px;
-}
-.options div:hover{
-  background-color: white;
-}
-.line{
-    border-left: .2 solid black;
-}
-.purchase_filters{
-    margin: 0px 1px 5px 1px;
-}
-.total{
-    padding: 5px 5px 5px 5px;
-    font-size: 120%;
-    margin-left: 10px;
+  margin-left: 20px;
+  box-shadow: 2px 2px 2px #FF6138;
 }
 .add_catagory{
-   background-color: #99FFAC;
-   /*padding: 1px 1px 1px 1px;*/
-   width: inherit;
-   height: 60%;
-   box-shadow: 2px 2px 2px #888888;
-   padding: 2px 2px 2px 2px;
-   border-radius: 3px 3px 3px 3px;
+  margin-left: 105px;
 }
-.add_catagory:hover{
-   background-color: #C7FFD1;
-   /*padding: 3px 3px 3px 3px;*/
+.item_form_catagory{
+  margin-left: 10px;
 }
-.add_catagory_btn{
-   background-color: #99FFAC;
-   /*padding: 1px 1px 1px 1px;*/
-   width: auto;
-   height: auto;
-   margin-left: 460px;
-   margin-top: 15px;
+.item_form_btn{
+  /*background-color: blue;*/
+  /*margin-left: 100px;*/
+  margin-bottom: 5px;
+  width: 150px;
+  height: 40px;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 100%;
 }
-.add_catagory:hover{
-   background-color: #C7FFD1;
-   /*padding: 3px 3px 3px 3px;*/
-   cursor: pointer;
+/******
+ITEM LIST
+*******/
+.items_list_container{
 }
-.catagory{
-    /*height: auto;
-    width: 26%;*/
+.item_individual_container{
+  background-color: #38FFC0;
+  border-radius: 9px 9px 9px 9px;
+  display: block;
+  margin-bottom: 10px;
+  padding: 15px 15px 15px 15px;
 }
-.new_catagory_input{
-    margin-top: 10px;
+.item_info{
+  display: block;
+  background-color: #FF6138;
+  width: 90%;
+  height: auto;
+  border-radius: 9px 9px 9px 9px;
+  padding: 15px 15px 15px 15px;
 }
+.item_options_container{
+  display: block;
+  background-color: #BD9E79;
+  width: 96%;
+  height: auto;
+  border-radius: 9px 9px 9px 9px;
+  padding: 10px 5px 10px 5px;
+  margin-top: 5px;
+}
+.purchase_container{
+  background-color: #2892C0;
+  display: inline-block;
+  height: auto;
+  width: 45%;
+  padding: 10px 5px 10px 5px;
+  margin-left: 8px;
+  border-radius: 9px 9px 9px 9px;
+}
+.purchase_btn{
+  background-color: #00A388;
+  height: 45px;
+  width: 50%;
+  margin-left: 5px;
+}
+.purchase_number_input{
+  height: auto;
+  width: 15%;
+}
+.options_btn{
+  display: inline-block;
+  background-color: #2892C0;
+  padding: 10px 30px 10px 20px;
+  margin-bottom: : 10px;
+  margin-left: 7px;
+  border-radius: 9px 9px 9px 9px;
+  text-align: center;
+  font-size: 100%;
+  height: 40px;
+  width: 25%;
+}
+/******
+PURCHASES TABLE
+*******/
+.purchase_table_inner_container{
+  background-color: #FF6138;
+  border-radius: 9px 9px 9px 9px;
+  border-spacing: 0 25px;
+  padding: 15px 15px 15px 15px;
+}
+.border_bottom{
+  border-bottom: 5em black solid;
+}
+/******
+PAGINATION
+*******/
+.pagination_container{
+  background-color: white;
+  padding: 15px 15px 15px 15px;
+  border-radius: 9px 9px 9px 9px;
+  display: block;
+}
+.pagination_firstblock_container{
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.blank_of_blank{
+  display: inline-block;
+  background-color: black;
+  color: white;
+  padding: 5px 15px 5px 15px;
+  border-radius: 9px 9px 9px 9px;
+  margin-right: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.prev_next_container{
+  display: inline-block;
+  width: 50%;
+  height: auto;
+  margin-left: 10px;
+}
+.pagination_btn{
+  display: inline-block;
+  height: 35px;
+  width: 40% !important;
+}
+.number_per_page_container{
+  padding: 15px 15px 0px 5px;
+}
+.item_per_page{
+  height: auto;
+  width: 40%;
+  padding: 5px 5px 5px 5px;
+}
+/******
+media queries
+*******/
 @media only screen
 and (max-width : 790px) {
-    .item{
-        /*height: 200%;*/
-        /*width: auto;*/
-        padding: 0px 0px 70px 0px;
-        font-size: 125%;
-        position: relative;
-    }
-    .item span{
-        display: none;
-    }
-    .items{
-        margin-top: 15px;
-    }
-    .purchase_btn{
-      height: auto;
-      width: 125px;
-      font-size: 110%;
-    }
-    .purchase_btn:hover{
-        background-color: #C7FFD1;
-        border-radius: 2px 2px 2px 2px;
-        /*margin: 0px 5px 5px 5px;*/
-        cursor: pointer;
-        box-shadow: 2px 2px 2px #888888;
-        /*padding: 5px 0px 5px 15px;*/
-        text-align: center;
-    }
-    .undo{
-        height: inherit;
-    }
-    .options{
-        height: 50px;
-        width: 125px;
-        position: relative;
-        z-index: 100;
-        padding-left: 50px;
-        padding-top: 13px;
-    }
-    .options:hover{
-        height: 50px;
-        width: 125px;
-        position: relative;
-        z-index: 100;
-        padding-left: 50px;
-        padding-top: 13px;
-    }
+
 }

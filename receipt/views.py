@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -6,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models.query import QuerySet
 
 from .forms import (
     ItemForm,
@@ -40,7 +43,7 @@ def get_get(request, name):
 
 def page_it(queryset, page_number, number_per_page):
     """
-    returns the query for the given page. 
+    returns the query for the given page.
     """
     paginator = Paginator(queryset, number_per_page)
     if page_number:
@@ -95,6 +98,111 @@ def cata_ids(user, item, purchased):
             cata_ids.append(catagory.id)
     return list(set(cata_ids))
 
+def cata_name_id_tuple(user):
+    query = Catagory.objects.filter(user_id=user.id)
+    return [(c.name, c.id) for c in query]
+
+def item_query_to_dict(query, user, page=False):
+    data = dict()
+    if page:
+        items, paginator    = page_it(query, 1, 5)
+        data["total_pages"] = paginator.num_pages
+        data["per_page"]    = 5
+    else:
+        data["no_pagination"] = True
+        items               = query
+    data["page_number"]     = 1
+    data["ids"]             = [i.id for i in items]
+    data["names"]           = [i.name for i in items]
+    data["where_from"]      = [i.where_from for i in items]
+    data["prices"]          = [i.price for i in items]
+    data["total_number_of_items"] = len(items)
+    data["times_purchased"] = [
+        i.number_of_times_purchased for i in items]
+    data["catas"]           = cata_name_id_tuple(user)
+    return data
+
+def items_all_query(user, page=False):
+    """
+    Get all data from Item by User query paginated by [:5]
+    """
+    data = dict()
+    items_query = Item.objects.filter(user=user)
+    data = item_query_to_dict(items_query, user, page=page)
+    return data
+
+def filter_all_items_by_chars(user, chars):
+    items = list()
+    query = Item.objects.filter(user_id=user.id, name__icontains=chars)
+    return item_query_to_dict(query, user, page=False)
+
+def purchase_query_to_dict(query, user, page=False):
+    data = dict()
+    if page:
+        purchases, paginator = page_it(query, 1, 5)
+        data["total_pages"] = paginator.num_pages
+        data["per_page"] = 5
+    else:
+        data["no_pagination"] = True
+        purchases = query
+    data["page_number"] = 1
+    data["ids"] = [purchase.id for purchase in purchases]
+    data["purchased_items_names"] = [purchase.item_purchased.name for purchase in purchases]
+    data["purchased_date_created"] = [purchase.item_purchased.date_created for purchase in purchases]
+    data["amount_payed"] = [purchase.amount_payed for purchase in purchases]
+    data["purchased_length"] = len(list(purchases))
+    data["catas"] = cata_name_id_tuple(user)
+    data["total"] = sum([i.amount_payed for i in purchases])
+    return data
+
+def purchase_query_to_dict_from_multiple_queries(user, purchases):
+    """
+    Returns data for purchases that match a certain query. 
+    Should be called when purchases might require more
+    than one call to `objects.filter`.
+    No pagination capabilities.
+    """
+    data = dict()
+    if type(purchases) is list and not type(purchases) is QuerySet:
+        purchased_item_names = list()
+        purchased_dates = list()
+        amount_payed = list()
+        for filtered_query in purchases:
+            if filtered_query.count() > 1:
+                for purchase in filtered_query:
+                    purchased_item_names.append(purchase.item_purchased.name)
+                    purchased_dates.append(purchase.date_display())
+                    amount_payed.append(purchase.amount_payed)
+        data["purchased_items_names"] = purchased_item_names
+        data["purchased_date_created"] = purchased_dates
+        data["amount_payed"] = amount_payed
+        data["catas"] = cata_name_id_tuple(user)
+        data["total"] = sum(amount_payed)
+        data["no_pagination"] = True
+        return data
+    
+def purchases_all_query(user, page=False):
+    data = dict()
+    purchases_query = Purchase.objects.filter(user=user)
+    data = purchase_query_to_dict(purchases_query, user, page=page)
+    return data
+
+def filter_all_purchases_by_chars(user, chars):
+    queries = list()
+    # all items for chars
+    items = Item.objects.filter(user_id=user.id, name__icontains=chars)
+    if items.count() > 1:
+        for item in items:
+            # all purchases with this item as foreignkey
+            purchases = Purchase.objects.filter(user_id=user.id, item_purchased_id=item.id)
+            if purchases:
+                queries.append(purchases)
+        chained_query = list(chain(queries))
+        return purchase_query_to_dict_from_multiple_queries(user, chained_query)
+    else:
+        queries = Purchase.objects.filter(user_id=user.id, item_purchased_id=items[0].id)
+        return purchase_query_to_dict(queries, user, page=False)
+
 
 class Common(View):
     """
@@ -127,11 +235,11 @@ class MainView(Common):
             print "*****START*****"
             Start.objects.create(is_start_of_app=False)
             init_page_data = dict()
-            init_page_data["obj"]               = "item"
-            init_page_data["page_number"]       = 1
-            init_page_data["number_per_page"]   = DEFAULT_PER_PAGE
-            init_page_data["user"]              = user.id
-            item_form                           = WhatPageForm(init_page_data)
+            init_page_data["obj"]             = "item"
+            init_page_data["page_number"]     = 1
+            init_page_data["number_per_page"] = DEFAULT_PER_PAGE
+            init_page_data["user"]            = user.id
+            item_form                         = WhatPageForm(init_page_data)
             if item_form.is_valid():
                 item_form.save()
             item_page = WhatPage.objects.get(obj="item", user_id=user.id)
@@ -155,14 +263,14 @@ class MainView(Common):
         Add a new Item
         returns whether or not the item form successfully saved.
         """
-        context_data                         = dict()
-        item_form_data                  = dict()
-        item_form_data["catagory"]      = get_post(request, "catagory_id")
-        item_form_data["name"]          = get_post(request, "name")
-        item_form_data["where_from"]    = get_post(request, "where_from")
-        item_form_data["price"]         = get_post(request, "price")
-        item_form_data["user"]          = request.user.id
-        form                            = ItemForm(item_form_data)
+        context_data                 = dict()
+        item_form_data               = dict()
+        item_form_data["catagory"]   = get_post(request, "catagory_id")
+        item_form_data["name"]       = get_post(request, "name")
+        item_form_data["where_from"] = get_post(request, "where_from")
+        item_form_data["price"]      = get_post(request, "price")
+        item_form_data["user"]       = request.user.id
+        form                         = ItemForm(item_form_data)
         print form
         if form.is_valid():
             form.save()
@@ -200,8 +308,8 @@ class ItemEndPoint(Common):
             data["price"]           = item.price
             data["times_purchased"] = item.number_of_times_purchased
         return JsonResponse(data)
-        
-        
+
+
     def get(self, request, *a, **kw):
         data                = dict()
         user                = request.user
@@ -237,20 +345,34 @@ class ItemEndPoint(Common):
             else:
                 print "****NO ITEM PAGE****"
         return JsonResponse(data)
-    
+
     def purchased_item(self, request):
+        number_of_purchases = get_post(request, "number_of_purchases")
         item = Item.objects.get(id=get_post(request, "id"))
-        item.increase_number_of_times_purchased()
-        purchdata = dict()
-        purchdata["item_purchased"] = item
-        purchdata["user"] = request.user
-        amount_payed = get_post(request, "amount_payed")
-        if amount_payed:
-            purchdata["amount_payed"] = amount_payed
-        else: purchdata["amount_payed"] = item.price
-        purchased_item = Purchase(**purchdata)
-        purchased_item.save()
-        
+        if number_of_purchases > 1:
+            for _ in xrange(int(number_of_purchases)):
+                item.increase_number_of_times_purchased()
+                purchdata = dict()
+                purchdata["item_purchased"] = item
+                purchdata["user"] = request.user
+                amount_payed = get_post(request, "amount_payed")
+                if amount_payed:
+                    purchdata["amount_payed"] = amount_payed
+                else: purchdata["amount_payed"] = item.price
+                purchased_item = Purchase(**purchdata)
+                purchased_item.save()
+        else:
+            item.increase_number_of_times_purchased()
+            purchdata = dict()
+            purchdata["item_purchased"] = item
+            purchdata["user"] = request.user
+            amount_payed = get_post(request, "amount_payed")
+            if amount_payed:
+                purchdata["amount_payed"] = amount_payed
+            else: purchdata["amount_payed"] = item.price
+            purchased_item = Purchase(**purchdata)
+            purchased_item.save()
+
     def post(self, request, *a, **kw):
         """
         Next, Prev, Number Per Page
@@ -409,16 +531,11 @@ class CatagoryEndPoint(Common):
     Catagories that are associated with Items and Purchases.
     Works as an end point to recieve catagory information.
     """
-    def cata_name_id_tuple(self, user):
-        data = list()
-        for cata in Catagory.objects.filter(user_id=user.id):
-            data.append((cata.name, cata.id))
-        return data
-    
+
     def get(self, request, *a, **kw):
         data = dict()
         if not request.user.is_anonymous():
-            data["cata"] = self.cata_name_id_tuple(request.user)
+            data["cata"] = cata_name_id_tuple(request.user)
         else:
             data["not_logged_in"] = True
         return JsonResponse(data)
@@ -480,7 +597,7 @@ class PurchaseTableEndPoint(Common):
         else:
             print "****NO PURCHASE PAGE****"
         return JsonResponse(data)
-        
+
     def filter_purchases_by_catagory(self, user, catagory_id):
         data = dict()
         items = Item.objects.filter(catagory__id=catagory_id, user=user)
@@ -505,8 +622,11 @@ class PurchaseTableEndPoint(Common):
             data["per_page"]               = 5
         else: data["no_purchases_for_query"] = True
         return data
-        
+
     def post(self, request, *a, **kw):
+        """
+        Controls the pagination for the Purchases Table.
+        """
         data                = dict()
         user                = request.user
         catagory_id         = get_post(request, "catagory_id")
@@ -515,7 +635,8 @@ class PurchaseTableEndPoint(Common):
         next_               = get_post(request, "next")
         number_per_page     = get_post(request, "number_per_page")
         purchase_page       = WhatPage.objects.get(obj="purchase", user_id=user.id)
-        paginator           = Paginator(Purchase.objects.filter(user_id=user.id), purchase_page.number_per_page)
+        paginator           = Paginator(Purchase.objects.filter(
+            user_id=user.id), purchase_page.number_per_page)
         if number_per_page:
             purchase_page.change_number_per_page(number_per_page)
         if move:
@@ -526,4 +647,33 @@ class PurchaseTableEndPoint(Common):
                     purchase_page.increase_page_number()
         if catagory_id:
             data = self.filter_purchases_by_catagory(user, catagory_id)
+        return JsonResponse(data)
+
+
+class FilterItemsEndpoint(Common):
+    def get(self, request, *a, **kw):
+        # data = dict()
+        data = items_all_query(request.user, page=True)
+        return JsonResponse(data)
+    def post(self, request, *a, **kw):
+        data = dict()
+        query = get_post(request, "query")
+        if query:
+            data = filter_all_items_by_chars(request.user, query)
+            data["search_query"] = query
+        return JsonResponse(data)
+
+
+class FilterPurchasesEndpoint(Common):
+    def get(self, request, *a, **kw):
+        # data = dict()
+        data = purchases_all_query(request.user, page=True)
+        return JsonResponse(data)
+    def post(self, request, *a, **kw):
+        data = dict()
+        query = get_post(request, "query")
+        print query
+        if query:
+            data = filter_all_purchases_by_chars(request.user, query)
+            data["search_query"] = query
         return JsonResponse(data)
