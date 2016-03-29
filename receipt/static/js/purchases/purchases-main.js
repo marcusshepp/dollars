@@ -167,3 +167,11 @@ function change_number_per_page(){
         },
     });
 }
+function toggle_purchases(){
+  $(".purchased_items_container").slideToggle();
+  if ($(".purchases_hide_toggle_btn").val() == "Hide"){
+    $(".purchases_hide_toggle_btn").val("Show");
+  } else {
+    $(".purchases_hide_toggle_btn").val("Hide");
+  }
+}

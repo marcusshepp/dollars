@@ -166,3 +166,12 @@ function build_catagory_form(no_catagories){
 function clear_form_error(){
   $(".form_error_container").html("");
 }
+function toggle_item_form(){
+  var value = $(".item_form_toggle_hide_btn").val();
+  if (value == "Hide"){
+    $(".item_form_toggle_hide_btn").val("Show");
+  } else {
+    $(".item_form_toggle_hide_btn").val("Hide");
+  }
+  $(".item_form_container").slideToggle();
+} 

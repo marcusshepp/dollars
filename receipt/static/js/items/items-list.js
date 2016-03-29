@@ -385,3 +385,12 @@ function clear_item_form(){
      item_form_btns += ' class="" onclick="validate_new_item(this.form, true)">';
      $(".item_form_btns").html(item_form_btns);
 }
+function toggle_item_list(){
+  var value = $(".item_list_toggle_hide_btn").val();
+  if(value == "Hide"){
+    $(".item_list_toggle_hide_btn").val("Show");
+  } else {
+    $(".item_list_toggle_hide_btn").val("Hide");
+  }
+  $(".items_list_container").slideToggle();
+}
