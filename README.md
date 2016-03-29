@@ -4,4 +4,4 @@ TODO:
 - purchase w different name btn
 - click attr to see more text
 - filter by search btn
-- style
+- on phone swipe table to turn to next page

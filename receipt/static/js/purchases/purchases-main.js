@@ -48,9 +48,15 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
       purchased_items += '</tr>';
     }
     purchased_items += '</table>';
-    purchased_items += '<span class="page_info">'+page_number+' of '+total_pages+' pages</span>';
-    purchased_items += '<input type="button" value="prev" onclick="previous_purchase_page()" />';
-    purchased_items += '<input type="button" value="next" onclick="next_purchase_page()" />';
+    purchased_items += '<div class="pagination_container">';
+    purchased_items += '<div class="pagination_firstblock_container">';
+    purchased_items += '<div class="blank_of_blank">'+page_number+' of '+total_pages+' pages</div>';
+    purchased_items += '<div class="prev_next_container">';
+    purchased_items += '<input class="btn pagination_btn" type="button" value="prev" onclick="previous_purchase_page()" />';
+    purchased_items += '<input class="btn pagination_btn" type="button" value="next" onclick="next_purchase_page()" />';
+    purchased_items += '</div>';
+    purchased_items += '</div>';
+    purchased_items += '<div class="number_per_page_container">';
     purchased_items += '<label for="purchase_per_page"> Number Per Page: </label>';
     purchased_items += '<select onchange="change_number_per_page()" ';
     purchased_items += 'class="purchase_per_page" name="purchase_per_page">';
@@ -61,6 +67,8 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
         } else {purchased_items += '<option name="purchases_per_page" value="'+i+'">'+i+'</option>';}
     }
     purchased_items += '</select>';
+    purchased_items += '</div>'
+    purchased_items += '</div>'
     return purchased_items;
 }
 function filter_purchase_tbl_by_catagory(catagory_id){

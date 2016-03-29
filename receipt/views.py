@@ -157,7 +157,7 @@ def purchase_query_to_dict(query, user, page=False):
 
 def purchase_query_to_dict_from_multiple_queries(user, purchases):
     """
-    Returns data for purchases that match a certain query. 
+    Returns data for purchases that match a certain query.
     Should be called when purchases might require more
     than one call to `objects.filter`.
     No pagination capabilities.
@@ -180,7 +180,7 @@ def purchase_query_to_dict_from_multiple_queries(user, purchases):
         data["total"] = sum(amount_payed)
         data["no_pagination"] = True
         return data
-    
+
 def purchases_all_query(user, page=False):
     data = dict()
     purchases_query = Purchase.objects.filter(user=user)
@@ -349,18 +349,20 @@ class ItemEndPoint(Common):
     def purchased_item(self, request):
         number_of_purchases = get_post(request, "number_of_purchases")
         item = Item.objects.get(id=get_post(request, "id"))
-        if number_of_purchases > 1:
-            for _ in xrange(int(number_of_purchases)):
-                item.increase_number_of_times_purchased()
-                purchdata = dict()
-                purchdata["item_purchased"] = item
-                purchdata["user"] = request.user
-                amount_payed = get_post(request, "amount_payed")
-                if amount_payed:
-                    purchdata["amount_payed"] = amount_payed
-                else: purchdata["amount_payed"] = item.price
-                purchased_item = Purchase(**purchdata)
-                purchased_item.save()
+        if number_of_purchases:
+            number_of_purchases = int(number_of_purchases)
+            if number_of_purchases > 1:
+                for _ in xrange(number_of_purchases):
+                    item.increase_number_of_times_purchased()
+                    purchdata = dict()
+                    purchdata["item_purchased"] = item
+                    purchdata["user"] = request.user
+                    amount_payed = get_post(request, "amount_payed")
+                    if amount_payed:
+                        purchdata["amount_payed"] = amount_payed
+                    else: purchdata["amount_payed"] = item.price
+                    purchased_item = Purchase(**purchdata)
+                    purchased_item.save()
         else:
             item.increase_number_of_times_purchased()
             purchdata = dict()

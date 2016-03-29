@@ -11,10 +11,17 @@ class TiedToUser(models.Model):
     user = models.ForeignKey(User)
 
 
+class Start(models.Model):
+    """
+    Is this the start of the application?
+    """
+    is_start_of_app = models.BooleanField(default=False)
+
+
 class Action(TiedToUser):
 
     class Meta:
-        pass
+        ordering = ["-id"]
 
     handler_options = (
         ("undo add item", "Undo Add Item"),
@@ -101,18 +108,11 @@ class Catagory(TiedToUser):
         for purchase in Purchase.objects.filter(user_id=user.id):
             if self.name == purchase.item_purchased.catagory.name:
                 return True
-    
+
     def has_an_item(self, user):
         for item in Item.objects.filter(user_id=user.id):
             if self.name == item.catagory.name:
                 return True
-
-
-class Start(models.Model):
-    """
-    Is this the start of the application?
-    """
-    is_start_of_app = models.BooleanField(default=False)
 
 
 class WhatPage(TiedToUser):
