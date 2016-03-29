@@ -42,6 +42,45 @@ COMMON
   margin: 4px 10px 5px 5px;
 }
 /******
+NAV
+*******/
+.menu_container{
+    display: block;
+}
+.page-header{
+    display: inline-block;
+    height: auto;
+    width: 70%;
+    background-color: #FFE6CA;
+}
+.dropdown{
+    display: none;
+    position: absolute;
+}
+.dropdown_on{
+    cursor: pointer;
+    display: block;
+}
+.menu_dropdown_container{
+    display: inline-block;
+    height: auto;
+    width: 20%;
+    background-color: #B98041;
+}
+.menu_dropdown_name{
+    cursor: pointer;
+    /*display: none;*/
+}
+.menu_dropdown_logout{
+    /*display: none;*/
+}
+.menu_dropdown_undo{
+    /*display: none;*/
+}
+.menu_dropdown_name:hover > .menu{
+
+}
+/******
 ITEM FORM
 *******/
 .item_form_container{
