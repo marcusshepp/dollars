@@ -63,7 +63,7 @@ function validate_new_item(form, purchase){
   Validate data within the item form before submitting to server.
   */
   var form_data = $(form).serializeArray();
-  console.log(form_data);
+  // console.log(form_data);
   if (form_data.length < 4){
     $(".form_error_container").html("Please fill out all fields in form.");
   } else {
@@ -92,11 +92,18 @@ function create_new_item(name, company_came_from, price, catagory_id, purchase){
       "purchase": purchase,
     },
     success: function(data){
-      $("#header").html("Successfully Added: " + name);
-      create_action("Create Item", "Create Item: "+name, "undo add item");
-      init_item_form();
-      init_item_list();
-      document.getElementsByClassName('item_form')[0].reset();
+      console.log(data);
+      if (data.name_exists){
+        console.log("name exists")
+        $(".form_error_container").html("Item with that name already exists.");
+      } else {
+        console.log("ELSE");
+        $("#header").html("Successfully Added: " + name);
+        create_action("Create Item", "Create Item: "+name, "undo add item");
+        init_item_form();
+        init_item_list();
+        document.getElementsByClassName('item_form')[0].reset();        
+      }
     },
     failure: function(){
       console.log("fail");

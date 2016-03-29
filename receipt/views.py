@@ -263,7 +263,7 @@ class MainView(Common):
         Add a new Item
         returns whether or not the item form successfully saved.
         """
-        context_data                 = dict()
+        data                 = dict()
         item_form_data               = dict()
         item_form_data["catagory"]   = get_post(request, "catagory_id")
         item_form_data["name"]       = get_post(request, "name")
@@ -274,7 +274,7 @@ class MainView(Common):
         print form
         if form.is_valid():
             form.save()
-            context_data["success"] = True
+            data["success"] = True
             if get_post(request, "purchase") == "true":
                 item = Item.objects.get(name=request.POST["name"])
                 item.increase_number_of_times_purchased()
@@ -283,10 +283,13 @@ class MainView(Common):
                 form = PurchaseForm(data)
                 if form.is_valid():
                     form.save()
-                context_data["purchased"] = True
+                data["purchased"] = True
+        elif "Name already exists" in str(form.errors):
+            print "name exists"
+            data["name_exists"] = True
         else:
-            context_data["invalid_form_data"] = True
-        return JsonResponse(context_data)
+            data["invalid_form_data"] = True
+        return JsonResponse(data)
 
 
 class ItemEndPoint(Common):
@@ -679,3 +682,4 @@ class FilterPurchasesEndpoint(Common):
             data = filter_all_purchases_by_chars(request.user, query)
             data["search_query"] = query
         return JsonResponse(data)
+ 
