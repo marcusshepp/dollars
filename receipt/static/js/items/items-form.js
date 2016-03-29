@@ -31,7 +31,7 @@ function build_item_form(cata){
     var item_form = "";
     item_form += '<form class="formmy item_form" action="" method="POST" enctype="multipart/form-data">';
     item_form += '<p><label for="name" class="item_form_label">Name: </label><input type="text" ';
-    item_form += 'placeholder="Name of Item" max_length="250" class="item_form_input item_form_input_name" /></p>';
+    item_form += 'placeholder="Name of Item" name="name" max_length="250" class="item_form_input item_form_input_name" /></p>';
     item_form += '<p><label for="where_from" class="item_form_label">Company: </label>';
     item_form += '<input type="text" placeholder="Where does this come from?" ';
     item_form += 'name="where_from" max_length="50" class="item_form_input" /></p>';
@@ -60,18 +60,22 @@ Create new Items + Validation
 
 function validate_new_item(form, purchase){
   /*
-  Ajax POST to items API. View then creates a new item object.
+  Validate data within the item form before submitting to server.
   */
   var form_data = $(form).serializeArray();
-  var name = form_data[0].value;
-  var company_came_from = form_data[1].value;
-  var catagory_id = form_data[2].value;
-  var price = form_data[3].value;
   console.log(form_data);
-  if (name.length < 4) {
-    $("#item_form_header").html("<p class=''>Item name must be longer than 3 characters.</p>");
+  if (form_data.length < 4){
+    $(".form_error_container").html("Please fill out all fields in form.");
   } else {
-    create_new_item(name, company_came_from, price, catagory_id, purchase)
+    var name = form_data[0].value;
+    var company_came_from = form_data[1].value;
+    var catagory_id = form_data[2].value;
+    var price = form_data[3].value;
+    if (name.length < 4) {
+      $(".form_error_container").html("Item name must be longer than 3 characters.");
+    } else {
+      create_new_item(name, company_came_from, price, catagory_id, purchase)
+    }
   }
 };
 
@@ -88,7 +92,7 @@ function create_new_item(name, company_came_from, price, catagory_id, purchase){
       "purchase": purchase,
     },
     success: function(data){
-      $("#header").html("<p class=''>Successfully Added: " + name +  "</p>");
+      $("#header").html("Successfully Added: " + name);
       create_action("Create Item", "Create Item: "+name, "undo add item");
       init_item_form();
       init_item_list();
@@ -158,4 +162,7 @@ function build_catagory_form(no_catagories){
     }
     catagory_form += "</form>";
     $(".item_form_container").html(catagory_form);
+}
+function clear_form_error(){
+  $(".form_error_container").html("");
 }

@@ -8,14 +8,15 @@
             <div class="menu_dropdown_name off">
                 User: {{ user.username }}
             </div>
-
-            <a href="{% url 'logout' %}">
-                <div class="dropdown menu_dropdown_logout">
-                    Logout
-                </div>
-            </a>
-            <div id="latest_action" class="dropdown menu_dropdown_undo" onclick="undo(none, none)">
-                Loading Last Action...
+            <div class="menu_dropdown_inner_container">
+              <a href="{% url 'logout' %}">
+                  <div class="dropdown menu_dropdown_logout">
+                      Logout
+                  </div>
+              </a>
+              <div id="latest_action" class="dropdown menu_dropdown_undo" onclick="undo(none, none)">
+                  Loading Last Action...
+              </div>
             </div>
         </div>
     </div>
@@ -25,6 +26,7 @@
       <span id="item_form_header" class="header_text">Add New Item</span>
       <input type="button" class="btn header_btn" value="Hide">
     </div>
+    <div class="form_error_container" onclick="clear_form_error()"></div>
     <div class="container item_form_container">
     </div>
 
