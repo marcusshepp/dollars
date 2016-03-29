@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
 {% block body %}
-    <h3 class="page-header" id="header">
-        Guru Development	&#174;
-    </h3>
-    <p><span>User: {{ user.username }} </span><span><a href="{% url 'logout' %}">logout?</a></span></p>
-    <h4 id="latest_action" class="undo" onclick="undo(none, none)">
-        Loading Last Action...
-    </h4>
-    
+    <div class="menu_container">
+        <div class="page-header" id="header">
+            Guru Development	&#174;
+        </div>
+        <div class="menu_dropdown_container">
+            <div class="menu_dropdown_name off">
+                User: {{ user.username }}
+            </div>
+
+            <a href="{% url 'logout' %}">
+                <div class="dropdown menu_dropdown_logout">
+                    Logout
+                </div>
+            </a>
+            <div id="latest_action" class="dropdown menu_dropdown_undo" onclick="undo(none, none)">
+                Loading Last Action...
+            </div>
+        </div>
+    </div>
+
+
     <div class="header_container">
       <span id="item_form_header" class="header_text">Add New Item</span>
       <input type="button" class="btn header_btn" value="Hide">
@@ -22,7 +35,7 @@
     </div>
     <div class="container items_list_container">
     </div>
-    
+
     <div class="header_container">
       <span class="header_text">Purchases</span>
       <input type="button" class="btn header_btn" value="Hide">
@@ -30,7 +43,7 @@
     </div>
     <div class="container purchased_items_container">
     </div>
-    
+
     <div class="footer">
       Foo Bar Pop
     </div>
