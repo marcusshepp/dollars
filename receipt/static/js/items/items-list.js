@@ -246,7 +246,8 @@ function purchase_item(id){
   var form = $("#item_"+id)[0];
   var item_id = form.id.substr(5);
   var more_than_one_purchase = false;
-  var number_of_purchases = $("#item_"+id).find("input").val();
+  var number_of_purchases = $("#item_"+id).find(".purchase_number_input").val();
+  console.log(number_of_purchases);
   $.ajax({
       type: 'POST',
       url: item_list_url(),
