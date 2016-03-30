@@ -14,6 +14,7 @@ from receipt.views import (
     CatagoryEndPoint,
     FilterItemsEndpoint,
     FilterPurchasesEndpoint,
+    foo,
 )
 from accounts.views import (
     Registeration,
@@ -21,6 +22,8 @@ from accounts.views import (
 )
 
 urlpatterns = [
+    url(r'^foo/bar$', foo),
+
     url(r'^foo/', admin.site.urls),
     # accounts
     url(r'^dollars/register/$', Registeration.as_view(), name="register"),

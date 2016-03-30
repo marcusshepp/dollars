@@ -67,10 +67,8 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
            item_markup += '<div class="pagination_container">';
            item_markup += '<div class="pagination_firstblock_container">';
            item_markup += '<div class="blank_of_blank">'+page_number+' of '+total_pages+' pages</div>';
-           item_markup += '<div class="prev_next_container">';
            item_markup += '<input class="btn pagination_btn" type="button" value="Prev" onclick="previous_item_page()" />';
            item_markup += '<input class="btn pagination_btn" type="button" value="Next" onclick="next_item_page()" />';
-           item_markup += '</div>';
            item_markup += '</div>';
            item_markup += '<div class="number_per_page_container">';
            item_markup += '<label for="item_per_page"> Number Per Page: </label>';

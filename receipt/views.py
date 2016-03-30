@@ -680,3 +680,7 @@ class FilterPurchasesEndpoint(Common):
             data = filter_all_purchases_by_chars(request.user, query)
             data["search_query"] = query
         return JsonResponse(data)
+
+def foo(request):
+    if request.method == "GET":
+        return render(request, "foo.html")

@@ -1,0 +1,16 @@
+body{
+    height: auto;
+    width: 100%;
+}
+.nav_container{
+    display: block;
+    background-color: #FFEEDA;
+    height: 25px;
+    width: 80%;
+}
+.nav{
+    display: inline-block;
+    background-color: #C77717;
+    height: 25px;
+    width: 49%;
+}
