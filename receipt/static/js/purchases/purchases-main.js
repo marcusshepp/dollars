@@ -34,20 +34,20 @@ function init_purchases(){
 }
 function build_table(purchased_items_names,purchased_date_created,purchased_length,amount_payed,total,cata_names_set,cata_ids_set,page_number,total_pages){
     var purchased_items = "";
-    purchased_items += '<table class=purchase_table_inner_container>';
-    purchased_items += '<tr class="border_bottom">';
-    purchased_items += '<td>Item Purchased</td>';
-    purchased_items += '<td>Date Purchased</td>';
-    purchased_items += '<td>Amount Spent</td>';
-    purchased_items += '</tr>';
+    purchased_items += '<div class=purchase_table_inner_container>';
+    purchased_items += '<div class="border_bottom">';
+    purchased_items += '<div>Item Purchased</div>';
+    purchased_items += '<div>Date Purchased</div>';
+    purchased_items += '<div>Amount Spent</div>';
+    purchased_items += '</div>';
     for(var i = 0; i < purchased_items_names.length; i++){
-      purchased_items += '<tr>';
-      purchased_items += "<td>" + purchased_items_names[i] + "</td>"
-      purchased_items += "<td>" + purchased_date_created[i] + "</td>"
-      purchased_items += "<td>" + amount_payed[i] + "</td>"
-      purchased_items += '</tr>';
+      purchased_items += '<div>';
+      purchased_items += "<div>" + purchased_items_names[i] + "</div>"
+      purchased_items += "<div>" + purchased_date_created[i] + "</div>"
+      purchased_items += "<div>" + amount_payed[i] + "</div>"
+      purchased_items += '</div>';
     }
-    purchased_items += '</table>';
+    purchased_items += '</div>';
     purchased_items += '<div class="pagination_container">';
     purchased_items += '<div class="pagination_firstblock_container">';
     purchased_items += '<div class="blank_of_blank">'+page_number+' of '+total_pages+' pages</div>';
