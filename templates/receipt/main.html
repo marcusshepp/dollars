@@ -20,33 +20,37 @@
             </div>
         </div>
     </div>
-
-
-    <div class="header_container">
-      <span id="item_form_header" class="header_text">Add New Item</span>
-      <input type="button" class="btn header_btn item_form_toggle_hide_btn" value="Hide" onclick="toggle_item_form()">
+    
+    <div class="all_content_container">
+        <div class="item_form_outter_container"> <!-- ITEM FORM -->
+            <div class="header_container">
+                <span id="item_form_header" class="header_text">Add New Item</span>
+                <input type="button" class="btn header_btn item_form_toggle_hide_btn" value="Hide" onclick="toggle_item_form()">
+            </div>
+            <div class="form_error_container" onclick="clear_form_error()"></div>
+            <div class="container item_form_container"></div>
+        </div>
+        
+        <div class="item_list_outter_container"> <!-- ITEM LIST -->
+            <div class="header_container">
+                <span class="header_text">Items</span>
+                <input type="button" class="btn header_btn item_list_toggle_hide_btn" value="Hide" onclick="toggle_item_list()">
+                <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
+            </div>
+            <div class="container items_list_container"></div>
+        </div>
+        
+        <div class="all_purchase_content_container"> <!-- PURCHASES -->
+            <div class="header_container">
+                <span class="header_text">Purchases</span>
+                <input type="button" class="btn header_btn purchases_hide_toggle_btn" value="Hide" onclick="toggle_purchases()">
+                <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
+            </div>
+            <div class="container purchased_items_container"></div>
+            <div class="purchased_items_pagination_container"></div>
+        </div>
     </div>
-    <div class="form_error_container" onclick="clear_form_error()"></div>
-    <div class="container item_form_container">
-    </div>
-
-    <div class="header_container">
-      <span class="header_text">Items</span>
-      <input type="button" class="btn header_btn item_list_toggle_hide_btn" value="Hide" onclick="toggle_item_list()">
-      <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
-    </div>
-    <div class="container items_list_container">
-    </div>
-
-    <div class="header_container">
-      <span class="header_text">Purchases</span>
-      <input type="button" class="btn header_btn purchases_hide_toggle_btn" value="Hide" onclick="toggle_purchases()">
-      <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
-    </div>
-    <div class="container purchased_items_container">
-    </div>
-    <div class="purchased_items_pagination_container">
-    </div>
+    
 
     <div class="footer">
       Foo Bar Pop

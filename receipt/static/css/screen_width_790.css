@@ -1,3 +1,18 @@
+:root{
+  
+}
+.btn{
+  cursor: pointer;
+  border-radius: 5px 5px 5px 5px;
+  box-shadow: 1px 1px 1px #FF6138;
+  font-size: 70%;
+}
+.container{
+  background-color: #FFEEDA;
+  padding: 20px 20px 20px 20px;
+  margin-bottom: 15px;
+  border-radius: 10px 10px 10px 10px;
+}
 /******
 media queries
 *******/
@@ -8,12 +23,7 @@ and (max-width : 790px) {
     /******
     COMMON
     *******/
-    .container{
-      background-color: #FFEEDA;
-      padding: 20px 20px 20px 20px;
-      margin-bottom: 15px;
-      border-radius: 10px 10px 10px 10px;
-    }
+
     .header_container{
       background-color: #FF8D0F;
       border-radius: 5px 5px 5px 5px;
@@ -29,12 +39,7 @@ and (max-width : 790px) {
       padding: 0px 5px 5px 5px;
       border-radius: 5px 5px 5px 5px;
     }
-    .btn{
-      cursor: pointer;
-      border-radius: 5px 5px 5px 5px;
-      box-shadow: 1px 1px 1px #FF6138;
-      font-size: 70%;
-    }
+
     .header_btn{
       background-color: #FFD09B;
       float: right;
@@ -98,11 +103,11 @@ and (max-width : 790px) {
       text-align: center;
       cursor: pointer;
     }
-    .item_form_container{
-
-    }
     .item_form{
       display: table-row;
+    }
+    .item_form_container{
+      width: auto;
     }
     .item_form_label{
       display: inline-block;
@@ -139,7 +144,7 @@ and (max-width : 790px) {
     }
     .item_individual_container{
       display: block;
-      background-color: #ff8d0f;
+      background-color: #FFFFFE;
       border-radius: 9px 9px 9px 9px;
       display: block;
       margin-bottom: 10px;
