@@ -48,7 +48,7 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
            item_markup += "<div id='item_container_" + id + "' class='item_individual_container'>";
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
            item_markup += '<div class="item_info">';
-           item_markup += '<div>' + name + '</div>';
+           item_markup += '<div class="item_name">' + name + '</div>';
            item_markup += '<div class="times_purchased">Price: $ '+price+'</div>';
            item_markup += '<div class="times_purchased">Purchased: ' + times_purchase + '</div>';
            item_markup += '</div>';

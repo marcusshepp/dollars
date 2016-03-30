@@ -9,16 +9,17 @@
     <body>
         <div class="nav_container">
             <div class="nav nav_left nav_user_action_info">Added Item: Foo Bar Pop</div>
-            <div class="nav nav_right nav_dropdown_container" onclick="toggle_dropdown()"><span class="nav nav_right nav_dropdown_container_text">fooo barr</span>
-              <div class="nav nav_right nav_dropdown_item nav_dropdown_item_one">el oh el</div>
-              <div class="nav nav_right nav_dropdown_item nav_dropdown_item_two">swag monkey</div>
+            <div class="nav_right nav_dropdown_container" onclick="toggle_dropdown()">
+              <a href="#"><div class="nav nav_right ">fooo barr</div></a>
+              <a href="#"><div class="nav nav_right nav_dropdown_item nav_dropdown_item_one">el oh el</div></a>
+              <a href="#"><div class="nav nav_right nav_dropdown_item nav_dropdown_item_two">swag monkey</div></a>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script type="text/javascript">
         function toggle_dropdown(){
           console.log("foo");
-          $(".nav_dropdown_item").fadeToggle();
+          $(".nav_dropdown_item").fadeToggle(350);
         }
         </script>
     </body>

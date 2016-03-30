@@ -42,7 +42,7 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
     purchased_items += '</div>';
     for(var i = 0; i < purchased_items_names.length; i++){
       purchased_items += '<div class="purch purchase_table_individual_purchase_container">';
-      purchased_items += '<div class="purch purchase_table_individual_purchase_data">' + purchased_items_names[i] + '</div>';
+      purchased_items += '<div class="purch purchase_table_individual_purchase_data purchase_name">' + purchased_items_names[i] + '</div>';
       purchased_items += '<div class="purch purchase_table_individual_purchase_data">' + purchased_date_created[i] + '</div>';
       purchased_items += '<div class="purch purchase_table_individual_purchase_data">' + amount_payed[i] + '</div>';
       purchased_items += '</div>';
