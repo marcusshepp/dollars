@@ -48,7 +48,7 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
            item_markup += "<div id='item_container_" + id + "' class='item_individual_container'>";
            item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
            item_markup += '<div class="item_info">';
-           item_markup += '<div>' + name + '</div>';
+           item_markup += '<div class="item_name">' + name + '</div>';
            item_markup += '<div class="times_purchased">Price: $ '+price+'</div>';
            item_markup += '<div class="times_purchased">Purchased: ' + times_purchase + '</div>';
            item_markup += '</div>';
@@ -245,7 +245,7 @@ function purchase_item(id){
   var item_id = form.id.substr(5);
   var more_than_one_purchase = false;
   var number_of_purchases = $("#item_"+id).find(".purchase_number_input").val();
-  console.log(number_of_purchases);
+  // console.log(number_of_purchases);
   $.ajax({
       type: 'POST',
       url: item_list_url(),
@@ -259,6 +259,7 @@ function purchase_item(id){
           $("#header").html("<p>Purchase Made: " + name + " <span class=''></></p>");
           create_action("Purchase", "Make purchase: "+name, "undo purchase");
           init_purchases();
+          init_item_list();
       },
       error: function(){
           console.log("failure");

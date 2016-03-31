@@ -52,7 +52,7 @@ class Purchase(TiedToUser):
     amount_payed = models.DecimalField(max_digits=19, decimal_places=2)
 
     def date_display(self):
-        return self.date_created.strftime("%b. %d, %Y, %-I:%M %p")
+        return self.date_created.strftime("%a %-I:%M %p")
 
 
 class Item(TiedToUser):
@@ -128,7 +128,8 @@ class WhatPage(TiedToUser):
     number_per_page = models.IntegerField()
 
     def __unicode__(self):
-        return u"obj: {0}\nPer page: {1}\nPage number: {2}".format(self.obj, self.number_per_page, self.page_number)
+        return u"obj: {0}\nPer page: {1}\nPage number: {2}".format(
+            self.obj, self.number_per_page, self.page_number)
 
     def decrement_page_number(self):
         page_number = self.page_number
