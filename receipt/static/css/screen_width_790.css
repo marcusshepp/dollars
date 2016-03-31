@@ -25,11 +25,34 @@ body{
     background-color: #FFB257;
 }
 /******
+itemlist - options
+*******/
+.options{
+    display: block;
+}
+.option_btn{
+    display: inline-block;
+    height: 30px;
+    width: 40%;
+    margin: 10px 0px 5px 2px;
+    background-color: #FFD09B;
+    text-align: center;
+    padding-top: 5px;
+}
+.option_btn_ellipsis{
+}
+.option_btn_edit{
+}
+.option_btn_delete{
+}
+.option_btn_new_price{
+}
+/******
 PAGINATION
 *******/
 .pagination_container{
     display: block;
-    background-color: #FFEEDA;
+    background-color: #F7D0A3;
     padding: 10px 0px 15px 15px;
     border-radius: 9px 9px 9px 9px;
     display: block;

@@ -52,14 +52,18 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
            item_markup += '<div class="times_purchased">Price: $ '+price+'</div>';
            item_markup += '<div class="times_purchased">Purchased: ' + times_purchase + '</div>';
            item_markup += '</div>';
-           item_markup += '<div class="item_btns_container">';
+           item_markup += '<div class="item_btns_container btn_container_'+id+'">';
            item_markup += '<div class="purchase_container">';
-           item_markup += '<input class="btn item_btn purchase_btn" onclick="purchase_item('+id+')" type="button" value="Purchase"/>';
+           item_markup += '<input class="btn item_btn purchase_btn" \
+           onclick="purchase_item('+id+')" type="button" value="Purchase"/>';
            item_markup += '<label class="purchase_number_label" name="purchase_number"> # </label>';
-           item_markup += '<input class="purchase_number_input" type="number" step="1" name="item_per_page" value="1" />';
+           item_markup += '<input class="purchase_number_input" type="number" step="1" \
+           name="item_per_page" value="1" />';
            item_markup += "</div>";
-           item_markup += '<input type="button" class="btn item_btn more_info_btn" onclick="show_item_info('+id+')" value="More Info">';
-           item_markup += '<input type="button" class="btn item_btn options_btn" onclick="show_options(this, '+id+')" value="Options" />';
+           item_markup += '<input type="button" class="btn item_btn more_info_btn" \
+           onclick="show_item_info('+id+')" value="More Info">';
+           item_markup += '<input type="button" class="btn item_btn options_btn" \
+           onclick="show_options(this, '+id+')" value="Options" />';
            item_markup += '</div>';
            item_markup += '</form>';
            item_markup += "</div>";
@@ -68,8 +72,10 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
            item_markup += '<div class="pagination_firstblock_container">';
            item_markup += '<div class="blank_of_blank">'+page_number+' of '+total_pages+' pages</div>';
            item_markup += '<div class="prev_next_container">';
-           item_markup += '<input class="btn pagination_btn" type="button" value="Prev" onclick="previous_item_page()" />';
-           item_markup += '<input class="btn pagination_btn" type="button" value="Next" onclick="next_item_page()" />';
+           item_markup += '<input class="btn pagination_btn" type="button" value="Prev" \
+           onclick="previous_item_page()" />';
+           item_markup += '<input class="btn pagination_btn" type="button" value="Next" \
+           onclick="next_item_page()" />';
            item_markup += '</div>';
            item_markup += '</div>';
            item_markup += '<div class="number_per_page_container">';
@@ -79,7 +85,8 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
            item_markup += '<option name="item_per_page" value="5">default(5)</option>';
            for (var i = 6; i <= 10; i++){
                if (i == per_page){
-                   item_markup += '<option selected="selected" name="item_per_page" value="'+i+'">'+i+'</option>';
+                   item_markup += '<option selected="selected" name="item_per_page" \
+                   value="'+i+'">'+i+'</option>';
                } else {item_markup += '<option name="item_per_page" value="'+i+'">'+i+'</option>';}
            }
            item_markup += '</select>';
@@ -94,20 +101,32 @@ function build_items(items, names, where_froms, prices, times_purchased, ids, pa
 
 function show_options(th, id){
     var options = '<div class="options">'
-    options += '<div onclick="hide_options(this, '+id+')" class="">...</div>';
-    options += '<div onclick="edit('+id+')">Edit</div>';
-    options += '<div onclick="del('+id+')">Delete</div>';
-    options += '<div onclick="build_purchase_w_new_price(this, '+id+')">Purchase w New Price</div>';
+    options += '<div onclick="hide_options(this, '+id+')" \
+    class="btn option_btn option_btn_ellipsis">...</div>';
+    options += '<div onclick="edit('+id+')" \
+    class="btn option_btn option_btn_edit">Edit</div>';
+    options += '<div onclick="del('+id+')" \
+    class="btn option_btn option_btn_delete">Delete</div>';
+    options += '<div onclick="build_purchase_w_new_price(this, '+id+')" \
+    class="btn option_btn option_btn_new_price">\
+    Purchase w New Price</div>';
     options += '</div>';
-    var options_div = $(th);
-    options_div.replaceWith(options);
-    $("#"+id).find("span").hide();
+    $(".btn_container_"+id).html(options);
 }
 function hide_options(th, id){
-    var a_options = "<span>&#8594;</span>";
-    var options_div = $(th);
-    var par = options_div.parent().filter(".options");
-    par.replaceWith("<div class='options' onclick='show_options(this, "+id+")'><div class=''>Options</div></div>")
+    var btn_markup = '';
+    btn_markup += '<div class="purchase_container">';
+    btn_markup += '<input class="btn item_btn purchase_btn" \
+    onclick="purchase_item('+id+')" type="button" value="Purchase"/>';
+    btn_markup += '<label class="purchase_number_label" name="purchase_number"> # </label>';
+    btn_markup += '<input class="purchase_number_input" type="number" step="1" \
+    name="item_per_page" value="1" />';
+    btn_markup += "</div>";
+    btn_markup += '<input type="button" class="btn item_btn more_info_btn" \
+    onclick="show_item_info('+id+')" value="More Info">';
+    btn_markup += '<input type="button" class="btn item_btn options_btn" \
+    onclick="show_options(this, '+id+')" value="Options" />';
+    $(".btn_container_"+id).html(btn_markup);
 }
 function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id, name, company, catagory, price){
     var form_str = "";
@@ -127,8 +146,10 @@ function build_edit_form(catagory_names, catagory_ids, catagory_length, item_id,
     form_str += '</select>';
     form_str += '</p>';
     form_str += '<p><label for="price">Price: </label><input ';
-    form_str += 'type="number" value="'+price+'" placeholder="Price of Item" name="price" step="0.01" class=""></p>';
-    form_str += '<input type="button" value="Save" class="edit_save_btn" onclick="edit_item(this.form, '+item_id+')">';
+    form_str += 'type="number" value="'+price+'" placeholder="Price of Item" \
+    name="price" step="0.01" class=""></p>';
+    form_str += '<input type="button" value="Save" class="edit_save_btn" \
+    onclick="edit_item(this.form, '+item_id+')">';
     form_str += '<input type="button" value="Clear" class="edit_clear_btn" onclick="clear_item_form()">';
     form_str += '</form>';
     $(".item_form_container").html(form_str);
@@ -232,7 +253,8 @@ function post_purchase_w_new_price(th, id){
         },
         success: function(){
             var name = $("#item_"+id).find("div")[0].innerText;
-            $("#header").html("<p>Purchase Made for: " + name + " Amount Played: "+new_price+"<span class=''></></p>");
+            $("#header").html("<p>Purchase Made for: " + name + " Amount Played: "+new_price+"\
+            <span class=''></></p>");
             create_action("Purchase", "Make purchase: "+name, "undo purchase");
         },
     });
@@ -381,7 +403,8 @@ function clear_item_form(){
      $(".item_form")[0][1].value = '';
      $(".item_form")[0][3].value = '';
      var item_form_btns = ''; //kkthisdoesnt work
-     item_form_btns += '<input type="button" value="Add" class="" onclick="validate_new_item(this.form, false)">';
+     item_form_btns += '<input type="button" value="Add" class="" \
+     onclick="validate_new_item(this.form, false)">';
      item_form_btns += '<input type="button" name="name" value="Add & Purchase"';
      item_form_btns += ' class="" onclick="validate_new_item(this.form, true)">';
      $(".item_form_btns").html(item_form_btns);
