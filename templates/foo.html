@@ -4,13 +4,13 @@
         <meta charset="utf-8">
         <title>foo</title>
         {% load static %}
-        <link rel="stylesheet" href="{% static 'css/foo.css' %}" media="screen" title="foo bar pop" charset="utf-8">
+        <link rel="stylesheet" href="{% static 'css/nav.css' %}" media="screen" title="foo bar pop" charset="utf-8">
     </head>
     <body>
         <div class="nav_container">
             <div class="nav nav_left nav_user_action_info">Added Item: Foo Bar Pop</div>
             <div class="nav_right nav_dropdown_container" onclick="toggle_dropdown()">
-              <a href="#"><div class="nav nav_right ">fooo barr</div></a>
+              <a href="#"><div class="nav nav_right nav_dropdown_item_dropdown_clicker">fooo barr</div></a>
               <a href="#"><div class="nav nav_right nav_dropdown_item nav_dropdown_item_one">el oh el</div></a>
               <a href="#"><div class="nav nav_right nav_dropdown_item nav_dropdown_item_two">swag monkey</div></a>
             </div>

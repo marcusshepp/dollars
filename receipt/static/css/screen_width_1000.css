@@ -1,14 +1,5 @@
-body{
-    background-color: #FFDBB3;
-    font-family: 'Karla', serif;
-    font-size: 107%;
-}
-/**/
-.item_individual_container{
-    background-color: #FFB257;
-}
 @media only screen
-and (min-width : 790px) {
+and (min-width : 900px) {
   /******
   COMMON
   *******/
@@ -23,7 +14,6 @@ and (min-width : 790px) {
     width: auto;
   }
   .header_container{
-    background-color: #FF8D0F;
     border-radius: 5px 5px 5px 5px;
     text-align: left;
     padding-top: 5px;
@@ -165,7 +155,7 @@ and (min-width : 790px) {
       margin: 5px 5px 5px 5px;
   }
   .purchased_items_container{
-      background-color: #9CDEFF;
+      /*background-color: #9CDEFF;*/
   }
   .purchase_table_inner_container{
     background-color: #FFEEDA;

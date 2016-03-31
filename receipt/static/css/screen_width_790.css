@@ -1,5 +1,10 @@
 :root{
-
+    
+}
+body{
+    background-color: #9ED6DC;
+    font-family: 'Karla', serif;
+    font-size: 107%;
 }
 .btn{
     cursor: pointer;
@@ -8,65 +13,67 @@
     font-size: 70%;
 }
 .container{
-    background-color: #FFEEDA;
+    background-color: #FFE2D0;
     padding: 20px 20px 20px 20px;
     margin-bottom: 15px;
     border-radius: 10px 10px 10px 10px;
 }
-
+.header_container{
+    background-color: #FFB257;
+}
+.item_individual_container{
+    background-color: #FFB257;
+}
 /******
-NAV
+PAGINATION
 *******/
-.menu_container{
+.pagination_container{
     display: block;
-}
-.page-header{
-    display: inline-block;
-    height: 30px;
-    width: 65%;
-    padding: 10px 5px 5px 5px;
-    background-color: #FFE6CA;
-}
-.menu_dropdown_inner_container{
-  margin-top: 16px;
-  width: 111%;
-  margin-left: -5px;
-}
-.dropdown{
-    display: none;
-    position: absolute;
-    background-color: black;
-    color: white;
-    border-radius: 3px 3px 3px 3px;
-}
-.dropdown_on{
-    cursor: pointer;
+    background-color: #FFEEDA;
+    padding: 10px 0px 15px 15px;
+    border-radius: 9px 9px 9px 9px;
     display: block;
+    width: 30%;
+    height: 55px;
 }
-.menu_dropdown_container{
+.blank_of_blank{
     display: inline-block;
-    height: 30px;
-    width: 28%;
-    padding: 10px 5px 5px 5px;
-    background-color: #B98041;
+    width: 35%;
+    height: 15px;
+    background-color: white;
+    padding: 5px 5px 5px 5px;
     text-align: center;
-    cursor: pointer;
+    border-radius: 3px 3px 3px 3px;
+    margin-bottom: 5px;
+    line-height: 100%;
 }
-.menu_dropdown_name{
+.prev_next_container{
+    display: inline-block;
+    width: 50%;
+    height: auto;
+    margin-left: 1%;
 }
-.menu_dropdown_logout{
+.pagination_btn{
+    display: inline-block;
+    height: 20px;
+    width: 45%;
+    margin-left: 1%;
+    text-align: center;
+    line-height: 120%;
 }
-.menu_dropdown_undo{
-  margin-top: 15px;
+.number_per_page_container{
+    padding: 15px 15px 0px 5px;
+    height: auto;
+    width: auto;
 }
-.menu_dropdown_name:hover > .menu{
+.item_per_page{
+    width: 50%;
+    padding: 5px 5px 5px 5px;
+    height: auto;
 }
 /*
     item list common
 */
-.items_list_container{
-    background-color: #9CDEFF;
-}
 .purchase_number_input{
     box-shadow: 1px 2px 1px #C16805;
 }
@@ -74,7 +81,7 @@ NAV
 media queries
 *******/
 @media only screen
-and (max-width : 790px) {
+and (max-width : 900px) {
     *{
     }
     /******
@@ -82,7 +89,6 @@ and (max-width : 790px) {
     *******/
 
     .header_container{
-      background-color: #FF8D0F;
       border-radius: 5px 5px 5px 5px;
       text-align: left;
       padding-top: 5px;
@@ -219,7 +225,7 @@ and (max-width : 790px) {
         /*margin: 5px 5px 5px 5px;*/
     }
     .purchased_items_container{
-        background-color: #9CDEFF;
+        /*background-color: #9CDEFF;*/
     }
     .purchase_table_inner_container{
       background-color: #FFEEDA;
@@ -256,51 +262,10 @@ and (max-width : 790px) {
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    /******
-    PAGINATION
-    *******/
+    /*
+    pagination
+    */
     .pagination_container{
-        display: block;
-      background-color: #FFEEDA;
-      padding: 10px 0px 15px 15px;
-      border-radius: 9px 9px 9px 9px;
-      display: block;
-      width: auto;
-      height: 50px;
-    }
-    .blank_of_blank{
-      display: inline-block;
-      width: auto;
-      height: 15px;
-      background-color: black;
-      color: white;
-      padding: 5px 15px 5px 15px;
-      border-radius: 9px 9px 9px 9px;
-      margin-right: 5px;
-      margin-top: 0px;
-      margin-bottom: 5px;
-    }
-    .prev_next_container{
-      display: inline-block;
-      width: 100%;
-      height: auto;
-      margin-left: 0px;
-    }
-    .pagination_btn{
-      display: inline-block;
-      height: 20px;
-      width: 29% !important;
-    }
-    .number_per_page_container{
-      padding: 15px 15px 0px 5px;
-      height: auto;
-      width: 134%;
-    }
-    .item_per_page{
-      /*height: auto;*/
-      width: 40%;
-      padding: 5px 5px 5px 5px;
-      height: auto;
-      /*width: 49%;*/
+        width: 100%;
     }
 }

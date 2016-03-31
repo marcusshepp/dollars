@@ -1,26 +1,16 @@
 {% extends 'base.html' %}
 {% block body %}
-    <div class="menu_container">
-        <div class="page-header" id="header">
-            Guru Development	&#174;
-        </div>
-        <div class="menu_dropdown_container">
-            <div class="menu_dropdown_name off">
-                User: {{ user.username }}
-            </div>
-            <div class="menu_dropdown_inner_container">
-              <a href="{% url 'logout' %}">
-                  <div class="dropdown menu_dropdown_logout">
-                      Logout
-                  </div>
-              </a>
-              <div id="latest_action" class="dropdown menu_dropdown_undo" onclick="undo(none, none)">
-                  Loading Last Action...
-              </div>
-            </div>
+    <div class="nav_container">
+        <div class="nav nav_left nav_user_action_info" id="header">Guru Development	&#174;</div>
+        <div class="nav_right nav_dropdown_container" onclick="toggle_dropdown()">
+          <a href="#"><div class="nav nav_right nav_dropdown_item_dropdown_clicker">User: {{ user.username }}</div></a>
+          <a href="{% url 'logout' %}"><div class="nav nav_right nav_dropdown_item nav_dropdown_item_one">Logout</div></a>
+          <a href="#" onclick="undo(none, none)">
+              <div id="latest_action" class="nav nav_right nav_dropdown_item nav_dropdown_item_two">swag monkey</div>
+          </a>
         </div>
     </div>
-    
+        
     <div class="all_content_container">
         <div class="item_form_outter_container"> <!-- ITEM FORM -->
             <div class="header_container">

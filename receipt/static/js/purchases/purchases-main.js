@@ -59,7 +59,7 @@ function build_table(purchased_items_names,purchased_date_created,purchased_leng
     purchased_items += '<div class="number_per_page_container">';
     purchased_items += '<label for="purchase_per_page"> Number Per Page: </label>';
     purchased_items += '<select onchange="change_number_per_page()" ';
-    purchased_items += 'class="purchase_per_page" name="purchase_per_page">';
+    purchased_items += 'class="item_per_page" name="purchase_per_page">';
     purchased_items += '<option name="purchases_per_page" value="5">default(5)</option>';
     for (var i = 6; i <= 10; i++){
         if (i == purchased_length){
