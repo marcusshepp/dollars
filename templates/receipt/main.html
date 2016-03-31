@@ -1,50 +1,46 @@
 {% extends 'base.html' %}
 {% block body %}
-    <div class="menu_container">
-        <div class="page-header" id="header">
-            Guru Development	&#174;
-        </div>
-        <div class="menu_dropdown_container">
-            <div class="menu_dropdown_name off">
-                User: {{ user.username }}
-            </div>
-            <div class="menu_dropdown_inner_container">
-              <a href="{% url 'logout' %}">
-                  <div class="dropdown menu_dropdown_logout">
-                      Logout
-                  </div>
-              </a>
-              <div id="latest_action" class="dropdown menu_dropdown_undo" onclick="undo(none, none)">
-                  Loading Last Action...
-              </div>
-            </div>
+    <div class="nav_container">
+        <div class="nav nav_left nav_user_action_info" id="header">Guru Development	&#174;</div>
+        <div class="nav_right nav_dropdown_container" onclick="toggle_dropdown()">
+          <a href="#"><div class="nav nav_right nav_dropdown_item_dropdown_clicker">User: {{ user.username }}</div></a>
+          <a href="{% url 'logout' %}"><div class="nav nav_right nav_dropdown_item nav_dropdown_item_one">Logout</div></a>
+          <a href="#" onclick="undo(none, none)">
+              <div id="latest_action" class="nav nav_right nav_dropdown_item nav_dropdown_item_two">swag monkey</div>
+          </a>
         </div>
     </div>
-
-
-    <div class="header_container">
-      <span id="item_form_header" class="header_text">Add New Item</span>
-      <input type="button" class="btn header_btn" value="Hide">
+        
+    <div class="all_content_container">
+        <div class="item_form_outter_container"> <!-- ITEM FORM -->
+            <div class="header_container">
+                <span id="item_form_header" class="header_text">Add New Item</span>
+                <input type="button" class="btn header_btn item_form_toggle_hide_btn" value="Hide" onclick="toggle_item_form()">
+            </div>
+            <div class="form_error_container" onclick="clear_form_error()"></div>
+            <div class="container item_form_container"></div>
+        </div>
+        
+        <div class="item_list_outter_container"> <!-- ITEM LIST -->
+            <div class="header_container">
+                <span class="header_text">Items</span>
+                <input type="button" class="btn header_btn item_list_toggle_hide_btn" value="Hide" onclick="toggle_item_list()">
+                <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
+            </div>
+            <div class="container items_list_container"></div>
+        </div>
+        
+        <div class="all_purchase_content_container"> <!-- PURCHASES -->
+            <div class="header_container">
+                <span class="header_text">Purchases</span>
+                <input type="button" class="btn header_btn purchases_hide_toggle_btn" value="Hide" onclick="toggle_purchases()">
+                <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
+            </div>
+            <div class="container purchased_items_container"></div>
+            <div class="purchased_items_pagination_container"></div>
+        </div>
     </div>
-    <div class="form_error_container" onclick="clear_form_error()"></div>
-    <div class="container item_form_container">
-    </div>
-
-    <div class="header_container">
-      <span class="header_text">Items</span>
-      <input type="button" class="btn header_btn" value="Hide">
-      <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
-    </div>
-    <div class="container items_list_container">
-    </div>
-
-    <div class="header_container">
-      <span class="header_text">Purchases</span>
-      <input type="button" class="btn header_btn" value="Hide">
-      <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
-    </div>
-    <div class="container purchased_items_container">
-    </div>
+    
 
     <div class="footer">
       Foo Bar Pop

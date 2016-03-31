@@ -263,7 +263,7 @@ class MainView(Common):
         Add a new Item
         returns whether or not the item form successfully saved.
         """
-        context_data                 = dict()
+        data                 = dict()
         item_form_data               = dict()
         item_form_data["catagory"]   = get_post(request, "catagory_id")
         item_form_data["name"]       = get_post(request, "name")
@@ -274,7 +274,7 @@ class MainView(Common):
         print form
         if form.is_valid():
             form.save()
-            context_data["success"] = True
+            data["success"] = True
             if get_post(request, "purchase") == "true":
                 item = Item.objects.get(name=request.POST["name"])
                 item.increase_number_of_times_purchased()
@@ -283,10 +283,13 @@ class MainView(Common):
                 form = PurchaseForm(data)
                 if form.is_valid():
                     form.save()
-                context_data["purchased"] = True
+                data["purchased"] = True
+        elif "Name already exists" in str(form.errors):
+            print "name exists"
+            data["name_exists"] = True
         else:
-            context_data["invalid_form_data"] = True
-        return JsonResponse(context_data)
+            data["invalid_form_data"] = True
+        return JsonResponse(data)
 
 
 class ItemEndPoint(Common):
@@ -349,20 +352,18 @@ class ItemEndPoint(Common):
     def purchased_item(self, request):
         number_of_purchases = get_post(request, "number_of_purchases")
         item = Item.objects.get(id=get_post(request, "id"))
-        if number_of_purchases:
-            number_of_purchases = int(number_of_purchases)
-            if number_of_purchases > 1:
-                for _ in xrange(number_of_purchases):
-                    item.increase_number_of_times_purchased()
-                    purchdata = dict()
-                    purchdata["item_purchased"] = item
-                    purchdata["user"] = request.user
-                    amount_payed = get_post(request, "amount_payed")
-                    if amount_payed:
-                        purchdata["amount_payed"] = amount_payed
-                    else: purchdata["amount_payed"] = item.price
-                    purchased_item = Purchase(**purchdata)
-                    purchased_item.save()
+        if number_of_purchases > 1:
+            for _ in xrange(int(number_of_purchases)):
+                item.increase_number_of_times_purchased()
+                purchdata = dict()
+                purchdata["item_purchased"] = item
+                purchdata["user"] = request.user
+                amount_payed = get_post(request, "amount_payed")
+                if amount_payed:
+                    purchdata["amount_payed"] = amount_payed
+                else: purchdata["amount_payed"] = item.price
+                purchased_item = Purchase(**purchdata)
+                purchased_item.save()
         else:
             item.increase_number_of_times_purchased()
             purchdata = dict()
@@ -679,3 +680,7 @@ class FilterPurchasesEndpoint(Common):
             data = filter_all_purchases_by_chars(request.user, query)
             data["search_query"] = query
         return JsonResponse(data)
+
+def foo(request):
+    if request.method == "GET":
+        return render(request, "foo.html")
