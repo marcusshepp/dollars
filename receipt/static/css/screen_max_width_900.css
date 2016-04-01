@@ -39,6 +39,17 @@ item list
 .item_info{
     
 }
+/*
+footer
+*/
+.footer{
+    position: absolute;
+    background-color: var(--nav-btn-main-color);
+    text-align: center;
+    width: 100%;
+    height: 25px;
+    bottom: auto;
+}
 /******
 itemlist - options
 *******/
