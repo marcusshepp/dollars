@@ -4,7 +4,7 @@ and (min-width : 900px) {
   COMMON
   *******/
   .all_content_container{
-    display: flex;
+    display: block;
     flex-flow: column;
     width: 100%;
     height: auto;
@@ -23,7 +23,6 @@ and (min-width : 900px) {
     margin-top: 8px;
   }
   .header_text{
-    background-color: #FFD09B;
     padding: 0px 5px 5px 5px;
     border-radius: 5px 5px 5px 5px;
   }
@@ -40,9 +39,8 @@ and (min-width : 900px) {
   .item_form_outter_container{
     display: inline-block;
     vertical-align: top;
-    width: 49%;
+    width: 35%;
     height: auto;
-    order: 3;
   }
   .form_error_container{
     border-radius: 3px 3px 3px 3px;
@@ -84,11 +82,13 @@ and (min-width : 900px) {
   list
   *******/
   .item_list_outter_container{
-    display: block;
-    width: 100%
+    display: inline-block;
+    width: 64%;
   }
   .items_list_container{
     display: block;
+    height: auto;
+    padding-bottom: 35px;
   }
   .item_individual_container{
     display: inline-block;
@@ -96,8 +96,8 @@ and (min-width : 900px) {
     margin-bottom: 10px;
     margin-right: 10px;
     padding: 10px 15px 15px 15px;
-    width: 25%;
-    height: 90px;
+    width: 28%;
+    height: 95px;
   }
   .item_info{
     display: inline-block;
@@ -149,7 +149,6 @@ and (min-width : 900px) {
     display: inline-block;
     vertical-align: top;
     width: 100%;
-    order: 2;
   }
   .purch{
       margin: 5px 5px 5px 5px;
@@ -186,5 +185,9 @@ and (min-width : 900px) {
   .purchase_table_individual_purchase_data{
       width: 32%;
       display: inline-block;
+  }
+  /*pagination*/
+  .pagination_container{
+      width: 45% !important;
   }
 }

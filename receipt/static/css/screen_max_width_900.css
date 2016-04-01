@@ -16,10 +16,13 @@ body{
     background-color: #FFE2D0;
     padding: 20px 20px 20px 20px;
     margin-bottom: 15px;
-    border-radius: 10px 10px 10px 10px;
+    border-radius: 0px 0px 10px 10px;
 }
 .header_container{
     background-color: #FFB257;
+    border-radius: 5px 5px 0px 0px;
+}
+.header_text{
 }
 .item_individual_container{
     background-color: #FFB257;
@@ -112,7 +115,6 @@ and (max-width : 900px) {
     *******/
 
     .header_container{
-      border-radius: 5px 5px 5px 5px;
       text-align: left;
       padding-top: 5px;
       padding-left: 25px;
@@ -121,7 +123,6 @@ and (max-width : 900px) {
       margin-top: 8px;
     }
     .header_text{
-      background-color: #FFD09B;
       padding: 0px 5px 5px 5px;
       border-radius: 5px 5px 5px 5px;
     }

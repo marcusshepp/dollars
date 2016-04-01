@@ -266,10 +266,10 @@ function purchase_item(id){
   Also increases the int on the btn.
   */
   var form = $("#item_"+id)[0];
+  var name = $("#item_"+id).find(".item_name").html();
   var item_id = form.id.substr(5);
-  var more_than_one_purchase = false;
   var number_of_purchases = $("#item_"+id).find(".purchase_number_input").val();
-  // console.log(number_of_purchases);
+  // console.log(item_id);
   $.ajax({
       type: 'POST',
       url: item_list_url(),
@@ -279,8 +279,7 @@ function purchase_item(id){
           "number_of_purchases": number_of_purchases,
       },
       success: function(data){
-          var name = data.item_name;
-          $("#header").html("<p>Purchase Made: " + name + " <span class=''></></p>");
+          $("#header").html("Purchase Made: " + name);
           create_action("Purchase", "Make purchase: "+name, "undo purchase");
           init_purchases();
           init_item_list();

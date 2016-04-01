@@ -1,0 +1,10 @@
+@media only screen
+and (min-width: 900px) 
+and (max-width: 1300px){
+    .item_individual_container{
+        width: 40%;
+    }
+    .pagination_container{
+        width: 60% !important;
+    }
+}
