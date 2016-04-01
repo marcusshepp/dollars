@@ -51,6 +51,14 @@ itemlist - options
 .option_btn_new_price{
 }
 /******
+itemlist - moreinfo
+*******/
+.item_more_info{
+    background-color: #FFEEDA;
+    width: 100%;
+    height: 100px;
+}
+/******
 PAGINATION
 *******/
 .pagination_container{
