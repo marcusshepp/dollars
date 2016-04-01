@@ -366,18 +366,19 @@ function show_item_info(id){
 }
 
 function build_item_info(name, id, where_from, cata_name, cata_id, price, number_of_times_purchased){
+  
   item_info_markup = "";
-  item_info_markup += '<div class="item_more_info">';
-  item_info_markup += "<span onclick='hide_item_info("+id+", ";
+  item_info_markup += '<div class="item_more_info item_individual_container">';
+  item_info_markup += "<div onclick='hide_item_info("+id+", ";
   item_info_markup += '"' + name + '", ';
   item_info_markup += price + ", ";
   item_info_markup += number_of_times_purchased;
-  item_info_markup += ")'>Back</span>";
-  item_info_markup += "<div>";
-  item_info_markup += "<div>Name: "+name+"</div>";
-  item_info_markup += "<div>Where From: "+where_from+"</div>";
-  item_info_markup += "<div>Catagory: "+cata_name+"</div>";
-  item_info_markup += "<div>Price: "+price+"</div>";
+  item_info_markup += ")'>Back</div>";
+  item_info_markup += "<div class='item_more_info_container'>";
+  item_info_markup += "<div class='item_more_info_list'>Name: "+name+"</div>";
+  item_info_markup += "<div class='item_more_info_list'>Where From: "+where_from+"</div>";
+  item_info_markup += "<div class='item_more_info_list'>Catagory: "+cata_name+"</div>";
+  item_info_markup += "<div class='item_more_info_list'>Price: "+price+"</div>";
   item_info_markup += "</div>";
   item_info_markup += '</div>'
   $("#item_container_"+id).html(item_info_markup);

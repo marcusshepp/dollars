@@ -1,0 +1,72 @@
+@media only screen
+and (min-width: 200px) 
+and (max-width: 400px){
+    *{
+        /*background-color: blue;*/
+    }
+    .btn{
+        font-size: 47% !important;
+    }
+    .container{
+        padding: 10px 10px 10px 10px !important;
+    }
+    /*
+    headers
+    */
+    .header_text{
+        width: 30%;
+        font-size: 90%;
+    } 
+    .header_btn{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    /*
+    form
+    */
+    .item_form_btn{
+        font-size: 80%;
+    }
+    .item_form_label{
+        width: 20%;
+    }
+    /*
+    list
+    */
+    .item_info{
+        margin-left: 0;
+        padding-left: 0;
+    }
+    .item_individual_container{
+        font-size: 90%;
+    }
+    .item_btn{
+        width: 26% !important;
+    }
+    /*
+    purchases
+    */
+    .purchases_header_text{
+    }
+    /*
+    pagination
+    */
+    .pagination_container{
+        width: 95% !important;
+        padding: 0 0 0 0 !important;
+        height: 80px !important;
+    }
+    .blank_of_blank{
+        width: 40% !important;
+    }
+    .pagination_btn{
+        width: 35% !important;
+    }
+    .pagination_firstblock_container{
+        width: 100%;
+        display: block;
+    }
+    .item_per_page{
+        width: 35% !important;
+    }
+}

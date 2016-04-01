@@ -62,7 +62,7 @@ and (min-width : 900px) {
     box-shadow: 2px 2px 2px #FF6138;
   }
   .add_catagory{
-    margin-left: 70px;
+    margin-left: 10%;
   }
   .item_form_catagory{
     margin-left: 10px;

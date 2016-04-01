@@ -32,7 +32,7 @@
         
         <div class="all_purchase_content_container"> <!-- PURCHASES -->
             <div class="header_container">
-                <span class="header_text">Purchases</span>
+                <span class="header_text purchases_header_text">Purchases</span>
                 <input type="button" class="btn header_btn purchases_hide_toggle_btn" value="Hide" onclick="toggle_purchases()">
                 <input type="button" class="btn header_btn" onclick="get_filter_items()" value="Filter" />
             </div>
@@ -46,3 +46,5 @@
       Foo Bar Pop
     </div>
 {% endblock body %}
+{% block custom_javascript %}
+{% endblock custom_javascript %}
