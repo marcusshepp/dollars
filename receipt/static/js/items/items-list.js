@@ -38,7 +38,6 @@ function init_item_list(){
 function build_items(items, names, where_froms, prices, times_purchased, ids, page_number, total_pages, per_page, cata_names_set, cata_ids_set, total_number_of_items){
      if (items){
          var item_markup = "";
-         item_markup += '';
          for (var i = 0; i < names.length; i++){
            var name = names[i];
            var where_from = where_froms[i];
@@ -266,10 +265,10 @@ function purchase_item(id){
   Also increases the int on the btn.
   */
   var form = $("#item_"+id)[0];
+  var name = $("#item_"+id).find(".item_name").html();
   var item_id = form.id.substr(5);
-  var more_than_one_purchase = false;
   var number_of_purchases = $("#item_"+id).find(".purchase_number_input").val();
-  // console.log(number_of_purchases);
+  // console.log(item_id);
   $.ajax({
       type: 'POST',
       url: item_list_url(),
@@ -279,8 +278,7 @@ function purchase_item(id){
           "number_of_purchases": number_of_purchases,
       },
       success: function(data){
-          var name = data.item_name;
-          $("#header").html("<p>Purchase Made: " + name + " <span class=''></></p>");
+          $("#header").html("Purchase Made: " + name);
           create_action("Purchase", "Make purchase: "+name, "undo purchase");
           init_purchases();
           init_item_list();
@@ -368,35 +366,51 @@ function show_item_info(id){
 }
 
 function build_item_info(name, id, where_from, cata_name, cata_id, price, number_of_times_purchased){
+  
   item_info_markup = "";
-  item_info_markup += "<span onclick='hide_item_info("+id+", ";
+  item_info_markup += '<div class="item_more_info item_individual_container">';
+  item_info_markup += "<div onclick='hide_item_info("+id+", ";
   item_info_markup += '"' + name + '", ';
   item_info_markup += price + ", ";
   item_info_markup += number_of_times_purchased;
-  item_info_markup += ")'>Back</span>";
-  item_info_markup += "<ul>";
-  item_info_markup += "<li>Name: "+name+"</li>";
-  item_info_markup += "<li>Where From: "+where_from+"</li>";
-  item_info_markup += "<li>Catagory: "+cata_name+"</li>";
-  item_info_markup += "<li>Price: "+price+"</li>";
-  item_info_markup += "</ul>";
+  item_info_markup += ")'>Back</div>";
+  item_info_markup += "<div class='item_more_info_container'>";
+  item_info_markup += "<div class='item_more_info_list'>Name: "+name+"</div>";
+  item_info_markup += "<div class='item_more_info_list'>Where From: "+where_from+"</div>";
+  item_info_markup += "<div class='item_more_info_list'>Catagory: "+cata_name+"</div>";
+  item_info_markup += "<div class='item_more_info_list'>Price: "+price+"</div>";
+  item_info_markup += "</div>";
+  item_info_markup += '</div>'
   $("#item_container_"+id).html(item_info_markup);
 }
 
 function hide_item_info(id, name, price, times_purchased){
   item_markup = "";
-  item_markup += '<form id="item_' + id + '" class="item" action="" method="POST">';
-  item_markup += '<div class="" onclick="show_item_info('+id+')">' + name.toUpperCase() + '</div>';
-  item_markup += '<span class="purchase_btn" onclick="purchase_item('+id+')">Purchase</span>';
-  item_markup += '<label class="purchase_number" name="purchase_number"> # </label>';
-  item_markup += '<input type="number" step="1" name="item_per_page" value="1" /><br />';
-  item_markup += '<span class="times_purchased">$ '+price+'</span>';
-  item_markup += '<span class="times_purchased"> # of purchases: ' + times_purchased + '</span>';
-  item_markup += '<div class="options" onclick="show_options(this, '+id+')">Options</div>';
+  item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
+  item_markup += '<div class="item_info">';
+  item_markup += '<div class="item_name">' + name + '</div>';
+  item_markup += '<div class="times_purchased">Price: $ '+price+'</div>';
+  item_markup += '<div class="times_purchased">Purchased: ' + times_purchased + '</div>';
+  item_markup += '</div>';
+  item_markup += '<div class="item_btns_container btn_container_'+id+'">';
+  item_markup += '<div class="purchase_container">';
+  item_markup += '<input class="btn item_btn purchase_btn" \
+  onclick="purchase_item('+id+')" type="button" value="Purchase"/>';
+  item_markup += '<label class="purchase_number_label" name="purchase_number"> # </label>';
+  item_markup += '<input class="purchase_number_input" type="number" step="1" \
+  name="item_per_page" value="1" />';
+  item_markup += "</div>";
+  item_markup += '<input type="button" class="btn item_btn more_info_btn" \
+  onclick="show_item_info('+id+')" value="More Info">';
+  item_markup += '<input type="button" class="btn item_btn options_btn" \
+  onclick="show_options(this, '+id+')" value="Options" />';
+  item_markup += '</div>';
   item_markup += '</form>';
   $("#item_container_"+id).html(item_markup);
 }
+/*
 
+*/
 function clear_item_form(){
      $("#item_form_header").html("Add New Item")
      $(".item_form")[0][0].value = '';

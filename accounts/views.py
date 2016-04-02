@@ -18,6 +18,7 @@ class Login(View):
 
     def post(self, request, *a, **kw):
         form = LoginForm(request.POST)
+        data = dict()
         if form.is_valid:
             user = authenticate(
                 username=request.POST.get('username', None),
@@ -27,12 +28,10 @@ class Login(View):
                     login(request, user)
                     user.is_authenticated = True
                     return redirect(reverse_lazy("main"))
-        form = LoginForm
-        message = 'User not authenticated'
-        return render(
-            request,
-            'accounts/register.html',
-            {"message": message, "form": form})
+            else: data["invalid"] = True
+        else: data["invalid"] = True
+        data["form"] = LoginForm
+        return render(request, 'accounts/login.html', data)
 
 
 class Registeration(View):

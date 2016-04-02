@@ -271,7 +271,6 @@ class MainView(Common):
         item_form_data["price"]      = get_post(request, "price")
         item_form_data["user"]       = request.user.id
         form                         = ItemForm(item_form_data)
-        print form
         if form.is_valid():
             form.save()
             data["success"] = True
@@ -285,7 +284,6 @@ class MainView(Common):
                     form.save()
                 data["purchased"] = True
         elif "Name already exists" in str(form.errors):
-            print "name exists"
             data["name_exists"] = True
         else:
             data["invalid_form_data"] = True
@@ -352,7 +350,7 @@ class ItemEndPoint(Common):
     def purchased_item(self, request):
         number_of_purchases = get_post(request, "number_of_purchases")
         item = Item.objects.get(id=get_post(request, "id"))
-        if number_of_purchases > 1:
+        if int(number_of_purchases) > 1:
             for _ in xrange(int(number_of_purchases)):
                 item.increase_number_of_times_purchased()
                 purchdata = dict()
@@ -367,14 +365,15 @@ class ItemEndPoint(Common):
         else:
             item.increase_number_of_times_purchased()
             purchdata = dict()
-            purchdata["item_purchased"] = item
-            purchdata["user"] = request.user
+            purchdata["item_purchased"] = item.id
+            purchdata["user"] = request.user.id
             amount_payed = get_post(request, "amount_payed")
             if amount_payed:
                 purchdata["amount_payed"] = amount_payed
             else: purchdata["amount_payed"] = item.price
-            purchased_item = Purchase(**purchdata)
-            purchased_item.save()
+            purchased_item_form = PurchaseForm(purchdata)
+            if purchased_item_form.is_valid():
+                purchased_item_form.save()
 
     def post(self, request, *a, **kw):
         """

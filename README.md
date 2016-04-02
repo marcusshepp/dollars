@@ -1,4 +1,4 @@
-HOSTED @ http://52.26.186.87/
+HOSTED @ http://52.26.186.87/dollars/
 
 TODO:
 - purchase w different name btn
