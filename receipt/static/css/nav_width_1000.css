@@ -13,7 +13,7 @@
     line-height: 200%;
 }
 .nav:hover{
-    background-color: var(--nav-btn-hover-color);  
+    background-color: var(--nav-btn-hover-color);
 }
 .nav_container{
     display: block;
@@ -24,7 +24,7 @@
 .nav_left{
     display: inline-block;
     height: var(--nav-btn-height);
-    width: 70.5%
+    width: 65.5%
 }
 .nav_right{
     display: inline-block;
