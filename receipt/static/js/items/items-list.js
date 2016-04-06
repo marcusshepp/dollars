@@ -366,7 +366,7 @@ function show_item_info(id){
 }
 
 function build_item_info(name, id, where_from, cata_name, cata_id, price, number_of_times_purchased){
-  
+
   item_info_markup = "";
   item_info_markup += '<div class="item_more_info item_individual_container">';
   item_info_markup += "<div onclick='hide_item_info("+id+", ";
@@ -377,7 +377,7 @@ function build_item_info(name, id, where_from, cata_name, cata_id, price, number
   item_info_markup += "<div class='item_more_info_container'>";
   item_info_markup += "<div class='item_more_info_list'>Name: "+name+"</div>";
   item_info_markup += "<div class='item_more_info_list'>Where From: "+where_from+"</div>";
-  item_info_markup += "<div class='item_more_info_list'>Catagory: "+cata_name+"</div>";
+  item_info_markup += "<div class='item_more_info_list'>Category: "+cata_name+"</div>";
   item_info_markup += "<div class='item_more_info_list'>Price: "+price+"</div>";
   item_info_markup += "</div>";
   item_info_markup += '</div>'

@@ -35,7 +35,7 @@ function build_item_form(cata){
     item_form += '<p><label for="where_from" class="item_form_label">Company: </label>';
     item_form += '<input type="text" placeholder="Where does this come from?" ';
     item_form += 'name="where_from" max_length="50" class="item_form_input" /></p>';
-    item_form += '<p><label for="catagory" class="item_form_label">Catagory: </label>';
+    item_form += '<p><label for="catagory" class="item_form_label">Category: </label>';
     item_form += '<input type="button" value="Add" class="add_catagory" onclick="build_catagory_form(no_catagories=false)">';
     item_form += '<select name="catagory" class="item_form_catagory">';
     for (var i = 0; i < cata.length; i++){
@@ -102,7 +102,7 @@ function create_new_item(name, company_came_from, price, catagory_id, purchase){
         create_action("Create Item", "Create Item: "+name, "undo add item");
         init_item_form();
         init_item_list();
-        document.getElementsByClassName('item_form')[0].reset();        
+        document.getElementsByClassName('item_form')[0].reset();
       }
     },
     failure: function(){
@@ -149,7 +149,7 @@ function validate_new_catagory(){
 }
 function build_catagory_form(no_catagories){
     var catagory_form = "";
-    catagory_form += "<h2 id='item_form_header'>Add A Catagory</h2>";
+    catagory_form += "<h2 id='item_form_header'>Add A Category</h2>";
     if(no_catagories) {
         catagory_form += "<p>Add a Catagory before you can add any Items.</p>";
     }
@@ -159,11 +159,11 @@ function build_catagory_form(no_catagories){
     } else {
         catagory_form += "<span class='cata_back_btn' onclick='init_item_form()'>back</span>";
     }
-    catagory_form += "<p><span><label for='catagory' class='pull-left' >Catagory: </label></span>";
+    catagory_form += "<p><span><label for='catagory' class='pull-left' >Category: </label></span>";
     catagory_form += "<input type='text' style='display: none;' />";
-    catagory_form += "<span><input type='text' placeholder='Enter New Catagory' class='new_catagory_input' /></span></p>";
+    catagory_form += "<span><input type='text' placeholder='Enter New Category' class='new_catagory_input' /></span></p>";
     if(no_catagories) {
-        catagory_form += '<input type="button" value="Add First Catagory" class="" onclick="validate_new_catagory();">';
+        catagory_form += '<input type="button" value="Add First Category" class="" onclick="validate_new_catagory();">';
     } else {
         catagory_form += '<input type="button" value="Add" class="" onclick="validate_new_catagory();">';
     }
@@ -181,4 +181,4 @@ function toggle_item_form(){
     $(".item_form_toggle_hide_btn").val("Hide");
   }
   $(".item_form_container").slideToggle();
-} 
+}

@@ -38,17 +38,27 @@ function build_filter_items(data){
       var price = data.prices[i];
       var times_purchase = data.times_purchased[i];
       var id = data.ids[i];
-      item_markup += '<br />';
-      item_markup += "<div id='item_container_" + id + "'>";
+      item_markup += "<div id='item_container_" + id + "' class='item_individual_container'>";
       item_markup += '<form id="item_' + id + '" class="item" action="api/items/" method="POST">';
-      item_markup += '<div class="" onclick="show_item_info('+id+')">' + name + '</div>';
-      item_markup += '<span class="purchase_btn" onclick="purchase_item('+id+')">Purchase</span>';
-      item_markup += '<label class="purchase_number" name="purchase_number"> # </label>';
-      item_markup += '<input type="number" step="1" name="item_per_page" value="1" /><br />';
-      item_markup += '<span class="times_purchased">$ '+price+'</span>';
-      item_markup += '<span class="times_purchased"> # of purchases: ' + times_purchase + '</span>';
+      item_markup += '<div class="item_info">';
+      item_markup += '<div class="item_name">' + name + '</div>';
+      item_markup += '<div class="times_purchased">Price: $ '+price+'</div>';
+      item_markup += '<div class="times_purchased">Purchased: ' + times_purchase + '</div>';
+      item_markup += '</div>';
+      item_markup += '<div class="item_btns_container btn_container_'+id+'">';
+      item_markup += '<div class="purchase_container">';
+      item_markup += '<input class="btn item_btn purchase_btn" \
+      onclick="purchase_item('+id+')" type="button" value="Purchase"/>';
+      item_markup += '<label class="purchase_number_label" name="purchase_number"> # </label>';
+      item_markup += '<input class="purchase_number_input" type="number" step="1" \
+      name="item_per_page" value="1" />';
+      item_markup += "</div>";
+      item_markup += '<input type="button" class="btn item_btn more_info_btn" \
+      onclick="show_item_info('+id+')" value="More Info">';
+      item_markup += '<input type="button" class="btn item_btn options_btn" \
+      onclick="show_options(this, '+id+')" value="Options" />';
+      item_markup += '</div>';
       item_markup += '</form>';
-      item_markup += '<div class="options" onclick="show_options(this, '+id+')">Options</div>';
       item_markup += "</div>";
       }
     item_markup += '</div>';
