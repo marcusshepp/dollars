@@ -1,16 +1,16 @@
 :root{
     --nav-btn-main-color: #C77717;
     --nav-btn-hover-color: #A8FBFF;
-    --nav-btn-height: 35px;
+    --nav-btn-height: 30px;
+
+    --nav-left-width: 65.5%;
+    --nav-right-width: 29%;
 }
-/*body{
-    height: auto;
-    width: 100%;
-}*/
 .nav{
     text-align: center;
     cursor: pointer;
-    line-height: 200%;
+    line-height: 180%;
+    height: var(--nav-btn-height);
 }
 .nav:hover{
     background-color: var(--nav-btn-hover-color);
@@ -19,21 +19,22 @@
     display: block;
     background-color: var(--nav-btn-main-color);
     height: var(--nav-btn-height);
-    /*width: 100%;*/
 }
 .nav_left{
     display: inline-block;
-    height: var(--nav-btn-height);
-    width: 65.5%
+    width: var(--nav-left-width);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .nav_right{
+    position: absolute;
+    top: .22em;
+    right: .6%;
     display: inline-block;
     background-color: var(--nav-btn-main-color);
-    height: var(--nav-btn-height);
-    width: 29%;
+    width: var(--nav-right-width);
     text-align: center;
     cursor: pointer;
-    line-height: 200%;
 }
 .nav_dropdown_item{
     display: none;
@@ -47,15 +48,17 @@
 }
 .nav_dropdown_item_one{
     position: absolute;
-    top: 43px;
+    top: 34px;
     border-bottom: 1px solid black;
     border-top: 1px solid black;
+    width: 100%;
 }
 .nav_dropdown_item_two{
     position: absolute;
-    top: 80px;
+    top: 66px;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%;
 }
 .nav_dropdown_item_dropdown_clicker{
     width: 100%;

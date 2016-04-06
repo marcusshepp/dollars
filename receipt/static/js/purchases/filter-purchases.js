@@ -33,23 +33,21 @@ function build_filter_purchases(data, do_filter){
     }
     purchased_items += '<input type="button" class="see_more_catagories" ';
     purchased_items += 'onclick="see_more_catagories()" value="More..."/>';
-    purchased_items += '<div class="total">Total: '+ data.total +'</div>';
-    purchased_items += '<table>';
-    purchased_items += '<tr>';
-    purchased_items += '<td>Item Purchased</td>';
-    purchased_items += '<td>Date Purchased</td>';
-    purchased_items += '<td>Amount Spent</td>';
-    purchased_items += '</tr>';
+    purchased_items += '<div class="purchase_table_inner_container">';
+    purchased_items += '<div class="purchase_table_individual_purchase_container">';
+    purchased_items += '<div class="purch purchase_table_individual_purchase_data">Item Purchased</div>';
+    purchased_items += '<div class="purch purchase_table_individual_purchase_data">Date Purchased</div>';
+    purchased_items += '<div class="purch purchase_table_individual_purchase_data">Amount Spent</div>';
+    purchased_items += '</div>';
     purchased_items += '<div class="filter_purchase_all_container">';
     for(var i = 0; i < data.purchased_items_names.length; i++){
-      purchased_items += '<tr>';
-      purchased_items += "<td>" + data.purchased_items_names[i].toUpperCase() + "</td>"
-      purchased_items += "<td>" + data.purchased_date_created[i] + "</td>"
-      purchased_items += "<td>" + data.amount_payed[i] + "</td>"
-      purchased_items += '</tr>';
+        purchased_items += '<div class="purch purchase_table_individual_purchase_container">';
+        purchased_items += '<div class="purch purchase_table_individual_purchase_data purchase_name">' + data.purchased_items_names[i] + '</div>';
+        purchased_items += '<div class="purch purchase_table_individual_purchase_data">' + data.purchased_date_created[i] + '</div>';
+        purchased_items += '<div class="purch purchase_table_individual_purchase_data">' + data.amount_payed[i] + '</div>';
+        purchased_items += '</div>';
     }
     purchased_items += '</div>';
-    purchased_items += '</table>';
     if (data.total_pages){
       purchased_items += '<span class="page_info">'+data.page_number+' of '+data.total_pages+' pages</span>';
       purchased_items += '<input type="button" value="prev" onclick="previous_purchase_page()" />';
